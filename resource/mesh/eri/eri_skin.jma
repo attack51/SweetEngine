@@ -1,0 +1,11 @@
+{
+  "asset-property": {
+    "identifier": "sweet-engine-asset",
+    "asset-type": "material"
+  },
+  "material-property": {
+    "vs-path": "../../resource/shader/Texture",
+    "fs-path": "../../resource/shader/Texture",
+    "tex-name": "../../resource/texture/eri/Eri_skinC"
+  }
+}

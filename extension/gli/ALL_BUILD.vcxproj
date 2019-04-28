@@ -1,0 +1,455 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{68B9524D-8B81-3768-A116-1B422353916B}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\work\Private\VulkanStudy\gli-0.8.2.0\.;D:\work\Private\VulkanStudy\gli-0.8.2.0\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\work\Private\VulkanStudy\gli-0.8.2.0\.;D:\work\Private\VulkanStudy\gli-0.8.2.0\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\work\Private\VulkanStudy\gli-0.8.2.0\.;D:\work\Private\VulkanStudy\gli-0.8.2.0\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>D:\work\Private\VulkanStudy\gli-0.8.2.0\.;D:\work\Private\VulkanStudy\gli-0.8.2.0\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/work/Private/VulkanStudy/gli-0.8.2.0 -BD:/work/Private/VulkanStudy/gli-0.8.2.0 --check-stamp-file D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystem.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\feature_tests.cxx;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\GNUInstallDirs.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseArguments.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\WriteBasicConfigVersionFile.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliBuildConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/work/Private/VulkanStudy/gli-0.8.2.0 -BD:/work/Private/VulkanStudy/gli-0.8.2.0 --check-stamp-file D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystem.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\feature_tests.cxx;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\GNUInstallDirs.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseArguments.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\WriteBasicConfigVersionFile.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliBuildConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/work/Private/VulkanStudy/gli-0.8.2.0 -BD:/work/Private/VulkanStudy/gli-0.8.2.0 --check-stamp-file D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystem.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\feature_tests.cxx;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\GNUInstallDirs.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseArguments.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\WriteBasicConfigVersionFile.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliBuildConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/work/Private/VulkanStudy/gli-0.8.2.0 -BD:/work/Private/VulkanStudy/gli-0.8.2.0 --check-stamp-file D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:/work/Private/VulkanStudy/gli-0.8.2.0/CMakeLists.txt;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystem.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\feature_tests.cxx;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeCXXCompiler.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\3.11.4\CMakeCXXCompiler.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\GNUInstallDirs.cmake;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\CMakeParseArguments.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\WriteBasicConfigVersionFile.cmake;C:\Program Files\CMake\share\cmake-3.11\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliBuildConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\cmake\gliConfig.cmake.in;D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\work\Private\VulkanStudy\gli-0.8.2.0\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\ZERO_CHECK.vcxproj">
+      <Project>{EB9C16A6-A81A-397A-A4EF-8B7459E0EE91}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\gli\gli_dummy.vcxproj">
+      <Project>{E29B69F5-D906-3D86-82BA-F33E12B3DC06}</Project>
+      <Name>gli_dummy</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\bug\test-bug.vcxproj">
+      <Project>{E5F01EF9-CD20-363A-82EE-5B9D61A730DF}</Project>
+      <Name>test-bug</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-convert_sampler1d.vcxproj">
+      <Project>{39CF6E34-7222-3D0B-AD31-9BF67A42E14B}</Project>
+      <Name>test-convert_sampler1d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-convert_sampler1d_array.vcxproj">
+      <Project>{5ACBA85F-F4F5-3FEC-8704-BC27E7B2A1B7}</Project>
+      <Name>test-convert_sampler1d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-convert_sampler2d.vcxproj">
+      <Project>{E17109FA-017E-3D8F-A7FD-41D5A19526FD}</Project>
+      <Name>test-convert_sampler2d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-convert_sampler2d_array.vcxproj">
+      <Project>{D24EB880-BEC6-339E-8AA8-A6ADF19CD72C}</Project>
+      <Name>test-convert_sampler2d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-convert_sampler3d.vcxproj">
+      <Project>{12C696C3-98AE-3D07-8F7C-D750E9E87C18}</Project>
+      <Name>test-convert_sampler3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-convert_sampler_cube.vcxproj">
+      <Project>{1256E5C5-B794-3FC1-BEF0-8B853ECBD48E}</Project>
+      <Name>test-convert_sampler_cube</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-convert_sampler_cube_array.vcxproj">
+      <Project>{6305FDFC-9F37-3449-B1B2-4CB74FDC05F1}</Project>
+      <Name>test-convert_sampler_cube_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core.vcxproj">
+      <Project>{424B8FB2-9B71-34EE-BAD6-CCD161894BEB}</Project>
+      <Name>test-core</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_addressing.vcxproj">
+      <Project>{475A02C9-BAA7-3661-A308-39E1325E5E5C}</Project>
+      <Name>test-core_addressing</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_clear.vcxproj">
+      <Project>{599A8AAD-2343-3130-8D0E-9B5A4CD96A7D}</Project>
+      <Name>test-core_clear</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_comparison.vcxproj">
+      <Project>{F3D7930A-E79E-3BCD-B633-167D34B6E514}</Project>
+      <Name>test-core_comparison</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_convert.vcxproj">
+      <Project>{CD74C63F-BB9A-348E-BDCD-19068600B52D}</Project>
+      <Name>test-core_convert</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_convert_access.vcxproj">
+      <Project>{B4F324D5-DE85-3C7D-92A9-82F107E2CE20}</Project>
+      <Name>test-core_convert_access</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_fetch.vcxproj">
+      <Project>{DD759A19-7905-3ED0-875A-78EEE5EC7288}</Project>
+      <Name>test-core_fetch</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_filter_1d.vcxproj">
+      <Project>{F6CFB203-0DA2-32B7-A3DE-F9FE8CF2F584}</Project>
+      <Name>test-core_filter_1d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_filter_2d.vcxproj">
+      <Project>{B6509A6B-9D14-3E8F-8BC0-C6784A5AB871}</Project>
+      <Name>test-core_filter_2d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_filter_3d.vcxproj">
+      <Project>{FDF724A0-D235-3D02-A036-A183A5F82332}</Project>
+      <Name>test-core_filter_3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_flip.vcxproj">
+      <Project>{F7FFBDB6-B9BD-39CB-8A4B-4E9FD21F36F3}</Project>
+      <Name>test-core_flip</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_format.vcxproj">
+      <Project>{A4C60F79-E610-3BB5-9A20-A5737FDFFE5D}</Project>
+      <Name>test-core_format</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_image.vcxproj">
+      <Project>{3C738198-974B-3DCE-A100-7FC752760EC7}</Project>
+      <Name>test-core_image</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load.vcxproj">
+      <Project>{14D200EB-DD1C-3755-B83C-51E4412329F6}</Project>
+      <Name>test-core_load</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_dds.vcxproj">
+      <Project>{918825B2-A45F-32FC-B554-8B2127022B01}</Project>
+      <Name>test-core_load_dds</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_1d.vcxproj">
+      <Project>{9626AE2B-843D-339A-99D7-4AF8E7DE6E35}</Project>
+      <Name>test-core_load_gen_1d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_1d_array.vcxproj">
+      <Project>{850E8358-2A78-3A59-81EC-351296AD72BD}</Project>
+      <Name>test-core_load_gen_1d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_2d.vcxproj">
+      <Project>{532897C0-B88D-3E9C-8DDF-E0213D15F9A4}</Project>
+      <Name>test-core_load_gen_2d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_2d_array.vcxproj">
+      <Project>{CF6F05F7-66F2-3263-8DBB-BA471CE516D8}</Project>
+      <Name>test-core_load_gen_2d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_3d.vcxproj">
+      <Project>{D780D717-F4E9-371E-9138-0DDC60D8EC6F}</Project>
+      <Name>test-core_load_gen_3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_cube.vcxproj">
+      <Project>{802CA1E0-AFA0-3D4D-819E-6BF4CF81DFC9}</Project>
+      <Name>test-core_load_gen_cube</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_cube_array.vcxproj">
+      <Project>{D53566DC-AA24-3695-8134-DB8F35850DDE}</Project>
+      <Name>test-core_load_gen_cube_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_gen_rect.vcxproj">
+      <Project>{0C6FBDDD-ED4B-3078-995B-8E9829B1CF26}</Project>
+      <Name>test-core_load_gen_rect</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_load_ktx.vcxproj">
+      <Project>{FD88DB6E-9A65-3C3B-A4C9-C79E080AB419}</Project>
+      <Name>test-core_load_ktx</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_sample.vcxproj">
+      <Project>{1098862B-418D-3298-801D-8D36742170F7}</Project>
+      <Name>test-core_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_sampler_clear.vcxproj">
+      <Project>{24A46735-744D-3A30-8617-F52BE50C3F92}</Project>
+      <Name>test-core_sampler_clear</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_sampler_texel.vcxproj">
+      <Project>{4E9D6296-2283-3096-8473-10AA28DFC1A5}</Project>
+      <Name>test-core_sampler_texel</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_sampler_wrap.vcxproj">
+      <Project>{F7887256-A3B7-316A-8041-E0D0F44C631E}</Project>
+      <Name>test-core_sampler_wrap</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_save.vcxproj">
+      <Project>{C01AD3E9-93CF-32E4-94AF-A223799FC985}</Project>
+      <Name>test-core_save</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_storage.vcxproj">
+      <Project>{E96FDAFE-985B-3424-81C1-20D33C0478AC}</Project>
+      <Name>test-core_storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_swizzle.vcxproj">
+      <Project>{2B09702C-395A-38ED-84DB-EF4C380C12E0}</Project>
+      <Name>test-core_swizzle</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture.vcxproj">
+      <Project>{19ACA2D9-EE06-3F7A-A5A6-63FE3409E66A}</Project>
+      <Name>test-core_texture</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture_1d.vcxproj">
+      <Project>{DE48BED0-BACE-3DE3-9742-26F5A716D607}</Project>
+      <Name>test-core_texture_1d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture_1d_array.vcxproj">
+      <Project>{27E27171-D5AC-3868-B9B7-FFB4D73CE421}</Project>
+      <Name>test-core_texture_1d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture_2d.vcxproj">
+      <Project>{D6AE96F1-1488-35B4-A42F-2C30342D1C22}</Project>
+      <Name>test-core_texture_2d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture_2d_array.vcxproj">
+      <Project>{6DE31F73-0B43-3DA2-A1E7-8AAB900BFA5E}</Project>
+      <Name>test-core_texture_2d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture_3d.vcxproj">
+      <Project>{03FD0F22-1434-3D10-9860-D21CFDA9EF46}</Project>
+      <Name>test-core_texture_3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture_cube.vcxproj">
+      <Project>{D3D0DBA8-DAD4-3AB9-B438-6E08BC91B877}</Project>
+      <Name>test-core_texture_cube</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-core_texture_cube_array.vcxproj">
+      <Project>{C970C62A-AC4A-3C85-9CCC-D58308780150}</Project>
+      <Name>test-core_texture_cube_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-generate_mipmaps_sampler1d.vcxproj">
+      <Project>{2B05C866-3533-39CA-8473-AAA6572C4EAF}</Project>
+      <Name>test-generate_mipmaps_sampler1d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-generate_mipmaps_sampler1d_array.vcxproj">
+      <Project>{61708A3E-5AC3-35D9-8973-7FAF40A67A39}</Project>
+      <Name>test-generate_mipmaps_sampler1d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-generate_mipmaps_sampler2d.vcxproj">
+      <Project>{5BC31D2A-93EE-3B57-88C8-2A5A6BA204C8}</Project>
+      <Name>test-generate_mipmaps_sampler2d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-generate_mipmaps_sampler2d_array.vcxproj">
+      <Project>{8216BB89-E47E-39D6-BCCC-1967B90DFE8D}</Project>
+      <Name>test-generate_mipmaps_sampler2d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-generate_mipmaps_sampler3d.vcxproj">
+      <Project>{4075F277-31E3-3564-BC4B-BBA1B1AE8852}</Project>
+      <Name>test-generate_mipmaps_sampler3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-generate_mipmaps_sampler_cube.vcxproj">
+      <Project>{F0C92F4D-7005-3AAB-95EC-81BB615CA9D2}</Project>
+      <Name>test-generate_mipmaps_sampler_cube</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-generate_mipmaps_sampler_cube_array.vcxproj">
+      <Project>{B0E527DF-BD7F-3873-BBBB-0729FA009986}</Project>
+      <Name>test-generate_mipmaps_sampler_cube_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-gl.vcxproj">
+      <Project>{5E79DF5A-89C5-3147-A801-CBF9B5F689B5}</Project>
+      <Name>test-gl</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-reduce.vcxproj">
+      <Project>{0D893FED-07BB-3009-8C6D-B9DE145F95D9}</Project>
+      <Name>test-reduce</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-test_copy.vcxproj">
+      <Project>{018F8951-5058-38EC-B4A2-F8B473A12AD3}</Project>
+      <Name>test-test_copy</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-test_copy_sub.vcxproj">
+      <Project>{B5EB10D8-C924-3CD4-BFF4-53A74D60A6F4}</Project>
+      <Name>test-test_copy_sub</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-test_duplicate.vcxproj">
+      <Project>{303D8CD5-55DA-3DA9-8E84-AEE585624FED}</Project>
+      <Name>test-test_duplicate</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-test_make_texture.vcxproj">
+      <Project>{42D683CD-FD69-3C93-B164-3879A30B9BF1}</Project>
+      <Name>test-test_make_texture</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-test_size.vcxproj">
+      <Project>{7EAF2E2C-6D2F-3EC0-B852-41364DDC9E71}</Project>
+      <Name>test-test_size</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-test_view.vcxproj">
+      <Project>{775BC640-A98D-365D-B434-38CD14BFF2C4}</Project>
+      <Name>test-test_view</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-texture_lod_sampler1d.vcxproj">
+      <Project>{344C2D41-201D-3E84-9011-D78263190F33}</Project>
+      <Name>test-texture_lod_sampler1d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-texture_lod_sampler1d_array.vcxproj">
+      <Project>{F6AAE8A2-C5AD-32A7-84C1-5355EA0BB7D0}</Project>
+      <Name>test-texture_lod_sampler1d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-texture_lod_sampler2d.vcxproj">
+      <Project>{18ACDDD7-9259-3B2E-95F0-F6E3DDAF6780}</Project>
+      <Name>test-texture_lod_sampler2d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-texture_lod_sampler2d_array.vcxproj">
+      <Project>{F505732D-AC17-3771-9267-9CC47D3D6C9D}</Project>
+      <Name>test-texture_lod_sampler2d_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-texture_lod_sampler3d.vcxproj">
+      <Project>{A154FCF0-E0F0-3D55-96B4-35B0C8D8BEC7}</Project>
+      <Name>test-texture_lod_sampler3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-texture_lod_sampler_cube.vcxproj">
+      <Project>{F12C94DB-7638-38E8-8CE0-01A86A861FC6}</Project>
+      <Name>test-texture_lod_sampler_cube</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-texture_lod_sampler_cube_array.vcxproj">
+      <Project>{C3B2D110-BB51-350A-A393-5B4B21326515}</Project>
+      <Name>test-texture_lod_sampler_cube_array</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\work\Private\VulkanStudy\gli-0.8.2.0\test\core\test-transform.vcxproj">
+      <Project>{DDEB5073-3B5E-32E5-8981-1B2D253D906B}</Project>
+      <Name>test-transform</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
