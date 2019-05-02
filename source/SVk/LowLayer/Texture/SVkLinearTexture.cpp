@@ -4,7 +4,7 @@
 //SVk Include
 #include "SVk/SVkInclude.h"
 
-#include "SVk/LowLayer/Command/SVkCommandBufferWrap.h"
+#include "SVk/LowLayer/Command/SVkCommandBuffer.h"
 #include "SVk/LowLayer/Sync/SVkFence.h"
 
 //C++ Include
@@ -28,7 +28,7 @@ SVkLinearTexture::~SVkLinearTexture()
 //Todo:정리, 리팩토링
 void SVkLinearTexture::LoadTexture(const CString& filePath, const STextureFileType& fileType)
 {
-    SVkCommandBufferWrap* commandBuffer = GetTextureTransferCommandBuffer();
+    SVkCommandBuffer* commandBuffer = GetTextureTransferCommandBuffer();
     if (commandBuffer == nullptr) return;
 
     vector<uint8_t> rawImage;

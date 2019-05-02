@@ -14,7 +14,7 @@ public:
     SVkIndexBuffer(const SVkDevice* device, uint32_t bufferSize);
     virtual ~SVkIndexBuffer() override;
     
-    void CmdBind(const SVkCommandBufferWrap* commandBuffer);
+    void CmdBind(const SVkCommandBuffer* commandBuffer);
 
     // ~End public funtions
     

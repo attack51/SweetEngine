@@ -18,7 +18,7 @@ SVkIndexBuffer::~SVkIndexBuffer()
 {
 }
 
-void SVkIndexBuffer::CmdBind(const SVkCommandBufferWrap* commandBuffer)
+void SVkIndexBuffer::CmdBind(const SVkCommandBuffer* commandBuffer)
 {
     VkDeviceSize offset = 0;
     vkCmdBindIndexBuffer(commandBuffer->GetVkCommandBuffer(), m_buffer, offset, VK_INDEX_TYPE_UINT16);

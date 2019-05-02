@@ -20,6 +20,7 @@ FORWARD_DECL_UPTR(class, SVkSemaphores);
 FORWARD_DECL_UPTR(class, SVkCommandPool);
 FORWARD_DECL_UPTR(class, SVkCommandBuffers);
 FORWARD_DECL_UPTR(class, SVkPipelineCache);
+FORWARD_DECL_UPTR(class, SVkDescriptorPool);
 FORWARD_DECL_UPTR(class, SVkUniformBuffer);
 FORWARD_DECL_UPTR(class, SAssetManager);
 
@@ -37,7 +38,7 @@ public:
     ~SVkRenderer();
 
     void OpenMainWindow(uint32_t sizeX, uint32_t sizeY, const CString& name);
-    bool UpdateWindows(const SVector4& clearColor);
+    bool UpdateWindows(const SVector4& clearColor, float deltaTime);
 
     const size_t NumDevice() const;
     const size_t NumDevice(const VkQueueFlagBits queueType) const;
@@ -70,7 +71,7 @@ private:
     SVkCanvasUPtr           m_mainCanvas                = nullptr;
 
     SVkPipelineCacheUPtr    m_pipelineCache             = nullptr;
-    //descriptorpool?
+    SVkDescriptorPoolUPtr   m_descriptorPool            = nullptr;
 
     SAssetManagerUPtr       m_assetManager              = nullptr;
 

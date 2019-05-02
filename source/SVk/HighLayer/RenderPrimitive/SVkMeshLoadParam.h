@@ -9,6 +9,7 @@
 
 FORWARD_DECL_PTR(class, SAssetManager);
 FORWARD_DECL_PTR(class, SVkPipelineCache);
+FORWARD_DECL_PTR(class, SVkDescriptorPool);
 
 FORWARD_DECL_UPTR(struct, SSerializedMesh);
 
@@ -25,6 +26,7 @@ public:
         const SVkDevice* device, 
         const VkRenderPass& renderPass,
         const SVkPipelineCache* pipelineCache,
+        const SVkDescriptorPool* descriptorPool,
         SAssetManager* assetManager);
 
 protected:
@@ -34,5 +36,6 @@ protected:
     const SVkDevice* m_device;
     VkRenderPass m_renderPass;
     const SVkPipelineCache* m_pipelineCache;
+    const SVkDescriptorPool* m_descriptorPool;
     SAssetManager* m_assetManager;
 };

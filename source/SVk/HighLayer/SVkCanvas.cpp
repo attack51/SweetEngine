@@ -2,7 +2,7 @@
 #include "SVk/SVkInclude.h"
 
 #include "SVk/LowLayer/RenderTarget/SVkSurfaceRT.h"
-#include "SVk/LowLayer/Command/SVkCommandBufferWrap.h"
+#include "SVk/LowLayer/Command/SVkCommandBuffer.h"
 
 //Header Include
 #include "SVkCanvas.h"

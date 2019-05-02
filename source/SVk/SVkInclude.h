@@ -13,7 +13,7 @@
 #include "SVk/HighLayer/SVkRenderer.h"
 
 #include "SVk/LowLayer/Command/SVkCommandBuffers.h"
-#include "SVk/LowLayer/Command/SVkCommandBufferWrap.h"
+#include "SVk/LowLayer/Command/SVkCommandBuffer.h"
 #include "SVk/LowLayer/Command/SVkCommandPool.h"
 #include "SVk/LowLayer/Device/SVkDevice.h"
 #include "SVk/LowLayer/Device/SVkGPUInfo.h"

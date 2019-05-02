@@ -1,4 +1,4 @@
-//General Include
+ï»¿//General Include
 #include "General/SUtil.h"
 #include "General/Resource/STextureLoader.h"
 #include "General/RawData/SRawDataLoadParameter.h"
@@ -44,7 +44,7 @@ void SVkTexture::BindMemory(const uint32_t offset)
     m_deviceMemory->BindMemory(m_image, offset);
 }
 
-//TODO:subresource range°¡ ¹¹ÇÏ´Â°ÇÁö ÀÚ¼¼È÷ ¾Ë¾Æº¼°Í
+//TODO:subresource rangeê°€ ë­í•˜ëŠ”ê±´ì§€ ìì„¸íˆ ì•Œì•„ë³¼ê²ƒ
 VkImageSubresourceRange SVkTexture::CreateSubRresourceRange()
 {
     assert(m_mipLevels > 0);
@@ -54,7 +54,7 @@ VkImageSubresourceRange SVkTexture::CreateSubRresourceRange()
     subresourceRange.baseMipLevel = 0;
     subresourceRange.levelCount = m_mipLevels;
     subresourceRange.baseArrayLayer = 0;
-    subresourceRange.layerCount = 1;//0ÀÌ¸é Æ¯Á¤ ÇÏµå¿ş¾î¿¡¼­ ImageView¸¸µé¶§ ¹®Á¦»ı±è(nullptrÀÌ µÊ)
+    subresourceRange.layerCount = 1;//0ì´ë©´ íŠ¹ì • í•˜ë“œì›¨ì–´ì—ì„œ ImageViewë§Œë“¤ë•Œ ë¬¸ì œìƒê¹€(nullptrì´ ë¨)
 
     return subresourceRange;
 }
@@ -87,8 +87,8 @@ void SVkTexture::InitImage(bool optimalTexture)
         imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
         imageCreateInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
 
-        //transfer dest·Î ¾ÈµÇ¾î ÀÖÀ¸¸é ÄÑÁØ´Ù.
-        //ÀÌ°ÉÇØ¾ß buffer¿¡¼­ ÀÌ¹ÌÁö ¸Ş¸ğ¸®·Î º¹»ç°¡´É
+        //transfer destë¡œ ì•ˆë˜ì–´ ìˆìœ¼ë©´ ì¼œì¤€ë‹¤.
+        //ì´ê±¸í•´ì•¼ bufferì—ì„œ ì´ë¯¸ì§€ ë©”ëª¨ë¦¬ë¡œ ë³µì‚¬ê°€ëŠ¥
         if (!(imageCreateInfo.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT))
         {
             imageCreateInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
@@ -104,16 +104,16 @@ void SVkTexture::InitImage(bool optimalTexture)
     ErrorCheck(vkCreateImage(m_deviceRef->GetVkDevice(), &imageCreateInfo, nullptr, &m_image));
 }
 
-void SVkTexture::WaitForTransfer(SVkCommandBufferWrap* commandBufferWrap)
+void SVkTexture::WaitForTransfer(SVkCommandBuffer* commandBuffer)
 {
-    assert(commandBufferWrap);
+    assert(commandBuffer);
 
-    //º¹»ç°¡ ¿Ï·áµÇ°í ´ÙÀ½ÁøÇàÀ» º¸ÀåÇÏ±â À§ÇØ Ææ½º»ı¼º
+    //ë³µì‚¬ê°€ ì™„ë£Œë˜ê³  ë‹¤ìŒì§„í–‰ì„ ë³´ì¥í•˜ê¸° ìœ„í•´ íœìŠ¤ìƒì„±
     SVkFenceUPtr transferFence = make_unique<SVkFence>(m_deviceRef);
 
-    //TODO:VK_QUEUE_TRANSFER_BIT ½á¾ßÇÏ´ÂÁö, VK_QUEUE_GRAPHICS_BIT ½á¾ßÇÏ´ÂÁö Ã¼Å©
+    //TODO:VK_QUEUE_TRANSFER_BIT ì¨ì•¼í•˜ëŠ”ì§€, VK_QUEUE_GRAPHICS_BIT ì¨ì•¼í•˜ëŠ”ì§€ ì²´í¬
     const SVkQueueInfo* queueInfo = m_deviceRef->GetFirstQueueInfo(VK_QUEUE_GRAPHICS_BIT);
-    commandBufferWrap->Submit(queueInfo, nullptr, nullptr, 0, 0, transferFence.get());
+    commandBuffer->Submit(queueInfo, nullptr, nullptr, 0, 0, transferFence.get());
     transferFence->WaitForFence(10000000);
 }
 
@@ -152,7 +152,7 @@ void SVkTexture::InitSampler()
     samplerCreateInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
     samplerCreateInfo.mipLodBias = 0.0f;
 
-    //sampler»ı¼º (TODO:anisotrophy ´ÙÀ½¿¡ ÇØº¸±â)
+    //samplerìƒì„± (TODO:anisotrophy ë‹¤ìŒì— í•´ë³´ê¸°)
     if (false)
     {
         samplerCreateInfo.anisotropyEnable = VK_TRUE;
@@ -215,9 +215,9 @@ bool SVkTexture::LoadRawImage(
             fullFilePath,
             inStartMipLevel,
             inMaxMipLevelCount,
-            outData, 
-            outMipmapOffset, 
-            outMipmapSize, 
+            outData,
+            outMipmapOffset,
+            outMipmapSize,
             outWidth,
             outHeight,
             sformat);
@@ -249,11 +249,11 @@ bool SVkTexture::LoadRawImage(
             {
                 uint8_t blockDimX, blockDimY;
                 readResult = STextureLoader::LoadFromASTC(
-                    fullFilePath, 
-                    data_mipmap, 
-                    width_mipmap, 
-                    height_mipmap, 
-                    blockDimX, 
+                    fullFilePath,
+                    data_mipmap,
+                    width_mipmap,
+                    height_mipmap,
+                    blockDimX,
                     blockDimY);
 
                 format_mipmap = GetUnormAstcFormatFromDim(blockDimX, blockDimY);
@@ -288,7 +288,7 @@ bool SVkTexture::LoadRawImage(
 {
     if (fileType == STextureFileType::Astc)
     {
-        if (!IsSupportFormat(gpu, VK_FORMAT_ASTC_4x4_UNORM_BLOCK)) 
+        if (!IsSupportFormat(gpu, VK_FORMAT_ASTC_4x4_UNORM_BLOCK))
             return STextureFileType::Png;
     }
     else if (fileType == STextureFileType::Dds)
@@ -307,15 +307,15 @@ bool SVkTexture::IsSupportFormat(VkPhysicalDevice gpu, const VkFormat& format)
     return (formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
 }
 
-SVkCommandBufferWrap* SVkTexture::GetTextureTransferCommandBuffer() const
+SVkCommandBuffer* SVkTexture::GetTextureTransferCommandBuffer() const
 {
     if (auto transferCommandBuffers = m_deviceRef->GetCommandBuffers(SVk_CommandBuffer_Transfer))
     {
-        return transferCommandBuffers->GetCommandBufferWrap(SVk_TransferCommandBuffer_Texture);
+        return transferCommandBuffers->GetCommandBuffer(SVk_TransferCommandBuffer_Texture);
     }
     else if (auto graphicsCommandBuffers = m_deviceRef->GetCommandBuffers(SVk_CommandBuffer_Graphics))
     {
-        return graphicsCommandBuffers->GetCommandBufferWrap(SVk_GraphicsCommandBuffer_Texture);
+        return graphicsCommandBuffers->GetCommandBuffer(SVk_GraphicsCommandBuffer_Texture);
     }
     return nullptr;
 }

@@ -9,7 +9,7 @@
 FORWARD_DECL_PTR(class, SVkDevice);
 FORWARD_DECL_PTR(class, SVkInstance);
 FORWARD_DECL_PTR(class, SPlatformWindow);
-FORWARD_DECL_PTR(class, SVkCommandBufferWrap);
+FORWARD_DECL_PTR(class, SVkCommandBuffer);
 
 FORWARD_DECL_UPTR(class, SVkSwapchainRT);
 FORWARD_DECL_UPTR(class, SVkDepthStencilRT);
@@ -22,11 +22,11 @@ public:
     SVkSurfaceRT(const SVkDevice* device, const SPlatformWindow* platformWindow, uint32_t requireSwapchainImageCount);
     virtual ~SVkSurfaceRT();
 
-    void BeginRender(SVkCommandBufferWrap* commandBufferWrap);
-    void EndRender(SVkCommandBufferWrap* commandBufferWrap);
+    void BeginRender(SVkCommandBuffer* commandBuffer);
+    void EndRender(SVkCommandBuffer* commandBuffer);
 
-    void BeginRenderPass(SVkCommandBufferWrap* commandBufferWrap, const SVector4& clearColor);
-    void EndRenderPass(SVkCommandBufferWrap* commandBufferWrap);
+    void BeginRenderPass(SVkCommandBuffer* commandBuffer, const SVector4& clearColor);
+    void EndRenderPass(SVkCommandBuffer* commandBuffer);
 
     void Resize(uint32_t width, uint32_t height);
 
@@ -64,7 +64,7 @@ protected:
 protected:
     const SVkDevice*                    m_deviceRef             = nullptr;
     const SPlatformWindow*              m_platformWindow        = nullptr;
-    
+
     VkSurfaceKHR                        m_surface               = VK_NULL_HANDLE;
     VkRenderPass                        m_renderPass            = VK_NULL_HANDLE;
 

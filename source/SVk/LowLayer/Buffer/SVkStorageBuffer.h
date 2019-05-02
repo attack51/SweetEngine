@@ -11,10 +11,10 @@ class SVkStorageBuffer : public SVkBuffer
 {
     // Begin public funtions
 public:
-    SVkStorageBuffer(const SVkDevice* device, uint32_t bufferSize);
+    SVkStorageBuffer(const SVkDevice* device, uint32_t bufferSize, bool deviceLocal);
     virtual ~SVkStorageBuffer() override;
 
-    void CmdBind(const SVkCommandBufferWrap* commandBuffer);
+    void CmdBind(const SVkCommandBuffer* commandBuffer);
 
     // ~End public funtions
 

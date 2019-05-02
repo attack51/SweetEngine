@@ -11,7 +11,7 @@ FORWARD_DECL_PTR(struct, SVkQueueInfo);
 FORWARD_DECL_PTR(class, SVkCommandPool);
 FORWARD_DECL_PTR(class, SVkSemaphores);
 FORWARD_DECL_PTR(class, SVkFence);
-FORWARD_DECL_UPTR(class, SVkCommandBufferWrap);
+FORWARD_DECL_UPTR(class, SVkCommandBuffer);
 
 
 class SVkCommandBuffers
@@ -29,9 +29,9 @@ public:
                    const SVkFence* fence = nullptr,
                    bool waitIdle = true);
 
-    inline const vector<SVkCommandBufferWrapUPtr>& GetCommandBuffers() const { return m_commandBufferWraps; }
-    inline const uint32_t GetCommandBufferCount() const { return (uint32_t)m_commandBufferWraps.size(); }
-    inline SVkCommandBufferWrap* GetCommandBufferWrap(int index) const { return m_commandBufferWraps[index].get(); }
+    inline const vector<SVkCommandBufferUPtr>& GetCommandBuffers() const { return m_commandBuffers; }
+    inline const uint32_t GetCommandBufferCount() const { return (uint32_t)m_commandBuffers.size(); }
+    inline SVkCommandBuffer* GetCommandBuffer(int index) const { return m_commandBuffers[index].get(); }
 
     // ~End public funtions
 
@@ -44,7 +44,7 @@ private:
     // Begin private fields
 private:
     const SVkCommandPool*            m_commandPoolRef       = nullptr;
-    vector<VkCommandBuffer>          m_commandBuffers;
-    vector<SVkCommandBufferWrapUPtr> m_commandBufferWraps;
+    vector<VkCommandBuffer>          m_vkCommandBuffers;
+    vector<SVkCommandBufferUPtr>     m_commandBuffers;
     // ~End private fields
 };

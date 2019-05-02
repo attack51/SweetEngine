@@ -7,7 +7,7 @@
 #include <memory>
 
 FORWARD_DECL_PTR(class, SVkDevice);
-FORWARD_DECL_PTR(class, SVkCommandBufferWrap);
+FORWARD_DECL_PTR(class, SVkCommandBuffer);
 FORWARD_DECL_UPTR(class, SVkFence);
 FORWARD_DECL_UPTR(class, SVkDeviceMemory);
 
@@ -31,11 +31,11 @@ protected:
     virtual void DeInit();
     void BindMemory(const uint32_t offset);
 
-    SVkCommandBufferWrap* GetTextureTransferCommandBuffer() const;
+    SVkCommandBuffer* GetTextureTransferCommandBuffer() const;
 
     VkImageSubresourceRange CreateSubRresourceRange();
     void InitImage(bool optimalTexture);
-    void WaitForTransfer(SVkCommandBufferWrap* commandBufferWrap);
+    void WaitForTransfer(SVkCommandBuffer* commandBufferWrap);
     void InitImageView(const VkImageSubresourceRange& subresourceRange);
     void InitSampler();
     void InitDescriptorImageInfo();

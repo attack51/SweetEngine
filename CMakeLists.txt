@@ -164,11 +164,16 @@ endif() # (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	source_group("source\\SVk\\LowLayer\\Command"			REGULAR_EXPRESSION		 "source/SVk/LowLayer/Command/*")
 	source_group("source\\SVk\\LowLayer\\Device"			REGULAR_EXPRESSION		 "source/SVk/LowLayer/Device/*")
 	source_group("source\\SVk\\LowLayer\\Memory"			REGULAR_EXPRESSION		 "source/SVk/LowLayer/Memory/*")
-	source_group("source\\SVk\\LowLayer\\RenderState"		REGULAR_EXPRESSION		 "source/SVk/LowLayer/RenderState/*")
+	source_group("source\\SVk\\LowLayer\\Descriptor"		REGULAR_EXPRESSION		 "source/SVk/LowLayer/Descriptor/*")
+	source_group("source\\SVk\\LowLayer\\Pipeline"			REGULAR_EXPRESSION		 "source/SVk/LowLayer/Pipeline/*")
+
 	source_group("source\\SVk\\LowLayer\\RenderTarget"		REGULAR_EXPRESSION		 "source/SVk/LowLayer/RenderTarget/*")
 	source_group("source\\SVk\\LowLayer\\Shader"			REGULAR_EXPRESSION		 "source/SVk/LowLayer/Shader/*")
 	source_group("source\\SVk\\LowLayer\\Sync"				REGULAR_EXPRESSION		 "source/SVk/LowLayer/Sync/*")
 	source_group("source\\SVk\\LowLayer\\Texture"			REGULAR_EXPRESSION		 "source/SVk/LowLayer/Texture/*")
+
+	source_group("source\\SVk\\LowLayer\\Etc"				REGULAR_EXPRESSION		 "source/SVk/LowLayer/Etc/*")
+
 	# SVk HighLayer
 	source_group("source\\SVk\\HighLayer"					REGULAR_EXPRESSION		 "source/SVk/HighLayer/*")
 	source_group("source\\SVk\\HighLayer\\RenderPrimitive"	REGULAR_EXPRESSION		 "source/SVk/HighLayer/RenderPrimitive/*")

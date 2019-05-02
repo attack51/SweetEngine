@@ -14,7 +14,7 @@ public:
     SVkVertexBuffer(const SVkDevice* device, uint32_t bufferSize);
     virtual ~SVkVertexBuffer() override;
 
-    void CmdBind(const SVkCommandBufferWrap* commandBuffer);
+    void CmdBind(const SVkCommandBuffer* commandBuffer);
     
     // ~End public funtions
     

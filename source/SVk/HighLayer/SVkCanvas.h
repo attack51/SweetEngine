@@ -9,7 +9,7 @@
 FORWARD_DECL_PTR(class, SPlatformWindow);
 FORWARD_DECL_PTR(class, SVkDevice);
 FORWARD_DECL_UPTR(class, SVkSurfaceRT);
-FORWARD_DECL_PTR(class, SVkCommandBufferWrap);
+FORWARD_DECL_PTR(class, SVkCommandBuffer);
 
 
 class SVkCanvas

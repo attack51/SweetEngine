@@ -12,15 +12,34 @@
 //C++ Include
 #include <vector>
 
+FORWARD_DECL_UPTR(class, SVkFence);
+
 FORWARD_DECL_SPTR(class, SVkShader);
 FORWARD_DECL_SPTR(class, SVkVertexBuffer);
-FORWARD_DECL_SPTR(class, SVkStorageBufferC2G);
+FORWARD_DECL_SPTR(class, SVkStorageBuffer);
+FORWARD_DECL_SPTR(class, SVkComputeDescriptor);
+FORWARD_DECL_SPTR(class, SVkComputePipeline);
 
+FORWARD_DECL_PTR(class, SVkDescriptorPool);
+FORWARD_DECL_PTR(class, SVkPipelineCache);
 FORWARD_DECL_PTR(class, SAssetManager);
 
 FORWARD_DECL_PTR(struct, SSerializedSkeleton);
 FORWARD_DECL_PTR(struct, SSerializedAnim);
 
+
+struct SVkSkinComputeInfo
+{
+    SAssetHandle<SVkShader>             CsHandle            = {};
+
+    SVkStorageBufferSPtr                AnimMatrixSB        = nullptr;
+    SVkStorageBufferSPtr                AnimatedVertexSB    = nullptr;
+
+    SVkComputeDescriptorSPtr            Descriptor          = nullptr;
+    SVkComputePipelineSPtr              Pipeline            = nullptr;
+
+    SVkFenceUPtr                        Fence               = nullptr;
+};
 
 class SVkMeshAnimInstance
 {
@@ -29,6 +48,8 @@ public:
 
     SVkMeshAnimInstance(
         const SVkDevice* device,
+        const SVkPipelineCache* pipelineCache,
+        const SVkDescriptorPool* descriptorPool,
         SAssetManager* assetManager,
         const SAssetHandle<SVkMesh>& meshHandle,
         const SAssetHandle<SVkSkeleton>& skeletonHandle);
@@ -37,10 +58,9 @@ public:
     void SetAnim(const SAssetHandle<SVkAnim>& animHandle);
     void Update(float deltaTime);
 
-    //cpu skinning test
-    SVkVertexBuffer* GetAnimatedVertexBuffer() const
+    SVkStorageBuffer* GetAnimatedStorageBuffer() const
     {
-        return m_vertexBuffer.get();
+        return m_skinComputeInfo.AnimatedVertexSB.get();
     }
 
 // ~End public funtions
@@ -50,38 +70,45 @@ private:
     void InitAnimDatas();
     void InitStorageBuffers();
     void InitComputeShader();
+    void InitDescriptor(const SVkDescriptorPool* descriptorPool);
+    void InitPipeline(const SVkPipelineCache* pipelineCache);
+    void InitFence();
 
     void DeInitStorageBuffers();
     void DeInitComputeShader();
+    void DeInitDescriptor();
+    void DeInitPipeline();
+    void DeInitFence();
 
     SSerializedSkeleton* GetSkeleton() const;
     SSerializedAnim* GetAnim() const;
+
+    void UpdateAnims(float deltaTime);
+    void ComputeAnimatedVertices(float deltaTime);
+
+    uint32_t GetVertexCount() const;
+    uint32_t GetBoneCount() const;
+
 // ~End private funtions
 
 private:
 // Begin private fields
 
-    const SVkDevice*                    m_deviceRef = nullptr;
+    const SVkDevice*                    m_deviceRef             = nullptr;
     SAssetManager*                      m_assetManager          = nullptr;
 
     SAssetHandle<SVkMesh>               m_meshHandle            = {};
     SAssetHandle<SVkSkeleton>           m_skeletonHandle        = {};
     SAssetHandle<SVkAnim>               m_animHandle            = {};
-    SAssetHandle<SVkShader>             m_csHandle              = {};
 
-    vector<STransform>                  m_lcTransforms = {};//local transform
-    vector<STransform>                  m_hcTransforms = {};//hierarchical transform
+    vector<STransform>                  m_lcTransforms          = {};//local transform
+    vector<STransform>                  m_hcTransforms          = {};//hierarchical transform
 
-    vector<SMatrix4x3>                  m_meshAnimMMs = {};
+    vector<SMatrix4x3>                  m_meshAnimMMs           = {};
 
     float                               m_animTime              = .0f;
 
-    //cpu skinning test
-    SVkVertexBufferSPtr                 m_vertexBuffer = nullptr;
-    const SVkMeshVertex*                m_before_ani_vertices = {};
-    vector<SVkAnimatedMeshVertex>       m_after_ani_vertices = {};
-
-    SVkStorageBufferC2GSPtr             m_animMatricesStorageBuffer = nullptr;
+    SVkSkinComputeInfo                  m_skinComputeInfo;
 
 // ~End private fields
 

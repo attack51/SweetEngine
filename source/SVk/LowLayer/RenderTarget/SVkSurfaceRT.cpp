@@ -1,9 +1,9 @@
-//SVk Include
+ï»¿//SVk Include
 #include "SVk/SVkInclude.h"
 
 #include "SVk/LowLayer/RenderTarget/SVkSwapchainRT.h"
 #include "SVk/LowLayer/RenderTarget/SVkDepthStencilRT.h"
-#include "SVk/LowLayer/Command/SVkCommandBufferWrap.h"
+#include "SVk/LowLayer/Command/SVkCommandBuffer.h"
 
 //Platform Include
 #include "Platform/SPlatformWindow.h"
@@ -16,7 +16,7 @@
 
 
 SVkSurfaceRT::SVkSurfaceRT( const SVkDevice* device,
-                            const SPlatformWindow* platformWindow, 
+                            const SPlatformWindow* platformWindow,
                             uint32_t requireSwapchainImageCount)
 {
     m_deviceRef = device;
@@ -45,7 +45,7 @@ void SVkSurfaceRT::InitSurface()
     InitPlatformSurface();
 
     VkBool32 WSI_Support = false;
-    
+
     uint32_t graphicsFamilyIndex = m_deviceRef->GetFirstQueueInfo(VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT)->FamilyIndex;
     vkGetPhysicalDeviceSurfaceSupportKHR(m_deviceRef->GetGPUInfo()->Gpu, graphicsFamilyIndex, m_surface, &WSI_Support);
     if (!WSI_Support)
@@ -93,7 +93,7 @@ void SVkSurfaceRT::InitSwapchainRT(uint32_t requireSwapchainImageCount)
 {
     uint32_t swapchainImageCount = GetActualSwapchainImageCount(requireSwapchainImageCount);
 
-    m_swapchainRT = make_unique<SVkSwapchainRT>(m_deviceRef, 
+    m_swapchainRT = make_unique<SVkSwapchainRT>(m_deviceRef,
                                                 m_surface,
                                                 m_surfaceFormat,
                                                 m_surfaceSizeX,
@@ -248,28 +248,28 @@ uint32_t SVkSurfaceRT::GetActualSwapchainImageCount(uint32_t requireSwapChainIma
     return requireSwapChainImageCount;
 }
 
-inline const VkImage& SVkSurfaceRT::GetActiveImage() const 
+inline const VkImage& SVkSurfaceRT::GetActiveImage() const
 {
-    return m_swapchainRT->GetImage(m_activeIndex); 
+    return m_swapchainRT->GetImage(m_activeIndex);
 }
 
-inline const VkImageView& SVkSurfaceRT::GetActiveImageView() const 
-{ 
-    return m_swapchainRT->GetImageView(m_activeIndex); 
+inline const VkImageView& SVkSurfaceRT::GetActiveImageView() const
+{
+    return m_swapchainRT->GetImageView(m_activeIndex);
 }
 
-inline const VkFramebuffer& SVkSurfaceRT::GetActiveFramebuffer() const 
-{ 
-    return m_frameBuffers[m_activeIndex]; 
+inline const VkFramebuffer& SVkSurfaceRT::GetActiveFramebuffer() const
+{
+    return m_frameBuffers[m_activeIndex];
 }
 
-uint32_t SVkSurfaceRT::SurfaceWidth() const 
-{ 
-    return m_surfaceCapabilities.currentExtent.width; 
+uint32_t SVkSurfaceRT::SurfaceWidth() const
+{
+    return m_surfaceCapabilities.currentExtent.width;
 }
 
 uint32_t SVkSurfaceRT::SurfaceHeight() const
-{ 
+{
     return m_surfaceCapabilities.currentExtent.height;
 }
 
@@ -278,7 +278,7 @@ const VkExtent2D& SVkSurfaceRT::SurfaceSize() const
     return m_surfaceCapabilities.currentExtent;
 }
 
-void SVkSurfaceRT::BeginRender(SVkCommandBufferWrap* commandBufferWrap)
+void SVkSurfaceRT::BeginRender(SVkCommandBuffer* commandBuffer)
 {
     assert(m_deviceRef);
     assert(m_swapchainRT);
@@ -292,27 +292,27 @@ void SVkSurfaceRT::BeginRender(SVkCommandBufferWrap* commandBufferWrap)
         VK_NULL_HANDLE,
         &m_activeIndex));
 
-    commandBufferWrap->Begin();
+    commandBuffer->Begin();
 }
 
-void SVkSurfaceRT::EndRender(SVkCommandBufferWrap* commandBufferWrap)
+void SVkSurfaceRT::EndRender(SVkCommandBuffer* commandBuffer)
 {
     auto queueInfo = m_deviceRef->GetFirstQueueInfo(VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT);
 
-    commandBufferWrap->End();
-    commandBufferWrap->Submit(
+    commandBuffer->End();
+    commandBuffer->Submit(
         queueInfo,
-        m_semaphores.get(), //todo:²À ÇÊ¿äÇÑÁö È®ÀÎ
-        m_semaphores.get(), //todo:²À ÇÊ¿äÇÑÁö È®ÀÎ
+        m_semaphores.get(), //todo:ê¼­ í•„ìš”í•œì§€ í™•ì¸
+        m_semaphores.get(), //todo:ê¼­ í•„ìš”í•œì§€ í™•ì¸
         SVk_SurfaceSemaphoreType_PresentComplete,
         SVk_SurfaceSemaphoreType_RenderComplete,
         nullptr,
-        true);//todo:²À ÇÊ¿äÇÑÁö È®ÀÎ
+        true);//todo:ê¼­ í•„ìš”í•œì§€ í™•ì¸
 
     VkResult result = VkResult::VK_RESULT_MAX_ENUM;
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-    presentInfo.waitSemaphoreCount = 1; //todo:²À ÇÊ¿äÇÑÁö È®ÀÎ
+    presentInfo.waitSemaphoreCount = 1; //todo:ê¼­ í•„ìš”í•œì§€ í™•ì¸
     presentInfo.pWaitSemaphores = m_semaphores->GetSemaphore(SVk_SurfaceSemaphoreType_RenderComplete);
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = &m_swapchainRT->GetSwapchain();
@@ -323,7 +323,7 @@ void SVkSurfaceRT::EndRender(SVkCommandBufferWrap* commandBufferWrap)
     ErrorCheck(result);
 }
 
-void SVkSurfaceRT::BeginRenderPass(SVkCommandBufferWrap* commandBufferWrap, const SVector4& clearColor)
+void SVkSurfaceRT::BeginRenderPass(SVkCommandBuffer* commandBuffer, const SVector4& clearColor)
 {
     VkRect2D rect{};
     rect.offset.x = 0;
@@ -343,12 +343,12 @@ void SVkSurfaceRT::BeginRenderPass(SVkCommandBufferWrap* commandBufferWrap, cons
     renderPassBeginInfo.clearValueCount = (uint32_t)clearValues.size();
     renderPassBeginInfo.pClearValues = clearValues.data();
 
-    vkCmdBeginRenderPass(commandBufferWrap->GetVkCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBeginRenderPass(commandBuffer->GetVkCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
 
-void SVkSurfaceRT::EndRenderPass(SVkCommandBufferWrap* commandBufferWrap)
+void SVkSurfaceRT::EndRenderPass(SVkCommandBuffer* commandBuffer)
 {
-    vkCmdEndRenderPass(commandBufferWrap->GetVkCommandBuffer());
+    vkCmdEndRenderPass(commandBuffer->GetVkCommandBuffer());
 }
 
 void SVkSurfaceRT::Resize(uint32_t width, uint32_t height)

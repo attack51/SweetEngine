@@ -82,7 +82,7 @@ void SVkDevice::InitDevice(const VkQueueFlags requireQueueFlag)
 
     ////////////////////////////////////////////////////////////////
     // Create Device
-    VkDeviceCreateInfo deviceCreateInfo{}; 
+    VkDeviceCreateInfo deviceCreateInfo{};
     deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     deviceCreateInfo.queueCreateInfoCount = (uint32_t)queueCreateInfos.size();
     deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
@@ -109,15 +109,15 @@ void SVkDevice::InitDevice(const VkQueueFlags requireQueueFlag)
                 VkQueue queue;
                 vkGetDeviceQueue(m_device, familyIndex, queueIndex, &queue);
 
-                //하나의 VkQueue가 사용되면 
+                //하나의 VkQueue가 사용되면
                 bool used = false;
 
                 if (maskedQueueFlag & VK_QUEUE_GRAPHICS_BIT)
                 {
                     InsertToQueueInfos(
-                        queue, 
-                        familyIndex, 
-                        queueIndex, 
+                        queue,
+                        familyIndex,
+                        queueIndex,
                         used ? 0 : queuePriority[queueIndex],
                         m_graphicsQueueInfos);
 
@@ -127,9 +127,9 @@ void SVkDevice::InitDevice(const VkQueueFlags requireQueueFlag)
                 if (maskedQueueFlag & VK_QUEUE_COMPUTE_BIT)
                 {
                     InsertToQueueInfos(
-                        queue, 
-                        familyIndex, 
-                        queueIndex, 
+                        queue,
+                        familyIndex,
+                        queueIndex,
                         used ? 0 : queuePriority[queueIndex],
                         m_computeQueueInfos);
 
@@ -144,7 +144,7 @@ void SVkDevice::InitDevice(const VkQueueFlags requireQueueFlag)
                         queueIndex,
                         used ? 0 : queuePriority[queueIndex],
                         m_transferQueueInfos);
-                
+
                     used = true;
                 }
             }
@@ -293,7 +293,7 @@ const vector<SVkQueueInfoUPtr>& SVkDevice::GetQueueInfos(const VkQueueFlagBits q
 const SVkQueueInfo* SVkDevice::GetFirstQueueInfo(const VkQueueFlagBits queueType) const
 {
     if (HasQueueType(queueType) == false) return nullptr;
-    
+
     auto& queueInfos = GetQueueInfos(queueType);
     assert(queueInfos.size() > 0);
 
@@ -343,10 +343,10 @@ const SVkCommandBuffers* SVkDevice::GetCommandBuffers(const SVkCommandBufferType
     }
 }
 
-SVkCommandBufferWrap* SVkDevice::GetRenderingCommandBuffer() const
+SVkCommandBuffer* SVkDevice::GetRenderingCommandBuffer() const
 {
     auto graphicsCommandBuffers = GetCommandBuffers(SVk_CommandBuffer_Graphics);
     if (graphicsCommandBuffers == nullptr) return nullptr;
 
-    return graphicsCommandBuffers->GetCommandBufferWrap(SVk_GraphicsCommandBuffer_Render);
+    return graphicsCommandBuffers->GetCommandBuffer(SVk_GraphicsCommandBuffer_Render);
 }

@@ -1,0 +1,105 @@
+#version 450
+layout (local_size_x = 1) in;
+
+struct skinnedVert
+{
+	vec4 pos;
+	vec4 nor;
+	uint packed_bone_indices;
+	float bone_weights[3];
+};
+
+struct animatedVert
+{
+	vec4 pos;
+	vec4 nor;
+};
+
+//https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)
+//std140 : always rounded up to the size of a vec4 (ie: 16-bytes)
+//std430 : they are no longer rounded up to a multiple of 16 bytes
+layout(std430, binding = 1000) readonly buffer skinnedVertRB
+{
+	skinnedVert inVertices[];
+} inSkinnedVertRB;
+
+layout(std140, binding = 1001) readonly buffer animMatrixRB
+{
+	mat3x4 inAnimMats[];
+} inAnimMatrixRB;
+
+layout(std140, binding = 1002) buffer animVertWB
+{
+	animatedVert outVertices[];
+} outAnimVertWB;
+
+uvec3 Unpack_UIntToUVec3(uint packed)
+{
+	uvec3 result;
+	result.x = (packed) & 0xff;
+	result.y = (packed >> 8) & 0xff;
+	result.z = (packed >> 16) & 0xff;
+
+	return result;
+}
+
+uvec4 Unpack_UIntToUVec4(uint packed)
+{
+	uvec4 result;
+	result.x = (packed) & 0xff;
+	result.y = (packed >> 8) & 0xff;
+	result.z = (packed >> 16) & 0xff;
+	result.w = (packed >> 24) & 0xff;
+
+	return result;
+}
+
+void Skinning(	in vec4 inPos,
+				in vec4 inNor,
+				in uvec3 inBone_indices,
+				in float inBone_weights[3],
+				out vec4 outPos,
+				out vec4 outNor)
+{
+	outPos = vec4(0,0,0,1);
+	outNor = vec4(0,0,0,0);
+
+	mat3x4 animMatrix;
+	float totalWeight = 0.0f;
+
+	for (uint i = 0; ((i < 3) && (totalWeight<1.0f)); ++i)
+	{
+		animMatrix = inAnimMatrixRB.inAnimMats[inBone_indices[i]];
+		outPos.xyz += (inPos * animMatrix) * inBone_weights[i];
+		outNor.xyz += (inNor * animMatrix) * inBone_weights[i];
+
+		totalWeight += inBone_weights[i];
+	}
+
+	//no function any (maybe is for bvec)
+	//bool animated = any(inBone_weights);
+	//outPos = animated ? outPos : inPos;
+	//outNor = animated ? outNor : inNor;
+}
+
+void main()
+{
+	uint id = gl_GlobalInvocationID.x;
+
+	skinnedVert inVert = inSkinnedVertRB.inVertices[id];
+
+	vec4 outPos;
+	vec4 outNor;
+	uvec3 bone_indices = Unpack_UIntToUVec3(inVert.packed_bone_indices);
+
+	Skinning(
+			inVert.pos,
+			inVert.nor,
+			bone_indices,
+			inVert.bone_weights,
+			outPos,
+			outNor);
+
+	outAnimVertWB.outVertices[id].pos = outPos;
+	outAnimVertWB.outVertices[id].nor = outNor;
+}

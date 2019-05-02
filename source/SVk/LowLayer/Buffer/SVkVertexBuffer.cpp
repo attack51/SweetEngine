@@ -18,7 +18,7 @@ SVkVertexBuffer::~SVkVertexBuffer()
 {
 }
 
-void SVkVertexBuffer::CmdBind(const SVkCommandBufferWrap* commandBuffer)
+void SVkVertexBuffer::CmdBind(const SVkCommandBuffer* commandBuffer)
 {
     VkDeviceSize offsets[1] = { 0 };
     vkCmdBindVertexBuffers(commandBuffer->GetVkCommandBuffer(), 0, 1, &m_buffer, offsets);

@@ -1,12 +1,17 @@
-#pragma once
+ï»¿#pragma once
 
-//¿ëµµ: svk¿Í ¿¬°üµÈ define, typedef, enum µîÀ» ¸ğ¾ÆµÒ
-//Á¢±Ù: only SVkHeader
+//ìš©ë„: svkì™€ ì—°ê´€ëœ define, typedef, enum ë“±ì„ ëª¨ì•„ë‘ 
+//access SVkHeader only
 
 #define SVK_INVALID_INDEX -1
 #define SVK_PTR_TO_HANDLE(pHandle) pHandle ? (*pHandle) : VK_NULL_HANDLE
 
-//index·Î casting Á¢±Ù¾ÈÇÏ¸é enum class
+#define UNIFORM_BINDING_START 0
+#define STORAGE_BINDING_START 1000
+#define IMAGE_SAMPLER_BINDING_START 2000
+
+
+//indexë¡œ casting ì ‘ê·¼ì•ˆí•˜ë©´ enum class
 enum class SVkDepthStencilState : uint8_t
 {
     SVk_DepthStencilState_None              = 0,
@@ -14,7 +19,7 @@ enum class SVkDepthStencilState : uint8_t
     SVk_DepthStencilState_DepthStencil      = 2
 };
 
-//indexÇüÅÂ·Î Á¢±ÙÇÏ¸é ±×³É enum
+//indexí˜•íƒœë¡œ ì ‘ê·¼í•˜ë©´ ê·¸ëƒ¥ enum
 enum SVkSurfaceSemaphoreType : uint8_t
 {
     SVk_SurfaceSemaphoreType_RenderComplete,
@@ -48,4 +53,10 @@ enum SVkTransferCommandBufferType : uint8_t
 {
     SVk_TransferCommandBuffer_Texture,
     SVk_TransferCommandBuffer_Count,
+};
+
+enum SVkBufferMemoryType : uint8_t
+{
+    SVk_BufferMemory_Device,
+    SVk_BufferMemory_HostVisible,
 };

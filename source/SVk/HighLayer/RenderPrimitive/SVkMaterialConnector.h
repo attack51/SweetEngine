@@ -7,8 +7,8 @@
 #include <vector>
 
 FORWARD_DECL_SPTR(class, SVkMaterial);
-FORWARD_DECL_SPTR(class, SVkDescriptor);
-FORWARD_DECL_SPTR(class, SVkPipeline);
+FORWARD_DECL_SPTR(class, SVkGraphicsDescriptor);
+FORWARD_DECL_SPTR(class, SVkGraphicsPipeline);
 
 
 class SVkMaterialConnector
@@ -18,6 +18,6 @@ public:
     ~SVkMaterialConnector();
 
     SAssetHandle<SVkMaterial>           MaterialHandle = {};
-    SVkDescriptorSPtr                   Descriptor  = nullptr;
-    SVkPipelineSPtr                     Pipeline    = nullptr;
+    SVkGraphicsDescriptorSPtr           Descriptor  = nullptr;
+    SVkGraphicsPipelineSPtr             Pipeline    = nullptr;
 };

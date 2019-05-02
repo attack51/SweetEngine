@@ -18,7 +18,7 @@ std::vector<SString> SString_split(const SString& s, SChar delim)
     SStringStream ss(s);
     SString item;
 
-    while (getline(ss, item, delim)) 
+    while (getline(ss, item, delim))
     {
         result.push_back(item);
     }
@@ -83,7 +83,7 @@ std::wstring utf8_wstring(const std::string& var)
     typedef std::codecvt_utf8<wchar_t> converter_type;
     auto converter = new converter_type;
     const std::locale utf8_locale = std::locale(std::locale::empty(), converter);
-    
+
     auto &facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(utf8_locale);
     return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).from_bytes(var);
 }

@@ -22,8 +22,9 @@
 #include "SVk/LowLayer/Sync/SVkSemaphores.h"
 #include "SVk/LowLayer/Command/SVkCommandPool.h"
 #include "SVk/LowLayer/Command/SVkCommandBuffers.h"
-#include "SVk/LowLayer/Command/SVkCommandBufferWrap.h"
-#include "SVk/LowLayer/RenderState/SVkPipelineCache.h"
+#include "SVk/LowLayer/Command/SVkCommandBuffer.h"
+#include "SVk/LowLayer/Pipeline/SVkPipelineCache.h"
+#include "SVk/LowLayer/Descriptor/SVkDescriptorPool.h"
 #include "SVk/LowLayer/Buffer/SVkUniformBuffer.h"
 
 //Platform Include
@@ -55,6 +56,7 @@ SVkRenderer::SVkRenderer()
     }
 
     m_pipelineCache = make_unique<SVkPipelineCache>(GetDevice(0));
+    m_descriptorPool = make_unique<SVkDescriptorPool>(GetDevice(0));
 
     m_assetManager = make_unique<SAssetManager>();
 }
@@ -63,7 +65,6 @@ SVkRenderer::~SVkRenderer()
 {
     QueueWaitIdle();
 
-    //삭제순서 중요함
     m_entities.clear();
     UPTR_SAFE_DELETE(m_pipelineCache);
 
@@ -90,6 +91,7 @@ void SVkRenderer::OpenMainWindow(uint32_t sizeX, uint32_t sizeY, const CString& 
         GetDevice(0),
         m_mainCanvas->GetVkRenderPass(),
         m_pipelineCache.get(),
+        m_descriptorPool.get(),
         m_assetManager.get());
 
     SAssetHandle<SVkMesh> meshHandle = m_assetManager->GetAssetHandle<SVkMesh>(meshLoadParam);
@@ -104,6 +106,9 @@ void SVkRenderer::OpenMainWindow(uint32_t sizeX, uint32_t sizeY, const CString& 
 
     SVkMeshEntitySPtr meshEntity = make_shared<SVkMeshEntity>(
         GetDevice(0),
+        m_mainCanvas->GetVkRenderPass(),
+        m_pipelineCache.get(),
+        m_descriptorPool.get(),
         m_assetManager.get(),
         meshHandle,
         skeletonHandle,
@@ -171,20 +176,26 @@ void SVkRenderer::OnResize(uint32_t width, uint32_t height)
     }
 }
 
-bool SVkRenderer::UpdateWindows(const SVector4& clearColor)
+bool SVkRenderer::UpdateWindows(const SVector4& clearColor, float deltaTime)
 {
     if (m_mainWindow == nullptr) return true;
 
     if (m_mainWindow->Update())
     {
-        m_mainCanvas->BeginPainting(clearColor);
-
+        //update
         for (auto& entity : m_entities)
         {
-            entity->Update(0.016f);
-            entity->Draw(&(*m_camera));
+            entity->Update(deltaTime);
         }
 
+        //draw
+        m_mainCanvas->BeginPainting(clearColor);
+        {
+            for (auto& entity : m_entities)
+            {
+                entity->Draw(&(*m_camera));
+            }
+        }
         m_mainCanvas->EndPainting();
 
         return true;

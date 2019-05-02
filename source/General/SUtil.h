@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 //General Include
 #include "General/SHeader.h"
@@ -37,7 +37,7 @@ std::vector<SString> SString_split(const SString& s, SChar delim);
 std::vector<CString> CString_split(const CString& s, CChar delim);
 std::vector<U8String> U8String_split(const U8String& s, U8Char delim);
 
-//·ÎÄÉÀÏ ¾ğ¾î º¯°æ
+//ë¡œì¼€ì¼ ì–¸ì–´ ë³€ê²½
 std::string wstring_string(const std::wstring& var);
 std::wstring string_wstring(const std::string& var);
 std::string wstring_utf8(const std::wstring& var);

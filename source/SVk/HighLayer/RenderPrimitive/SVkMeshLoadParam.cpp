@@ -23,12 +23,14 @@ SVkMeshLoadParam::SVkMeshLoadParam(
     const SVkDevice* device,
     const VkRenderPass& renderPass,
     const SVkPipelineCache* pipelineCache,
+    const SVkDescriptorPool* descriptorPool,
     SAssetManager* assetManager)
         : SAssetLoadParameter(filePath)
 {
     m_device = device;
     m_renderPass = renderPass;
     m_pipelineCache = pipelineCache;
+    m_descriptorPool = descriptorPool;
     m_assetManager = assetManager;
 }
 
@@ -46,6 +48,7 @@ unique_ptr<SAsset> SVkMeshLoadParam::Create()
         m_device, 
         m_renderPass,
         m_pipelineCache,
+        m_descriptorPool,
         m_assetManager, 
         serializedMesh.get());
 
