@@ -9,3 +9,6 @@ simple character animation sample with Vulkan API
 6)cmake SweetEngine/tools/FBXConv build  (optionable)
 
 FBXConv is import tool from .fbx to json format mesh/skeleton/animation data
+
+----- UPDATE [2019.05.02] -----
+GPU skinning with compute shader(Improved performance dramatically)
