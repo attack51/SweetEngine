@@ -23,7 +23,7 @@ It works with more than 250 frames from the 2nd gen i7 2600 + GTX 1070.
 
 The character used is unity asset store
 https://assetstore.unity.com/packages/3d/characters/humanoids/eri-82607
-We use fbx and png files obtained by purchasing here.
+I use fbx and png files obtained by purchasing here.
 png is converted to dds file and used
 fbx uses FBX SDK and converts it into json format mesh, skeleton, animation file using FbxConv made by its own.
 
@@ -31,7 +31,7 @@ fbx uses FBX SDK and converts it into json format mesh, skeleton, animation file
 FBXSDK: Used by FbxConv
 RapidJson: json import/export
 stb : used when reading png image file
-gli: dds, used when reading ktx image files
+gli: used when reading dds/ktx image files
 vulkan: rendering graphics API
 spirv-tool: use text based shader files in real time instead of compiled shader files spv
 
