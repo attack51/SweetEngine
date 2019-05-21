@@ -21,5 +21,5 @@ protected:
     virtual unique_ptr<SAsset> Create() override;
 
 protected:
-    SAssetManager * m_assetManager;
+    SAssetManager* m_assetManager;
 };

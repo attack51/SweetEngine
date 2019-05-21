@@ -67,8 +67,8 @@ void SVkAnimMeshEntity::ResetDeviceMemory()
 {
 }
 
-void SVkAnimMeshEntity::SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime)
+void SVkAnimMeshEntity::SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime, bool rewind)
 {
     m_animHandle = animHandle;
-    m_animInstance->SetAnim(animHandle, startTime);
+    m_animInstance->SetAnim(animHandle, startTime, rewind);
 }

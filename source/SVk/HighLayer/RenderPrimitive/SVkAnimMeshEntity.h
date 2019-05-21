@@ -37,7 +37,7 @@ public:
     virtual void RequestDraw(SCamera* camera, SRendererInterface* renderer) override;
     virtual void ResetDeviceMemory() override;
 
-    void SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime = 0);
+    void SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime = 0, bool rewind=false);
 
 // ~End public funtions
 
@@ -58,7 +58,6 @@ private:
     SAssetHandle<SVkMesh>               m_meshHandle            = {};
     SAssetHandle<SVkSkeleton>           m_skeletonHandle        = {};
     SAssetHandle<SVkAnim>               m_animHandle            = {};
-
     SVkMeshAnimInstanceUPtr             m_animInstance          = nullptr;
 
 // ~End private fields

@@ -98,25 +98,31 @@ void SWorld::CreateEntitiesForSample()
     SAssetHandle<SVkSkeleton> skeletonHandle = m_assetManager->GetAssetHandle<SVkSkeleton>(skeletonLoadParam);
 
     //anim asset
-    SVkAnimLoadParam animRunLoadParam(CText("../../resource/mesh/eri/Anim@Run.jan"), m_assetManager.get());
-    SAssetHandle<SVkAnim> animHandleRun = m_assetManager->GetAssetHandle<SVkAnim>(animRunLoadParam);
-
-    SVkAnimLoadParam animJumpLoadParam(CText("../../resource/mesh/eri/Anim@Jump.jan"), m_assetManager.get());
-    SAssetHandle<SVkAnim> animHandleJump = m_assetManager->GetAssetHandle<SVkAnim>(animJumpLoadParam);
-
-    SVkAnimLoadParam animIdleLoadParam(CText("../../resource/mesh/eri/Anim@IdleB.jan"), m_assetManager.get());
-    SAssetHandle<SVkAnim> animHandleIdle = m_assetManager->GetAssetHandle<SVkAnim>(animIdleLoadParam);
+    vector<pair<CString,bool>> animPaths
+    {
+        {CText("../../resource/mesh/eri/Anim@Bye.jan")          ,false},
+        {CText("../../resource/mesh/eri/Anim@Cry.jan")          ,false},
+        {CText("../../resource/mesh/eri/Anim@Cutepose.jan")     ,true},
+        { CText("../../resource/mesh/eri/Anim@IdleB.jan")       ,false},
+        {CText("../../resource/mesh/eri/Anim@Jump.jan")         ,false},
+        {CText("../../resource/mesh/eri/Anim@Rei.jan")          ,false},
+        {CText("../../resource/mesh/eri/Anim@Run.jan")          ,false},
+        {CText("../../resource/mesh/eri/Anim@Walk.jan")         ,false},
+        {CText("../../resource/mesh/eri/Anim@CastspellB.jan")   ,true},
+        {CText("../../resource/mesh/eri/Anim@CastspellC.jan")   ,true},
+    };
 
     vector<SAssetHandle<SVkAnim>> animHandles;
-    animHandles.push_back(animHandleRun);
-    animHandles.push_back(animHandleJump);
-    animHandles.push_back(animHandleIdle);
+    for (int animIndex = 0; animIndex < animPaths.size(); ++animIndex)
+    {
+        SVkAnimLoadParam animLoadParam(animPaths[animIndex].first, m_assetManager.get());
+        SAssetHandle<SVkAnim> animHandle = m_assetManager->GetAssetHandle<SVkAnim>(animLoadParam);
+        animHandles.push_back(animHandle);
+    }
 
     for (int y = -5; y < 5; ++y)
-    //for (int y = -1; y < 0; ++y)
     {
         for (int x = -5; x < 5; ++x)
-        //for (int x = -1; x < 0; ++x)
         {
             int animIndex = std::rand() % animHandles.size();
             float animTime = (std::rand() % 5000) / 1000.0f;//0~5sec
@@ -125,7 +131,7 @@ void SWorld::CreateEntitiesForSample()
             SVkAnimMeshEntitySPtr animMeshEntity = 
                 make_shared<SVkAnimMeshEntity>(animMeshHandle, skeletonHandle);
 
-            animMeshEntity->SetAnim(animHandles[animIndex], animTime);
+            animMeshEntity->SetAnim(animHandles[animIndex], animTime, animPaths[animIndex].second);
 
             SVector location(x * 10.0f, y * 10.0f, 0);
             animMeshEntity->SetWorldTranslation(location);

@@ -76,7 +76,7 @@ const SVkMMsContainerSPtr& SVkMeshAnimInstance::GetAnimMMsContainer() const
     return m_animMMsContainer;
 }
 
-void SVkMeshAnimInstance::SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime)
+void SVkMeshAnimInstance::SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime, bool rewind)
 {
     m_animHandle = animHandle;
     if (!m_animHandle.IsValid() || !m_animHandle.HasAsset()) return;
@@ -85,6 +85,7 @@ void SVkMeshAnimInstance::SetAnim(const SAssetHandle<SVkAnim>& animHandle, float
 
     const float& totalTime = GetAnim()->AnimProperty.TotalTime;
     m_animTime = SMath::Freq(startTime, 0.0f, totalTime);
+    m_rewind = rewind;
 }
 
 void SVkMeshAnimInstance::Update(float deltaTime)
@@ -111,9 +112,18 @@ void SVkMeshAnimInstance::UpdateAnims(float deltaTime)
     //반복에니는 last->first 로 보간하지 않고, first, last를 붙여서 처리
     //비반복 에니는 last->first가 연결되어 있지 않기 때문에 이렇게 처리
     int32_t curFrame = static_cast<int32_t>(floor(frame));
-    int32_t nextFrame = SMath::Clamp<int32_t>(curFrame + 1, 0, keyFrameCount-1);
-    assert(curFrame < nextFrame);
-    assert(curFrame < (int32_t)keyFrameCount && nextFrame < (int32_t)keyFrameCount);
+    int32_t nextFrame = curFrame + 1;
+
+    if (m_rewind)
+    {
+        nextFrame %= keyFrameCount;
+    }
+    else
+    {
+        nextFrame = SMath::Clamp<int32_t>(nextFrame, 0, keyFrameCount-1);
+        assert(curFrame <= nextFrame);
+        assert(curFrame < (int32_t)keyFrameCount && nextFrame < (int32_t)keyFrameCount);
+    }
 
     for (uint32_t boneIndex = 0; boneIndex < GetBoneCount(); ++boneIndex)
     {
@@ -148,7 +158,8 @@ void SVkMeshAnimInstance::UpdateAnims(float deltaTime)
         animContainer->MMs[boneIndex] = (bone.PrePoseTransform * m_hcTransforms[boneIndex] * worldTransform).GetMatrix4x3();
     }
 
-    m_animTime = SMath::Freq(m_animTime + deltaTime, 0.0f, totalTime);
+    float totalAnimTime = rewind ? totalTime + keyFrameTime : totalTime;
+    m_animTime = SMath::Freq(m_animTime + deltaTime, 0.0f, totalAnimTime);
 }
 
 void SVkMeshAnimInstance::InitAnimDatas()

@@ -33,7 +33,7 @@ public:
 
     ~SVkMeshAnimInstance();
 
-    void SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime = 0.0f);
+    void SetAnim(const SAssetHandle<SVkAnim>& animHandle, float startTime = 0.0f, bool rewind=false);
     void Update(float deltaTime);
 
     const SVkMMsContainerSPtr& GetAnimMMsContainer() const;
@@ -61,6 +61,7 @@ private:
 // Begin private fields
     const SEntity*                      m_owner                 = nullptr;
     float                               m_animTime              = .0f;
+    bool                                m_rewind           = false;
 
     SAssetHandle<SVkMesh>               m_meshHandle            = {};
     SAssetHandle<SVkSkeleton>           m_skeletonHandle        = {};
