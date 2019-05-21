@@ -6,4 +6,5 @@ class SAsset
 {
 public:
     virtual ~SAsset() {}
+    virtual void ResetDeviceMemory() {}
 };

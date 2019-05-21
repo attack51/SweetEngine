@@ -21,6 +21,8 @@ public:
 
     void SetBuffer(const void* pSrcData);
 
+    virtual size_t GetMinBufferOffset() const override;
+
 protected:
     void Init(size_t bufferSize, const void* pInitData);
     void DeInit();

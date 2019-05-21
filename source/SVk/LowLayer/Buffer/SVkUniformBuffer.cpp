@@ -68,3 +68,9 @@ void SVkUniformBuffer::SetBuffer(const void* pSrcData)
     //flush해서 gpu가 볼수있게 함
     ErrorCheck(vkFlushMappedMemoryRanges(m_deviceRef->GetVkDevice(), (uint32_t)m_mappedRanges.size(), m_mappedRanges.data()));
 }
+
+size_t SVkUniformBuffer::GetMinBufferOffset() const
+{
+    return m_deviceRef->GetGPUInfo()->Properties.limits.minUniformBufferOffsetAlignment;
+}
+

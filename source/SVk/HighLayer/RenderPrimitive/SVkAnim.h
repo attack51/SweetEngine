@@ -10,6 +10,7 @@
 
 
 FORWARD_DECL_PTR(class, SAssetManager);
+
 FORWARD_DECL_UPTR(struct, SSerializedAnim);
 
 typedef map<SString, int> AnimBoneIndexerMap;
@@ -27,7 +28,6 @@ public:
 
     SSerializedAnim* GetAnim() const;
     int GetAnimBoneIndex(SString boneName);
-
     // ~End public funtions
 
 private:

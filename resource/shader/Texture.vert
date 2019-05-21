@@ -1,4 +1,6 @@
 #version 450
+//precision highp int;
+//precision highp float;
 
 struct animatedVert
 {
@@ -8,8 +10,10 @@ struct animatedVert
 
 layout (std140, binding = 0) uniform bufferVals
 {
-    mat4 mvp;
+    mat4 VP;
 	vec3 col;
+	uint vertCount;
+
 } myBufferVals;
 
 //https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)
@@ -32,8 +36,14 @@ void main()
    outUV 		 = inUV;
    outColor		 = myBufferVals.col;
 
-   vec4 inPos	= inAnimVertWB.inVertices[gl_VertexIndex].pos;
-   vec4 inNor	= inAnimVertWB.inVertices[gl_VertexIndex].nor;
+   uint instanceId = gl_InstanceIndex;
+   uint vertexId = gl_VertexIndex;
 
-   gl_Position 	 = inPos * myBufferVals.mvp;
+   uint crowdVertOffset = instanceId * myBufferVals.vertCount;
+   uint vertIndex = crowdVertOffset + vertexId;
+
+   vec4 inPos	= inAnimVertWB.inVertices[vertIndex].pos;
+   vec4 inNor	= inAnimVertWB.inVertices[vertIndex].nor;
+
+   gl_Position 	 = inPos * myBufferVals.VP;
 }

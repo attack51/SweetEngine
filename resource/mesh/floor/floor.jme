@@ -1,0 +1,27 @@
+{
+  "asset-property": {
+    "identifier": "sweet-engine-asset",
+    "asset-type": "mesh"
+  },
+  "mesh-property": {
+    "has-col": false,
+    "has-nor": true,
+    "has-tan": false,
+    "has-uv": true,
+    "has-uv2": false,
+    "has-skin": false,
+    "mesh-group-count": 1
+  },
+  "mesh-group": [
+    {
+      "material-slot-name": "Material #25",
+      "material-path": "../../resource/mesh/floor/floor_material.jma",
+      "vert-count": 4,
+      "face-count": 6,
+      "pos": [ "-60, -60, 0", "60, -60, 0", "-60, 60, 0", "60, 60, 0" ],
+      "nor": [ "0, 0, 1", "0, 0, 1", "0, 0, 1", "0, 0, 1" ],
+      "uv": [ "0,0", "10,0", "0,10", "10,10" ],
+      "face": [ 0, 1, 2, 2, 1, 3 ]
+    }
+  ]
+}

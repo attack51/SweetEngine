@@ -2,6 +2,9 @@
 
 //General Include
 #include "General/Asset/SAssetHandle.h"
+#include "General/Entity/SRendererInterface.h"
+
+#include "General/Pattern/SRendererEventObserver.h"
 
 //SVk Include 
 #include "SVk/SVkHeader.h"
@@ -9,6 +12,7 @@
 //C++ Include
 #include <vector>
 #include <list>
+#include <set>
 #include <memory>
 
 FORWARD_DECL_UPTR(class, SVkInstance);
@@ -22,23 +26,37 @@ FORWARD_DECL_UPTR(class, SVkCommandBuffers);
 FORWARD_DECL_UPTR(class, SVkPipelineCache);
 FORWARD_DECL_UPTR(class, SVkDescriptorPool);
 FORWARD_DECL_UPTR(class, SVkUniformBuffer);
-FORWARD_DECL_UPTR(class, SAssetManager);
-
-FORWARD_DECL_SPTR(class, SEntity);
-FORWARD_DECL_SPTR(class, SCamera);
-FORWARD_DECL_SPTR(class, SVkMeshEntity);//임시
+FORWARD_DECL_UPTR(class, SVkManyCrowdAnimMeshRenderer);
+FORWARD_DECL_UPTR(class, SVkStaticMeshRenderer);
 
 
-class SVkRenderer
+FORWARD_DECL_SPTR(class, SRHC);
+FORWARD_DECL_SPTR(class, SVkStaticMeshRHC);
+FORWARD_DECL_SPTR(class, SVkAnimMeshRHC);
+
+FORWARD_DECL_PTR(class, SCamera);
+FORWARD_DECL_PTR(class, SInputState);
+
+
+class SVkRenderer : public SRendererInterface
 {
 public:
 // Begin public funtions
 
-    SVkRenderer();
-    ~SVkRenderer();
+    SVkRenderer(
+        SCamera* camera, 
+        SInputState* inputState,
+        SAssetManager* assetManager);
 
+    virtual ~SVkRenderer();
+
+    void AddEventObserver(SRendererEventObserver* observer);
+    void RemoveEventObserver(SRendererEventObserver* observer);
+
+    virtual void PushRHC(SRHCSPtr rhc) override;
+    
     void OpenMainWindow(uint32_t sizeX, uint32_t sizeY, const CString& name);
-    bool UpdateWindows(const SVector4& clearColor, float deltaTime);
+    bool Draw(const SVector4& clearColor);
 
     const size_t NumDevice() const;
     const size_t NumDevice(const VkQueueFlagBits queueType) const;
@@ -46,16 +64,27 @@ public:
     const SVkDevice* GetDevice(int index) const;
     const SVkDevice* GetDevice(int index, const VkQueueFlagBits queueType) const;
 
+    SVkCanvas* GetCanvas() const;
+    SVkPipelineCache* GetPipelineCache() const;
+    SVkDescriptorPool* GetDescriptorPool() const;
+    const VkRenderPass& GetVkRenderPass() const;
+
+    uint32_t GetScreenSizeX() const;
+    uint32_t GetScreenSizeY() const;
+
 // ~End public funtions
 
 private:
 // Begin private funtions
 
     SPlatformWindowUPtr OpenWindow(uint32_t sizeX, uint32_t sizeY, const CString& name);
+
     SVkCanvasUPtr CreateCanvas(const SPlatformWindow* window);
     void QueueWaitIdle();
 
     void OnResize(uint32_t width, uint32_t height);
+
+    void ClearRHC();
 
 // ~End private funtions
 
@@ -73,10 +102,15 @@ private:
     SVkPipelineCacheUPtr    m_pipelineCache             = nullptr;
     SVkDescriptorPoolUPtr   m_descriptorPool            = nullptr;
 
-    SAssetManagerUPtr       m_assetManager              = nullptr;
+    //owner ship has SWorld
+    SCamera*                m_camera                    = nullptr;
+    SInputState*            m_inputState                = nullptr;
 
-    SCameraSPtr             m_camera                    = nullptr;
-    vector<SEntitySPtr>     m_entities                  = {};
+    set<SRendererEventObserver*> m_eventObservers;
+
+    //todo:sptr pool 만들어서 malloc 최소화
+    SVkStaticMeshRendererUPtr           m_staticMeshRenderer;
+    SVkManyCrowdAnimMeshRendererUPtr    m_manyCrowdAnimMeshRenderer;
 
 // ~End private fields
 };

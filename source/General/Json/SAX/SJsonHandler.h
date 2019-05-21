@@ -41,10 +41,10 @@ public:
 
     bool EndObject(size_t memberCount)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
         Pop();
 
-        if (IsEmpty() == false)
+        if (IsValid() == false)
         {
             m_currentKey = Peek()->GetKey();
         }
@@ -63,11 +63,11 @@ public:
 
     bool EndArray(size_t elementCount)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         Pop();
 
-        if (IsEmpty() == false)
+        if (IsValid() == false)
         {
             m_currentKey = Peek()->GetKey();
         }
@@ -77,7 +77,7 @@ public:
     
     bool Null()
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -87,7 +87,7 @@ public:
 
     bool Bool(bool b)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -97,7 +97,7 @@ public:
 
     bool Int(int i)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -107,7 +107,7 @@ public:
 
     bool Uint(unsigned u)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -117,7 +117,7 @@ public:
 
     bool Int64(int64_t i)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -127,7 +127,7 @@ public:
 
     bool Uint64(uint64_t u)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -137,7 +137,7 @@ public:
 
     bool Double(double d)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -147,7 +147,7 @@ public:
 
     bool RawNumber(const U8Char* str, size_t length, bool copy)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -157,7 +157,7 @@ public:
 
     bool String(const U8Char* str, size_t length, bool copy)
     {
-        assert(IsEmpty() == false);
+        assert(IsValid() == false);
 
         auto child = CreateChild();
         assert(child.get());
@@ -166,7 +166,7 @@ public:
     }
 
 protected:
-    bool IsEmpty() const
+    bool IsValid() const
     {
         return m_stack.empty();
     }

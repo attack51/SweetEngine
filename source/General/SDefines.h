@@ -462,4 +462,10 @@ enum class SFormat
     FORMAT_RG3B2_UNORM_PACK8, FORMAT_LAST = FORMAT_RG3B2_UNORM_PACK8
 };
 
+enum class SRHC_Type : uint8_t
+{
+    StaticMesh = 0,
+    SkeletalMesh = 1,
+};
+
 #define SKIN_WEIGHT_COUNT 3

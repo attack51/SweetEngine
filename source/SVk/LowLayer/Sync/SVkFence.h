@@ -15,7 +15,7 @@ public:
 
     inline const VkFence& GetVkFence() const { return m_fence; }
 
-    void WaitForFence(uint64_t timeout);
+    void WaitForFence(uint64_t timeout = 1000000000);
 
     // ~End public funtions
     

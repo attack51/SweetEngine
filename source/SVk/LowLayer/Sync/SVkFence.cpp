@@ -18,7 +18,8 @@ SVkFence::~SVkFence()
 
 void SVkFence::WaitForFence(uint64_t timeout)
 {
-    vkWaitForFences(m_deviceRef->GetVkDevice(), 1, &m_fence, VK_TRUE, 10000000);
+    vkWaitForFences(m_deviceRef->GetVkDevice(), 1, &m_fence, VK_TRUE, timeout);
+    vkResetFences(m_deviceRef->GetVkDevice(), 1, &m_fence);
 }
 
 void SVkFence::InitFence()

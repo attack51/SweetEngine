@@ -45,19 +45,20 @@ public:
         }
     }
     
-    inline const CString& GetKey() const { return IsValid() ? m_container->GetKey() : CString::empty; }
+    inline const CString& GetKey() const { return IsValid() ? m_container->GetKey() : EmptyCString; }
     inline T* GetAsset() const { return IsValid() ? static_cast<T*>(m_container->GetAsset()) : nullptr; }
 
-    //Asset이 없어도 파기된 Handle이 아니라면 Valid한것임
+    //Asset이 유효한지 검사. 
+    //경로가 잘못되었거나 할때
+    inline bool HasAsset() const { return GetAsset() != nullptr; }  
+
+    //Asset이 없어도 파기된 Handle이 아니라면 IsValid 아님
     //명시적 Clear호출 or 소멸자 호출될때 단 한번만 파기되게 하기 위함
     //그러므로 Asset유효성을 IsValid에 절대로 넣지 말것
-    inline bool IsValid() const { return m_container != nullptr; } 
-
-    //Asset이 유효한지 검사하는 용도
-    //IsValid와 혼동히지 말것
-    inline bool IsEmpty() const { return GetAsset() == nullptr; }  
-
+    inline bool IsValid() const { return m_container != nullptr; }
 private:
+
+
     //access for AssetManager
     SAssetHandle(SAssetContainerSPtr& container)
     {

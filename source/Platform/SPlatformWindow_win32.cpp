@@ -27,6 +27,92 @@ LRESULT CALLBACK WindowsEventHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
         window->Resize(width, height);
         break;
     }
+    case WM_LBUTTONDOWN:
+    {
+        if (window->GetInputState())
+        {
+            window->GetInputState()->ResetMousePos();
+            window->SetAcceptMouseMove(true);
+        }
+        break;
+    }
+    case WM_LBUTTONUP:
+    {
+        if (window->GetInputState())
+        {
+            window->SetAcceptMouseMove(false);
+            window->GetInputState()->ResetMousePos();
+        }
+        break;
+    }
+    case WM_MOUSEMOVE:
+    {
+        if (window->GetInputState() && window->GetAcceptMouseMove())
+        {
+            float mouseX = static_cast<float>(LOWORD(lParam));
+            float mouseY = static_cast<float>(HIWORD(lParam));
+
+            SVector2 mousePos(mouseX / window->SizeX(), mouseY / window->SizeY());
+            window->GetInputState()->SetMousePos(mousePos);
+        }
+        break;
+    }
+    case WM_KEYFIRST:
+    {
+        if (window->GetInputState())
+        {
+            switch (wParam)
+            {
+            //left
+            case 0x41:
+                window->GetInputState()->DigitalAxisPress(DIGITAL_AXIS_LEFT);
+                    break;
+            //right
+            case 0x44:
+                window->GetInputState()->DigitalAxisPress(DIGITAL_AXIS_RIGHT);
+                break;
+            //up
+            case 0x57:
+                window->GetInputState()->DigitalAxisPress(DIGITAL_AXIS_UP);
+                break;
+            //down
+            case 0x53:
+                window->GetInputState()->DigitalAxisPress(DIGITAL_AXIS_DOWN);
+                break;
+            default:
+                break;
+            }
+        }
+        break;
+    }
+    case WM_KEYUP:
+    {
+        if (window->GetInputState())
+        {
+            switch (wParam)
+            {
+                //left
+            case 0x41:
+                window->GetInputState()->DigitalAxisRelease(DIGITAL_AXIS_LEFT);
+                break;
+                //right
+            case 0x44:
+                window->GetInputState()->DigitalAxisRelease(DIGITAL_AXIS_RIGHT);
+                break;
+                //up
+            case 0x57:
+                window->GetInputState()->DigitalAxisRelease(DIGITAL_AXIS_UP);
+                break;
+                //down
+            case 0x53:
+                window->GetInputState()->DigitalAxisRelease(DIGITAL_AXIS_DOWN);
+                break;
+            default:
+                break;
+            }
+        }
+        break;
+    }
     default:
         break;
     }

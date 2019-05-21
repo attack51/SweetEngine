@@ -1,6 +1,8 @@
 //General Include
 #include "General/SInclude.h"
 
+#include "General/Entity/SRendererInterface.h"
+
 //Header Include
 #include "SCamera.h"
 
@@ -36,7 +38,7 @@ void SCamera::Update(float deltaTime)
     //SetWorldEulerRotation(SEulerRotator(0.0f, 0.0f, roll));
 }
 
-void SCamera::Draw(SCamera* camera)
+void SCamera::RequestDraw(SCamera* camera, SRendererInterface* renderer)
 {
 
 }

@@ -1,0 +1,11 @@
+{
+  "asset-property": {
+    "identifier": "sweet-engine-asset",
+    "asset-type": "material"
+  },
+  "material-property": {
+    "vs-path": "../../resource/shader/static_mesh",
+    "fs-path": "../../resource/shader/static_mesh",
+    "tex-name": "../../resource/texture/floor/floor"
+  }
+}

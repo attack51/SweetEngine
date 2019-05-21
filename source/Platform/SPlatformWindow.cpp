@@ -5,12 +5,14 @@
 #include "SPlatformWindow.h"
 
 
-SPlatformWindow::SPlatformWindow(uint32_t sizeX, uint32_t sizeY, const CString& name)
+SPlatformWindow::SPlatformWindow(uint32_t sizeX, uint32_t sizeY, const CString& name, SInputState* inputState)
 {
     m_sizeX = sizeX;
     m_sizeY = sizeY;
 
     m_windowName = name;
+
+    m_inputState = inputState;
 
     Init();
 }

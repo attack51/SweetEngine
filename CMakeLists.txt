@@ -152,6 +152,7 @@ endif() # (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	source_group("source\\General\\Json\\DOM"				REGULAR_EXPRESSION		 "source/General/Json/DOM/*")
 	source_group("source\\General\\Json\\SAX"				REGULAR_EXPRESSION		 "source/General/Json/SAX/*")
 	source_group("source\\General\\Entity"					REGULAR_EXPRESSION		 "source/General/Entity/*")
+	source_group("source\\General\\Input"					REGULAR_EXPRESSION		 "source/General/Input/*")
 
 	# Platform
 	source_group("source\\Platform"							REGULAR_EXPRESSION		 "source/Platform/*")
@@ -177,6 +178,7 @@ endif() # (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	# SVk HighLayer
 	source_group("source\\SVk\\HighLayer"					REGULAR_EXPRESSION		 "source/SVk/HighLayer/*")
 	source_group("source\\SVk\\HighLayer\\RenderPrimitive"	REGULAR_EXPRESSION		 "source/SVk/HighLayer/RenderPrimitive/*")
+	source_group("source\\SVk\\HighLayer\\Renderer"			REGULAR_EXPRESSION		 "source/SVk/HighLayer/Renderer/*")
 	source_group("source\\SVk\\HighLayer\\Material"			REGULAR_EXPRESSION		 "source/SVk/HighLayer/Material/*")
 
 	################

@@ -86,8 +86,17 @@ void SVkSurfaceRT::InitSurfaceSize()
         m_surfaceSizeX = m_surfaceCapabilities.currentExtent.width;
         m_surfaceSizeY = m_surfaceCapabilities.currentExtent.height;
     }
-}
 
+    if (m_surfaceSizeX < 1)
+    {
+        m_surfaceSizeX = m_surfaceCapabilities.currentExtent.width = 1;
+    }
+
+    if (m_surfaceSizeY < 1)
+    {
+        m_surfaceSizeY = m_surfaceCapabilities.currentExtent.height = 1;
+    }
+}
 
 void SVkSurfaceRT::InitSwapchainRT(uint32_t requireSwapchainImageCount)
 {

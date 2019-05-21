@@ -288,7 +288,7 @@ void ConvMeshImporter::FillVertices(FbxMesh* fbxMesh)
             FbxColor col;
             FbxVector4 nor, tan;
             FbxVector2 uv, uv2;
-            ConvSkinSPtr skin;
+            ConvSkin skin;
 
             if (HasCol())
             {
@@ -324,12 +324,12 @@ void ConvMeshImporter::FillVertices(FbxMesh* fbxMesh)
 
             for (auto& allSameMatID : allSameMatIDs)
             {
-                AddVertex(allSameMatID, pos, col, nor, tan, uv, uv2, skin.get());
+                AddVertex(allSameMatID, pos, col, nor, tan, uv, uv2, skin);
             }
 
             for (auto& byPolyMatID : byPolyMatIDs)
             {
-                AddVertex(byPolyMatID, pos, col, nor, tan, uv, uv2, skin.get());
+                AddVertex(byPolyMatID, pos, col, nor, tan, uv, uv2, skin);
             }
 
             ++vertIndex;
@@ -508,7 +508,7 @@ void ConvMeshImporter::AddVertex(
     const FbxVector4& tan,
     const FbxVector2& uv,
     const FbxVector2& uv2,
-    const ConvSkin* skin)
+    const ConvSkin& skin)
 {
     ConvEditMeshGroupMapIter iter = m_editMeshGroups.find(matID);
     if (iter == m_editMeshGroups.end())
@@ -526,7 +526,7 @@ void ConvMeshImporter::AddVertex(
     assert(!HasUV2() || meshGroup->Pos.size() == meshGroup->UV2.size());
     assert(!HasSkin() || meshGroup->Skin.size() == meshGroup->Skin.size());
 
-    auto key = std::make_shared<ConvEditVertKey>(pos, col, nor, tan, uv, uv2, *skin, m_importedMesh->MeshProperty.get());
+    auto key = std::make_shared<ConvEditVertKey>(pos, col, nor, tan, uv, uv2, skin, m_importedMesh->MeshProperty.get());
     editMeshGroup->Winding.push_back(key);
 }
 
@@ -776,13 +776,13 @@ FbxVector2 ConvMeshImporter::GetVertUV(
     return uv;
 }
 
-ConvSkinSPtr ConvMeshImporter::GetSkin(
+ConvSkin ConvMeshImporter::GetSkin(
     FbxMesh* fbxMesh,
     FbxSkeleton* parentSkeleton,
     EditSkinMap& editSkinMap,
     int controlPointIndex) const
 {
-    ConvSkinSPtr skin = std::make_shared<ConvSkin>();
+    ConvSkin skin;
 
     auto iter = editSkinMap.find(controlPointIndex);
     if (iter == editSkinMap.end())
@@ -792,8 +792,8 @@ ConvSkinSPtr ConvMeshImporter::GetSkin(
 
         if (parentSkeleton)
         {
-            skin->Indices[0] = m_skeletonImporter->GetSkeletonIndex(parentSkeleton);
-            skin->Weights[0] = 1.0f;
+            skin.Indices[0] = m_skeletonImporter->GetSkeletonIndex(parentSkeleton);
+            skin.Weights[0] = 1.0f;
         }
         return skin;
     }
@@ -810,11 +810,11 @@ ConvSkinSPtr ConvMeshImporter::GetSkin(
         if (weight > FBXSDK_FLOAT_EPSILON)
         {
             FbxSkeleton* linkSkeleton = editSkin->DirectArray[i].Skeleton;
-            skin->Indices[i] = m_skeletonImporter->GetSkeletonIndex(linkSkeleton);
+            skin.Indices[i] = m_skeletonImporter->GetSkeletonIndex(linkSkeleton);
 
             if (i < SKIN_WEIGHT_COUNT)
             {
-                skin->Weights[i] = (float)weight;
+                skin.Weights[i] = (float)weight;
             }
             totalWeights += (float)weight;
         }
@@ -826,7 +826,7 @@ ConvSkinSPtr ConvMeshImporter::GetSkin(
         {
             if (i < SKIN_WEIGHT_COUNT)
             {
-                skin->Weights[i] /= totalWeights;
+                skin.Weights[i] /= totalWeights;
             }
         }
     }

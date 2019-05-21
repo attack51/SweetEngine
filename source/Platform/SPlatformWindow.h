@@ -16,7 +16,7 @@ DECLARE_DELEGATE(OnResizeDelegate, void, uint32_t, uint32_t);
 class SPlatformWindow
 {
 public:
-    SPlatformWindow(uint32_t sizeX, uint32_t sizeY, const CString& name);
+    SPlatformWindow(uint32_t sizeX, uint32_t sizeY, const CString& name, SInputState* inputState);
     ~SPlatformWindow();
 
     void Close();
@@ -24,6 +24,10 @@ public:
     void Resize(uint32_t sizeX, uint32_t sizeY);
 
     void SetResizeDelegate(OnResizeDelegate resizeDelegate);
+    SInputState* GetInputState() const{ return m_inputState; }
+
+    bool GetAcceptMouseMove() const { return m_acceptMouseMove; }
+    void SetAcceptMouseMove(bool accept) { m_acceptMouseMove = accept; }
 
     inline uint32_t SizeX() const { return m_sizeX; }
     inline uint32_t SizeY() const { return m_sizeY; }
@@ -35,6 +39,8 @@ public:
     inline const xcb_connection_t* GetXcbConnection() const { return m_xcb_connection; }
     inline const xcb_screen_t* GetXcbScreen() const { return m_xcb_screen; }
     inline const xcb_window_t* GetXcbWindow() const { return m_xcb_window; }
+#elif USE_PLATFORM_ANDROID
+
 #endif
 
 protected:
@@ -53,18 +59,23 @@ protected:
     CString						        m_windowName                = {};
 
     bool                                m_run                       = true;
+    OnResizeDelegate                    m_onResizeDelegate = nullptr;
 
-    OnResizeDelegate                    m_onResizeDelegate          = nullptr;
+    //Temporary code
+    bool                                m_acceptMouseMove           = false;
+    SInputState*                        m_inputState                = nullptr;
 
 #if USE_PLATFORM_WIN32
     HINSTANCE                           m_win32_inst                = nullptr;
     HWND                                m_win32_hwnd                = nullptr;
-    CString                              m_win32_className           = {};
+    CString                             m_win32_className           = {};
     static uint64_t                     m_win32_classIdCounter;
 #elif USE_PLATFORM_XCB
     xcb_connection_t*	                m_xcb_connection            = nullptr;
     xcb_screen_t*	                    m_xcb_screen                = nullptr;
     xcb_window_t                        m_xcb_window                = 0;
     xcb_intern_atom_reply_t*            m_xcb_atom_window_reply     = nullptr;
+#elif USE_PLATFORM_ANDROID
+
 #endif 
 };

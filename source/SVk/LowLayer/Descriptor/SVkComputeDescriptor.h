@@ -12,6 +12,7 @@
 FORWARD_DECL_PTR(class, SVkDevice);
 FORWARD_DECL_PTR(class, SVkDescriptorPool);
 FORWARD_DECL_PTR(class, SVkStorageBuffer);
+FORWARD_DECL_PTR(class, SVkUniformBuffer);
 
 
 class SVkComputeDescriptor : public SVkDescriptor
@@ -19,18 +20,24 @@ class SVkComputeDescriptor : public SVkDescriptor
 public:
     // Begin public funtions
 
-    SVkComputeDescriptor(const SVkDevice* device,
+    SVkComputeDescriptor(
+        const SVkDevice* device, 
         const SVkDescriptorPool* descriptorPool,
-        const vector<SVkStorageBuffer*>& storageBuffers);
+        uint32_t numUniformBuffer,
+        uint32_t numStorageBuffer);
 
     virtual ~SVkComputeDescriptor();
+
+    void UpdateDescriptorSets(
+        const vector<SVkUniformBuffer*>& uniformBuffers,
+        const vector<SVkStorageBuffer*>& storageBuffers);
 
     // ~End public funtions
 
 protected:
     // Begin protected funtions
-    void InitDescriptorSetLayouts(uint32_t storageBufferSize);
-    void InitDescriptorSets(const vector<SVkStorageBuffer*>& storageBuffers);
+    void InitDescriptorSetLayouts(uint32_t numUniformBuffer, uint32_t storageBufferSize);
+    void InitDescriptorSets();
 
     // ~End protected funtions
 

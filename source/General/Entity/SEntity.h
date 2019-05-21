@@ -10,6 +10,7 @@
 
 FORWARD_DECL_SPTR(class, SEntity);
 FORWARD_DECL_PTR(class, SCamera);
+FORWARD_DECL_PTR(class, SRendererInterface);
 
 
 class SEntity
@@ -20,7 +21,8 @@ public:
 
     virtual void Destroy();
     virtual void Update(float deltaTime) = 0;
-    virtual void Draw(SCamera* camera) = 0;
+    virtual void RequestDraw(SCamera* camera, SRendererInterface* renderer) = 0;
+    virtual void ResetDeviceMemory() {}
 
     void SetParent(SEntity* parent);
 
@@ -28,10 +30,10 @@ public:
     const STransform& GetWorldTransform() const;
     bool SetWorldTransform(const STransform& transform);
 
-    inline const SVector& GetWorldScale() const;
-    inline const SQuaternion& GetWorldRotation() const;
+    const SVector& GetWorldScale() const;
+    const SQuaternion& GetWorldRotation() const;
     SEulerRotator GetWorldEulerRotation() const;
-    inline const SVector& GetWorldTranslation() const;
+    const SVector& GetWorldTranslation() const;
 
     bool SetWorldScale(const SVector& scale);
     bool SetWorldRotation(const SQuaternion& rotation);
@@ -42,10 +44,10 @@ public:
     const STransform& GetRelativeTransform() const;
     bool SetRelativeTransform(const STransform& transform);
 
-    inline const SVector& GetRelativeScale() const;
-    inline const SQuaternion& GetRelativeRotation() const;
+    const SVector& GetRelativeScale() const;
+    const SQuaternion& GetRelativeRotation() const;
     SEulerRotator GetRelativeEulerRotation() const;
-    inline const SVector& GetRelativeTranslation() const;
+    const SVector& GetRelativeTranslation() const;
 
     bool SetRelativeScale(const SVector& scale);
     bool SetRelativeRotation(const SQuaternion& rotation);

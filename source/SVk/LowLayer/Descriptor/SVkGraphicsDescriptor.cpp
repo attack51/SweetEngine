@@ -15,12 +15,12 @@
 SVkGraphicsDescriptor::SVkGraphicsDescriptor(
         const SVkDevice* device,
         const SVkDescriptorPool* descriptorPool,
-        const vector<SVkUniformBuffer*>& uniformBuffers,
-        const vector<SVkStorageBuffer*>& storageBuffers,
-        const vector<SVkTexture*>& textures) : SVkDescriptor(device, descriptorPool)
+        uint32_t numUnformBuffer,
+        uint32_t numStorageBuffer,
+        uint32_t numTexture) : SVkDescriptor(device, descriptorPool)
 {
-    InitDescriptorSetLayouts((uint32_t)uniformBuffers.size(), (uint32_t)storageBuffers.size(), (uint32_t)textures.size());
-    InitDescriptorSets(uniformBuffers, storageBuffers, textures);
+    InitDescriptorSetLayouts(numUnformBuffer, numStorageBuffer, numTexture);
+    InitDescriptorSets();
 }
 
 SVkGraphicsDescriptor::~SVkGraphicsDescriptor()
@@ -28,14 +28,14 @@ SVkGraphicsDescriptor::~SVkGraphicsDescriptor()
 }
 
 void SVkGraphicsDescriptor::InitDescriptorSetLayouts(
-    uint32_t uniformDescriptorSize, 
-    uint32_t storageDescriptorSize, 
-    uint32_t imageDescriptorSize)
+    uint32_t numUnformBuffer,
+    uint32_t numStorageBuffer,
+    uint32_t numTexture)
 {
     vector<VkDescriptorSetLayoutBinding> layoutBindings;
-    layoutBindings.resize(uniformDescriptorSize + storageDescriptorSize + imageDescriptorSize);
+    layoutBindings.reserve(numUnformBuffer + numStorageBuffer + numTexture);
 
-    for (uint32_t i = 0; i < uniformDescriptorSize; ++i)
+    for (uint32_t i = 0; i < numUnformBuffer; ++i)
     {
         VkDescriptorSetLayoutBinding layoutBinding;
         layoutBinding.binding = UNIFORM_BINDING_START + i;
@@ -47,7 +47,7 @@ void SVkGraphicsDescriptor::InitDescriptorSetLayouts(
         layoutBindings.push_back(layoutBinding);
     }
 
-    for (uint32_t i = 0; i < storageDescriptorSize; ++i)
+    for (uint32_t i = 0; i < numStorageBuffer; ++i)
     {
         VkDescriptorSetLayoutBinding layoutBinding;
         layoutBinding.binding = STORAGE_BINDING_START + i;
@@ -59,7 +59,7 @@ void SVkGraphicsDescriptor::InitDescriptorSetLayouts(
         layoutBindings.push_back(layoutBinding);
     }
 
-    for (uint32_t i = 0; i < imageDescriptorSize; ++i)
+    for (uint32_t i = 0; i < numTexture; ++i)
     {
         VkDescriptorSetLayoutBinding layoutBinding;
         layoutBinding.binding = IMAGE_SAMPLER_BINDING_START + i;
@@ -81,10 +81,7 @@ void SVkGraphicsDescriptor::InitDescriptorSetLayouts(
     ErrorCheck(vkCreateDescriptorSetLayout(m_deviceRef->GetVkDevice(), &descriptorLayoutCreateInfo, nullptr, m_descriptorSetLayouts.data()));
 }
 
-void SVkGraphicsDescriptor::InitDescriptorSets(
-    const vector<SVkUniformBuffer*>& uniformBuffers,
-    const vector<SVkStorageBuffer*>& storageBuffers,
-    const vector<SVkTexture*>& textures)
+void SVkGraphicsDescriptor::InitDescriptorSets()
 {
     VkDescriptorSetAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -95,7 +92,13 @@ void SVkGraphicsDescriptor::InitDescriptorSets(
 
     m_descriptorSets.resize(m_descriptorSetLayouts.size());
     ErrorCheck(vkAllocateDescriptorSets(m_deviceRef->GetVkDevice(), &allocInfo, m_descriptorSets.data()));
+}
 
+void SVkGraphicsDescriptor::UpdateDescriptorSets(
+    const vector<SVkUniformBuffer*>& uniformBuffers,
+    const vector<SVkStorageBuffer*>& storageBuffers,
+    const vector<SVkTexture*>& textures)
+{
     vector<VkWriteDescriptorSet> writes;
     writes.reserve(uniformBuffers.size() + storageBuffers.size() + textures.size());
 
@@ -152,4 +155,5 @@ void SVkGraphicsDescriptor::InitDescriptorSets(
 
     //유니폼 버퍼를 디스크립터 세트로 할당
     vkUpdateDescriptorSets(m_deviceRef->GetVkDevice(), (uint32_t)writes.size(), writes.data(), 0, nullptr);
+
 }

@@ -1,5 +1,7 @@
 #version 450
 layout (local_size_x = 1) in;
+//precision highp int;
+//precision highp float;
 
 struct skinnedVert
 {
@@ -14,6 +16,12 @@ struct animatedVert
 	vec4 pos;
 	vec4 nor;
 };
+
+layout (std140, binding = 0) readonly uniform computeUB
+{
+    uint boneCount;
+	uint vertCount;
+} inComputeUB;
 
 //https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)
 //std140 : always rounded up to the size of a vec4 (ie: 16-bytes)
@@ -35,22 +43,19 @@ layout(std140, binding = 1002) buffer animVertWB
 
 uvec3 Unpack_UIntToUVec3(uint packed)
 {
-	uvec3 result;
-	result.x = (packed) & 0xff;
-	result.y = (packed >> 8) & 0xff;
-	result.z = (packed >> 16) & 0xff;
+	uvec3 shift = uvec3(0, 8, 16);
+	uint mask = 0xff;
 
+	uvec3 result = (packed.xxx >> shift) & mask.xxx;
 	return result;
 }
 
 uvec4 Unpack_UIntToUVec4(uint packed)
 {
-	uvec4 result;
-	result.x = (packed) & 0xff;
-	result.y = (packed >> 8) & 0xff;
-	result.z = (packed >> 16) & 0xff;
-	result.w = (packed >> 24) & 0xff;
+	uvec4 shift = uvec4(0, 8, 16, 24);
+	uint mask = 0xff;
 
+	uvec4 result = (packed.xxxx >> shift) & mask.xxxx;
 	return result;
 }
 
@@ -67,7 +72,7 @@ void Skinning(	in vec4 inPos,
 	mat3x4 animMatrix;
 	float totalWeight = 0.0f;
 
-	for (uint i = 0; ((i < 3) && (totalWeight<1.0f)); ++i)
+	for (uint i = 0; i < 3; ++i)
 	{
 		animMatrix = inAnimMatrixRB.inAnimMats[inBone_indices[i]];
 		outPos.xyz += (inPos * animMatrix) * inBone_weights[i];
@@ -85,12 +90,16 @@ void Skinning(	in vec4 inPos,
 void main()
 {
 	uint id = gl_GlobalInvocationID.x;
+	uint originalId = id % inComputeUB.vertCount;
 
-	skinnedVert inVert = inSkinnedVertRB.inVertices[id];
+	uint crowdId = id / inComputeUB.vertCount;
+	uint crowdBoneOffset = crowdId * inComputeUB.boneCount;
+
+	skinnedVert inVert = inSkinnedVertRB.inVertices[originalId];
 
 	vec4 outPos;
 	vec4 outNor;
-	uvec3 bone_indices = Unpack_UIntToUVec3(inVert.packed_bone_indices);
+	uvec3 bone_indices = Unpack_UIntToUVec3(inVert.packed_bone_indices) + crowdBoneOffset.xxx;
 
 	Skinning(
 			inVert.pos,
@@ -99,7 +108,7 @@ void main()
 			inVert.bone_weights,
 			outPos,
 			outNor);
-
+	
 	outAnimVertWB.outVertices[id].pos = outPos;
 	outAnimVertWB.outVertices[id].nor = outNor;
 }

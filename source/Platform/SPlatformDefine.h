@@ -14,6 +14,12 @@
     #define USE_PLATFORM_XCB 1
     #include <xcb/xcb.h>
 
+#elif defined(ANDROID)
+
+    #define USE_PLATFORM_ANDROID 1
+    //todo:android include
+    //#include <xcb/xcb.h>
+
 #else
     #error Platform not supported
 #endif

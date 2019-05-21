@@ -432,11 +432,15 @@ SMatrix SMatrix::SRT(const SVector& scale, const SQuaternion& rotate, const SVec
 
 SMatrix SMatrix::Perspective(float fovDegree, float aspect, float near, float far)
 {
-    float fogRadian = SMath::DegreesToRadians(fovDegree);
-    float const a = (float)(1.f / tan(fogRadian / 2.f));
+    float fovRadian = SMath::DegreesToRadians(fovDegree);
+    float const a = (float)(1.f / tan(fovRadian / 2.f));
 
-    float n = -((far + near) / (far - near));
-    float f = -((2.f * far * near) / (far - near));
+    //float n = -((far + near) / (far - near));
+    //float f = -((2.f * far * near) / (far - near));
+
+    //near:0, far:1
+    float n = -(far / (far - near));
+    float f = -((far * near) / (far - near));
 
     SMatrix ret;
     ret.SetCol(0, SVector4(a / aspect, 0.f, 0.f, 0.f));

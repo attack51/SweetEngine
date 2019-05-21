@@ -2,6 +2,7 @@
 
 //General Include
 #include "General/SHeader.h"
+#include "General/Input/SController.h"
 #include "General/Entity/SEntity.h"
 
 //C++ Include 
@@ -20,7 +21,7 @@ public:
     ~SCamera();
 
     virtual void Update(float deltaTime) override;
-    virtual void Draw(SCamera* camera) override;
+    virtual void RequestDraw(SCamera* camera, SRendererInterface* renderer) override;
 
     void SetCameraMode(SCameraMode cameraMode);
     const SCameraMode& GetCameraMode() const;

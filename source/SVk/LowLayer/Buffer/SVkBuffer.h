@@ -5,6 +5,7 @@
 
 //C++ Include
 #include <memory>
+#include <vector>
 
 FORWARD_DECL_PTR(class, SVkDevice);
 FORWARD_DECL_UPTR(class, SVkDeviceMemory);
@@ -19,6 +20,7 @@ public:
 
     inline const SVkDeviceMemory* GetVkDeviceMemory() const { return m_deviceMemory.get(); }
     inline const size_t GetMemorySize() const { return m_deviceMemory->GetMemorySize(); }
+    inline const size_t GetMemoryAlign() const { return m_deviceMemory->GetVkMemoryRequirements().alignment; }
     inline const size_t GetBufferSize() const { return m_bufferSize; }
     inline const VkBuffer& GetVkBuffer() const { return m_buffer; }
     inline const VkDescriptorBufferInfo& GetVkDescriptorBufferInfo() const { return m_bufferInfo; }
@@ -28,7 +30,10 @@ public:
 
     void UnmapMemory();
 
+    size_t ConvertAlignedOffset(size_t offset);
+
     void BindMemory(const uint32_t offset, const size_t size);
+    void Reset();
 
     // ~End public funtions
     
@@ -38,14 +43,16 @@ protected:
     void DeInitBuffer();
     
     uint8_t* MapMemory(const uint32_t offset, const size_t size, const void* pSrcData, bool unmap, bool bind);
+
+    virtual size_t GetMinBufferOffset() const { return 0; }
     // ~End private funtions
 
     // Begin private fields
 protected:
-    const SVkDevice*        m_deviceRef     = nullptr;
-    SVkDeviceMemoryUPtr     m_deviceMemory  = nullptr;
-    VkBuffer                m_buffer        = VK_NULL_HANDLE;
-    VkDescriptorBufferInfo  m_bufferInfo    = {};
-    size_t                  m_bufferSize    = 0;
+    const SVkDevice*                m_deviceRef     = nullptr;
+    SVkDeviceMemoryUPtr             m_deviceMemory  = nullptr;
+    VkBuffer                        m_buffer        = VK_NULL_HANDLE;
+    VkDescriptorBufferInfo          m_bufferInfo    = {};
+    size_t                          m_bufferSize    = 0;
     // ~End private fields
 };

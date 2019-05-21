@@ -10,7 +10,7 @@
 #include "SVk/SVkHeader.h"
 #include "SVk/SVkUtil.h"
 
-#include "SVk/HighLayer/SVkRenderer.h"
+#include "SVk/HighLayer/Renderer/SVkRenderer.h"
 
 #include "SVk/LowLayer/Command/SVkCommandBuffers.h"
 #include "SVk/LowLayer/Command/SVkCommandBuffer.h"

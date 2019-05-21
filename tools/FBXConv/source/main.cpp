@@ -46,6 +46,7 @@ bool FetchFromArgs(
         {
             mode = ARG_MODE_INPUT;
         }
+        //vertex element
         else if (FbxString(argv[i]) == "-nor")
         {
             meshExtractElms |= MESH_EXTRACT_ELM_NOR;
@@ -66,6 +67,11 @@ bool FetchFromArgs(
         {
             meshExtractElms |= MESH_EXTRACT_ELM_UV2;
         }
+        else if (FbxString(argv[i]) == "-skin")
+        {
+            meshExtractElms |= MESH_EXTRACT_ELM_SKIN;
+        }
+        //export format(mesh/skeleton/anim)
         else if (FbxString(argv[i]) == "-mesh")
         {
             exportFormat |= EXPORT_TYPE_MESH;
@@ -97,15 +103,15 @@ bool FetchFromArgs(
     //meshExtractElms = MESH_EXTRACT_ELM_NOR | MESH_EXTRACT_ELM_UV | MESH_EXTRACT_ELM_SKIN;
     //exportFormat = EXPORT_TYPE_MESH | EXPORT_TYPE_SKEL;
 
-    inputFilePath = "Anim@Run";
-    meshExtractElms = MESH_EXTRACT_ELM_NOR | MESH_EXTRACT_ELM_UV | MESH_EXTRACT_ELM_SKIN;
-    exportFormat = EXPORT_TYPE_ANIM;
+    //inputFilePath = "Anim@Run";
+    //meshExtractElms = MESH_EXTRACT_ELM_NOR | MESH_EXTRACT_ELM_UV | MESH_EXTRACT_ELM_SKIN;
+    //exportFormat = EXPORT_TYPE_ANIM;
 
     if (inputFilePath.IsEmpty())
     {
-        FBXSDK_printf("\nFbxConv -i <filepath> -nor -tan -col -uv -uv2 \
+        FBXSDK_printf("\nFbxConv -mesh -skel -anim -i <filepath> -nor -tan -col -uv -uv2 -skin\
                        \n <filepath> except for extension (ex: testCube)\
-                       \n -nor -tan -col -uv -uv2 is optional");
+                       \n -nor -tan -col -uv -uv2 -skin is optional");
         return false;
     }
 

@@ -82,6 +82,7 @@ void SVkDeviceMemory::BindMemory(const VkBuffer& buffer, uint32_t offset)
 void SVkDeviceMemory::MapMemory(const VkDeviceSize& offset, const VkDeviceSize& size, void** ppData)
 {
     assert(m_deviceRef);
+    assert(offset % m_memRequire.alignment == 0);
 
     ErrorCheck(vkMapMemory(m_deviceRef->GetVkDevice(), m_deviceMemory, offset, size, 0, ppData));
 }

@@ -50,7 +50,7 @@ uint8_t* SVkBuffer::MapMemory(const uint32_t offset, const size_t size, const vo
     VkDeviceSize castSize = size;
     m_deviceMemory->MapMemory(castOffset, castSize, (void**)&pData);
     {
-        if(pSrcData) memcpy(pData, pSrcData, size);
+        if (pSrcData) memcpy(pData, pSrcData, size);
     }
     if(unmap) UnmapMemory();
 
@@ -64,6 +64,14 @@ uint8_t* SVkBuffer::MapMemory(const uint32_t offset, const size_t size, const vo
 void SVkBuffer::UnmapMemory()
 {
     m_deviceMemory->UnmapMemory();
+}
+
+size_t SVkBuffer::ConvertAlignedOffset(size_t offset)
+{
+    VkDeviceSize align = m_deviceMemory->GetVkMemoryRequirements().alignment;
+    if (align < GetMinBufferOffset()) align = GetMinBufferOffset();
+
+    return ((offset + align - 1) / align) * align;
 }
 
 //usageFlag for vb : VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
@@ -101,4 +109,10 @@ void SVkBuffer::DeInitBuffer()
 
     m_deviceMemory = nullptr;
     vkDestroyBuffer(m_deviceRef->GetVkDevice(), m_buffer, nullptr);
+}
+
+void SVkBuffer::Reset()
+{
+    //DeInitBuffer();
+    //todo:save usageFlag, flag and recreate devicememory, buffer(check notebaook)
 }

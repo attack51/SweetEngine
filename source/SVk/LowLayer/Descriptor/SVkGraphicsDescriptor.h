@@ -25,25 +25,27 @@ public:
     SVkGraphicsDescriptor(
         const SVkDevice* device,
         const SVkDescriptorPool* descriptorPool,
+        uint32_t numUnformBuffer,
+        uint32_t numStorageBuffer,
+        uint32_t numTexture);
+
+    virtual ~SVkGraphicsDescriptor();
+
+    void UpdateDescriptorSets(
         const vector<SVkUniformBuffer*>& uniformBuffers,
         const vector<SVkStorageBuffer*>& storageBuffers,
         const vector<SVkTexture*>& textures);
-
-    virtual ~SVkGraphicsDescriptor();
 
 // ~End public funtions
 
 protected:
 // Begin protected funtions
     void InitDescriptorSetLayouts(
-        uint32_t uniformDescriptorSize, 
-        uint32_t storageDescriptorSize, 
-        uint32_t imageDescriptorSize);
+        uint32_t numUnformBuffer,
+        uint32_t numStorageBuffer,
+        uint32_t numTexture);
 
-    void InitDescriptorSets(
-        const vector<SVkUniformBuffer*>& uniformBuffers,
-        const vector<SVkStorageBuffer*>& storageBuffers,
-        const vector<SVkTexture*>& textures);
+    void InitDescriptorSets();
 
 // ~End protected funtions
 

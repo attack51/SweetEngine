@@ -62,12 +62,12 @@ bool SEntity::SetWorldTransform(const STransform& transform)
     return true;
 }
 
-inline const SVector& SEntity::GetWorldScale() const
+const SVector& SEntity::GetWorldScale() const
 {
     return m_worldTransform.GetScale();
 }
 
-inline const SQuaternion& SEntity::GetWorldRotation() const
+const SQuaternion& SEntity::GetWorldRotation() const
 {
     return m_worldTransform.GetRotation();
 }
@@ -77,9 +77,9 @@ SEulerRotator SEntity::GetWorldEulerRotation() const
     return m_worldTransform.GetEulerRotation();
 }
 
-inline const SVector& SEntity::GetWorldTranslation() const
+const SVector& SEntity::GetWorldTranslation() const
 {
-    m_worldTransform.GetTranslation();
+    return m_worldTransform.GetTranslation();
 }
 
 bool SEntity::SetWorldScale(const SVector& scale)
@@ -130,12 +130,12 @@ bool SEntity::SetRelativeTransform(const STransform& transform)
     return true;
 }
 
-inline const SVector& SEntity::GetRelativeScale() const
+const SVector& SEntity::GetRelativeScale() const
 {
     return m_relativeTransform.GetScale();
 }
 
-inline const SQuaternion& SEntity::GetRelativeRotation() const
+const SQuaternion& SEntity::GetRelativeRotation() const
 {
     return m_relativeTransform.GetRotation();
 }
@@ -145,7 +145,7 @@ SEulerRotator SEntity::GetRelativeEulerRotation() const
     return m_relativeTransform.GetEulerRotation();
 }
 
-inline const SVector& SEntity::GetRelativeTranslation() const
+const SVector& SEntity::GetRelativeTranslation() const
 {
     return m_relativeTransform.GetTranslation();
 }

@@ -21,7 +21,11 @@ SVkMaterialConnector::SVkMaterialConnector()
 
 SVkMaterialConnector::~SVkMaterialConnector()
 {
-    SPTR_SAFE_DELETE(Pipeline);
-    SPTR_SAFE_DELETE(Descriptor);
+    SPTR_SAFE_DELETE(StaticDescriptor);
+    SPTR_SAFE_DELETE(StaticPipeline);
+
+    SPTR_SAFE_DELETE(AnimDescriptor);
+    SPTR_SAFE_DELETE(AnimPipeline);
+
     MaterialHandle.Clear();
 }

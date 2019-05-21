@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConvHeader.h"
+#include "ConvSkin.h"
 
 
 class ConvMeshImporter
@@ -46,7 +47,7 @@ private:
         const FbxVector4& tan,
         const FbxVector2& uv,
         const FbxVector2& uv2,
-        const ConvSkin* skin);
+        const ConvSkin& skin);
 
     FbxColor GetVertCol(
         FbxMesh* fbxMesh,
@@ -80,7 +81,7 @@ private:
         int polyIndex,
         int polySubIndex) const;
 
-    ConvSkinSPtr GetSkin(
+    ConvSkin GetSkin(
         FbxMesh* fbxMesh,
         FbxSkeleton* parentSkeleton,
         EditSkinMap& editSkinMap,

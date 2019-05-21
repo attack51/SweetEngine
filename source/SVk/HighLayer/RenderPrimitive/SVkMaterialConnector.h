@@ -18,6 +18,9 @@ public:
     ~SVkMaterialConnector();
 
     SAssetHandle<SVkMaterial>           MaterialHandle = {};
-    SVkGraphicsDescriptorSPtr           Descriptor  = nullptr;
-    SVkGraphicsPipelineSPtr             Pipeline    = nullptr;
+    SVkGraphicsDescriptorSPtr           StaticDescriptor  = nullptr;
+    SVkGraphicsPipelineSPtr             StaticPipeline    = nullptr;
+
+    SVkGraphicsDescriptorSPtr           AnimDescriptor = nullptr;
+    SVkGraphicsPipelineSPtr             AnimPipeline = nullptr;
 };

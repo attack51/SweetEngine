@@ -11,10 +11,19 @@ class SVkStorageBuffer : public SVkBuffer
 {
     // Begin public funtions
 public:
-    SVkStorageBuffer(const SVkDevice* device, uint32_t bufferSize, bool deviceLocal);
+    SVkStorageBuffer(
+        const SVkDevice* device, 
+        uint32_t bufferSize, 
+        bool deviceLocal, 
+        bool transferTarget=false);
+
     virtual ~SVkStorageBuffer() override;
 
-    void CmdBind(const SVkCommandBuffer* commandBuffer);
+    virtual size_t GetMinBufferOffset() const override;
+
+    void Open();
+    void Copy(const void* pSrcData, size_t offset, size_t size);
+    void Close();
 
     // ~End public funtions
 
@@ -24,6 +33,8 @@ private:
 
     // Begin private fields
 private:
+    vector<VkMappedMemoryRange> m_mappedRanges = {};
+    uint8_t*                    m_pData = nullptr;
 
     // ~End private fields
 };

@@ -47,3 +47,7 @@ typedef typename std::wifstream SIfStream;
 //u8 ->
 #define U8StrToCStr(in) utf8_string(in)
 #define U8StrToSStr(in) utf8_wstring(in)
+
+static CString EmptyCString = CText("");
+static U8String EmptyU8String = U8Text("");
+static SString EmptySString = SText("");

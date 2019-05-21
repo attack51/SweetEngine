@@ -1,31 +1,40 @@
 //General Include
 #include "General/Asset/SAssetManager.h"
+#include "General/Asset/SAssetHandle.h"
 
 #include "General/Entity/SCamera.h"
-
 
 //SVk Include
 #include "SVk/SVkInclude.h"
 
 #include "SVk/HighLayer/SVkCanvas.h"
+
+#include "SVk/HighLayer/Renderer/SVkRHC.h"
+#include "SVk/HighLayer/Renderer/SVkCrowdAnimMeshRenderer.h"
+#include "SVk/HighLayer/Renderer/SVkStaticMeshRenderer.h"
+
 #include "SVk/HighLayer/RenderPrimitive/SVkMesh.h"
-#include "SVk/HighLayer/RenderPrimitive/SVkMeshLoadParam.h"
-
-#include "SVk/HighLayer/RenderPrimitive/SVkSkeleton.h"
-#include "SVk/HighLayer/RenderPrimitive/SVkSkeletonLoadParam.h"
-
-#include "SVk/HighLayer/RenderPrimitive/SVkAnim.h"
-#include "SVk/HighLayer/RenderPrimitive/SVkAnimLoadParam.h"
-
-#include "SVk/HighLayer/RenderPrimitive/SVkMeshEntity.h"
+#include "SVk/HighLayer/RenderPrimitive/SVkMaterialConnector.h"
 
 #include "SVk/LowLayer/Sync/SVkSemaphores.h"
+
 #include "SVk/LowLayer/Command/SVkCommandPool.h"
 #include "SVk/LowLayer/Command/SVkCommandBuffers.h"
 #include "SVk/LowLayer/Command/SVkCommandBuffer.h"
+
 #include "SVk/LowLayer/Pipeline/SVkPipelineCache.h"
+#include "SVk/LowLayer/Pipeline/SVkComputePipeline.h"
+#include "SVk/LowLayer/Pipeline/SVkGraphicsPipeline.h"
+
 #include "SVk/LowLayer/Descriptor/SVkDescriptorPool.h"
+#include "SVk/LowLayer/Descriptor/SVkDescriptor.h"
+#include "SVk/LowLayer/Descriptor/SVkGraphicsDescriptor.h"
+#include "SVk/LowLayer/Descriptor/SVkComputeDescriptor.h"
+
 #include "SVk/LowLayer/Buffer/SVkUniformBuffer.h"
+#include "SVk/LowLayer/Buffer/SVkVertexBuffer.h"
+#include "SVk/LowLayer/Buffer/SVkIndexBuffer.h"
+#include "SVk/LowLayer/Buffer/SVkStorageBuffer.h"
 
 //Platform Include
 #include "Platform/SPlatformWindow.h"
@@ -37,11 +46,13 @@
 //Header Include
 #include "SVkRenderer.h"
 
-
 using namespace std::placeholders;
 
 
-SVkRenderer::SVkRenderer()
+SVkRenderer::SVkRenderer(
+    SCamera* camera, 
+    SInputState* inputState,
+    SAssetManager* assetManager) : SRendererInterface()
 {
     m_instance = SVkInstanceUPtr(new SVkInstance());
     m_gpus = make_unique<SVkGPUs>(m_instance.get());
@@ -58,17 +69,29 @@ SVkRenderer::SVkRenderer()
     m_pipelineCache = make_unique<SVkPipelineCache>(GetDevice(0));
     m_descriptorPool = make_unique<SVkDescriptorPool>(GetDevice(0));
 
-    m_assetManager = make_unique<SAssetManager>();
+    m_camera = camera;
+    m_inputState = inputState;
+
+    m_staticMeshRenderer = make_unique<SVkStaticMeshRenderer>(GetDevice(0));
+
+    m_manyCrowdAnimMeshRenderer = make_unique<SVkManyCrowdAnimMeshRenderer>(
+        GetDevice(0),
+        assetManager,
+        m_pipelineCache.get(),
+        m_descriptorPool.get());
 }
 
 SVkRenderer::~SVkRenderer()
 {
     QueueWaitIdle();
 
-    m_entities.clear();
-    UPTR_SAFE_DELETE(m_pipelineCache);
+    ClearRHC();
 
-    UPTR_SAFE_DELETE(m_assetManager);
+    UPTR_SAFE_DELETE(m_staticMeshRenderer);
+    UPTR_SAFE_DELETE(m_manyCrowdAnimMeshRenderer);
+
+    UPTR_SAFE_DELETE(m_pipelineCache);
+    UPTR_SAFE_DELETE(m_descriptorPool);
 
     UPTR_SAFE_DELETE(m_mainCanvas);
     UPTR_SAFE_DELETE(m_mainWindow);
@@ -84,53 +107,11 @@ void SVkRenderer::OpenMainWindow(uint32_t sizeX, uint32_t sizeY, const CString& 
     m_mainCanvas = std::move(CreateCanvas(m_mainWindow.get()));
 
     m_mainWindow->SetResizeDelegate(bind(&SVkRenderer::OnResize, this, _1, _2));
-
-    //mesh asset
-    SVkMeshLoadParam meshLoadParam(
-        CText("../../resource/mesh/eri/Eri_sweather.jme"),
-        GetDevice(0),
-        m_mainCanvas->GetVkRenderPass(),
-        m_pipelineCache.get(),
-        m_descriptorPool.get(),
-        m_assetManager.get());
-
-    SAssetHandle<SVkMesh> meshHandle = m_assetManager->GetAssetHandle<SVkMesh>(meshLoadParam);
-
-    //skeleton asset
-    SVkSkeletonLoadParam skeletonLoadParam(CText("../../resource/mesh/eri/Eri_sweather.jsk"), m_assetManager.get());
-    SAssetHandle<SVkSkeleton> skeletonHandle = m_assetManager->GetAssetHandle<SVkSkeleton>(skeletonLoadParam);
-
-    //anim asset
-    SVkAnimLoadParam animLoadParam(CText("../../resource/mesh/eri/Anim@Run.jan"), m_assetManager.get());
-    SAssetHandle<SVkAnim> animHandle = m_assetManager->GetAssetHandle<SVkAnim>(animLoadParam);
-
-    SVkMeshEntitySPtr meshEntity = make_shared<SVkMeshEntity>(
-        GetDevice(0),
-        m_mainCanvas->GetVkRenderPass(),
-        m_pipelineCache.get(),
-        m_descriptorPool.get(),
-        m_assetManager.get(),
-        meshHandle,
-        skeletonHandle,
-        animHandle);
-
-    m_entities.push_back(meshEntity);
-
-    //camera
-    SCameraSPtr camera = make_shared<SCamera>();
-    camera->SetAspect(sizeX / (float)sizeY);
-    camera->SetNear(1.0f);
-    camera->SetFar(100.0f);
-    camera->SetFov(45.0f);
-    camera->SetWorldTranslation(SVector(0.0f, -20.0f, 5.0f));
-
-    m_entities.push_back(camera);
-    m_camera = camera;
 }
 
 SPlatformWindowUPtr SVkRenderer::OpenWindow(uint32_t sizeX, uint32_t sizeY, const CString& name)
 {
-    return std::move(make_unique<SPlatformWindow>(sizeX, sizeY, name));
+    return std::move(make_unique<SPlatformWindow>(sizeX, sizeY, name, m_inputState));
 }
 
 SVkCanvasUPtr SVkRenderer::CreateCanvas(const SPlatformWindow* window)
@@ -165,38 +146,37 @@ void SVkRenderer::QueueWaitIdle()
 
 void SVkRenderer::OnResize(uint32_t width, uint32_t height)
 {
+    if (width < 1) width = 1;
+    if (height < 1) height = 1;
+
     if (m_mainCanvas)
     {
         m_mainCanvas->Resize(width, height);
     }
 
-    if (m_camera)
+    for_each(m_eventObservers.begin(), m_eventObservers.end(),
+        [width, height](SRendererEventObserver*observer)
     {
-        m_camera->SetAspect(width / (float)height);
-    }
+        observer->OnResize(width, height);
+    });
 }
 
-bool SVkRenderer::UpdateWindows(const SVector4& clearColor, float deltaTime)
+bool SVkRenderer::Draw(const SVector4& clearColor)
 {
     if (m_mainWindow == nullptr) return true;
 
+    m_manyCrowdAnimMeshRenderer->ComputeVertex();
+
     if (m_mainWindow->Update())
     {
-        //update
-        for (auto& entity : m_entities)
-        {
-            entity->Update(deltaTime);
-        }
-
         //draw
         m_mainCanvas->BeginPainting(clearColor);
         {
-            for (auto& entity : m_entities)
-            {
-                entity->Draw(&(*m_camera));
-            }
+            m_staticMeshRenderer->Paint();
+            m_manyCrowdAnimMeshRenderer->Paint();
         }
         m_mainCanvas->EndPainting();
+        ClearRHC();
 
         return true;
     }
@@ -244,4 +224,73 @@ const SVkDevice* SVkRenderer::GetDevice(int index, const VkQueueFlagBits queueTy
     }
 
     return nullptr;
+}
+
+SVkCanvas* SVkRenderer::GetCanvas() const
+{
+    return m_mainCanvas.get();
+}
+
+SVkPipelineCache* SVkRenderer::GetPipelineCache() const
+{
+    return m_pipelineCache.get();
+}
+
+SVkDescriptorPool* SVkRenderer::GetDescriptorPool() const
+{
+    return m_descriptorPool.get();
+}
+
+const VkRenderPass& SVkRenderer::GetVkRenderPass() const
+{
+    return m_mainCanvas->GetVkRenderPass();
+}
+
+uint32_t SVkRenderer::GetScreenSizeX() const
+{
+    return m_mainWindow->SizeX();
+}
+
+uint32_t SVkRenderer::GetScreenSizeY() const
+{
+    return m_mainWindow->SizeY();
+}
+
+void SVkRenderer::AddEventObserver(SRendererEventObserver* observer)
+{
+    auto iter = m_eventObservers.find(observer);
+    if (iter == m_eventObservers.end())
+    {
+        m_eventObservers.insert(observer);
+    }
+}
+
+void SVkRenderer::RemoveEventObserver(SRendererEventObserver* observer)
+{
+    auto iter = m_eventObservers.find(observer);
+    if (iter != m_eventObservers.end())
+    {
+        m_eventObservers.erase(iter);
+    }
+}
+
+void SVkRenderer::PushRHC(SRHCSPtr rhc)
+{
+    switch (rhc->GetRHCType())
+    {
+    case SRHC_Type::StaticMesh:
+        m_staticMeshRenderer->PushRHC(dynamic_pointer_cast<SVkStaticMeshRHC, SRHC>(rhc));
+        break;
+    case SRHC_Type::SkeletalMesh:
+        m_manyCrowdAnimMeshRenderer->PushRHC(dynamic_pointer_cast<SVkAnimMeshRHC, SRHC>(rhc));
+        break;
+    default:
+        break;
+    }
+}
+
+void SVkRenderer::ClearRHC()
+{
+    m_staticMeshRenderer->ClearRHC();
+    m_manyCrowdAnimMeshRenderer->ClearRHC();
 }

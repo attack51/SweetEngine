@@ -11,6 +11,8 @@
 
 FORWARD_DECL_SPTR(class, SAssetContainer);
 typedef std::map<CString, SAssetContainerSPtr> SAssetContainerMap;
+typedef SAssetContainerMap::iterator SAssetContainerMapIter;
+typedef std::pair<CString, SAssetContainerSPtr> SAssetContainerPair;
 
 
 class SAssetManager
@@ -19,10 +21,12 @@ public:
     SAssetManager();
     ~SAssetManager();
 
+    void ResetDeviceMemory();
+
     template<class T>
     SAssetHandle<T> GetAssetHandle(SAssetLoadParameter& loadParameter)
     {
-        SAssetContainerMap::iterator it = m_containers.find(loadParameter.FilePath());
+        SAssetContainerMapIter it = m_containers.find(loadParameter.FilePath());
         if (it != m_containers.end())
         {
             return std::move(SAssetHandle<T>(it->second));

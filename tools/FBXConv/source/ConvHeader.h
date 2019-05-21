@@ -30,7 +30,6 @@ FORWARD_DECL_SPTR(struct, ConvMesh);
 FORWARD_DECL_SPTR(struct, ConvMeshGroup);
 FORWARD_DECL_SPTR(struct, ConvSkeleton);
 FORWARD_DECL_SPTR(struct, ConvBone);
-FORWARD_DECL_SPTR(struct, ConvSkin);
 
 FORWARD_DECL_SPTR(struct, ConvAnimTransform);
 FORWARD_DECL_SPTR(struct, ConvAnimBone);

@@ -25,5 +25,6 @@
 //#include "General/Asset/SAssetManager.h"
 #include "General/Asset/SAsset.h"
 #include "General/Entity/SEntity.h"
+#include "General/Input/SInputState.h"
 
 using namespace std;

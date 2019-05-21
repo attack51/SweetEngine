@@ -14,6 +14,19 @@ struct ConvSkin
         memset(Weights, 0, sizeof(float)*SKIN_WEIGHT_COUNT);
     }
 
+    ConvSkin(const ConvSkin& other)
+    {
+        memcpy(Indices, other.Indices, sizeof(uint8_t)*SKIN_WEIGHT_COUNT);
+        memcpy(Weights, other.Weights, sizeof(float)*SKIN_WEIGHT_COUNT);
+    }
+
+    ConvSkin& operator=(const ConvSkin& other)
+    {
+        memcpy(Indices, other.Indices, sizeof(uint8_t)*SKIN_WEIGHT_COUNT);
+        memcpy(Weights, other.Weights, sizeof(float)*SKIN_WEIGHT_COUNT);
+        return *this;
+    }
+
     bool operator<(const ConvSkin& Right) const;
 };
 
