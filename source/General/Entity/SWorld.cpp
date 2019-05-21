@@ -103,13 +103,14 @@ void SWorld::CreateEntitiesForSample()
         {CText("../../resource/mesh/eri/Anim@Bye.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Cry.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Cutepose.jan")     ,true},
-        { CText("../../resource/mesh/eri/Anim@IdleB.jan")       ,false},
+        {CText("../../resource/mesh/eri/Anim@IdleB.jan")       ,false},
         {CText("../../resource/mesh/eri/Anim@Jump.jan")         ,false},
         {CText("../../resource/mesh/eri/Anim@Rei.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Run.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Walk.jan")         ,false},
         {CText("../../resource/mesh/eri/Anim@CastspellB.jan")   ,true},
         {CText("../../resource/mesh/eri/Anim@CastspellC.jan")   ,true},
+        {CText("../../resource/mesh/eri/Anim@Atk1.jan")         ,true },
     };
 
     vector<SAssetHandle<SVkAnim>> animHandles;
