@@ -45,7 +45,7 @@ spirv-tool: use text based shader files in real time instead of compiled shader 
 
 FBXConv is import tool from .fbx to json format mesh/skeleton/animation data
 
------ UPDATE [2019.05.32] -----
+----- UPDATE [2019.05.21] -----
 Crowd character gpu skinnging animation with instancing
 
 ----- UPDATE [2019.05.02] -----
