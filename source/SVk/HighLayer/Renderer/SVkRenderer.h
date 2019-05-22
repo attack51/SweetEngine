@@ -68,6 +68,7 @@ public:
     SVkPipelineCache* GetPipelineCache() const;
     SVkDescriptorPool* GetDescriptorPool() const;
     const VkRenderPass& GetVkRenderPass() const;
+    const SVkUniformBuffer* GetGeneralUB() const;
 
     uint32_t GetScreenSizeX() const;
     uint32_t GetScreenSizeY() const;
@@ -101,6 +102,7 @@ private:
 
     SVkPipelineCacheUPtr    m_pipelineCache             = nullptr;
     SVkDescriptorPoolUPtr   m_descriptorPool            = nullptr;
+    SVkUniformBufferUPtr    m_generalUB                 = nullptr;
 
     //owner ship has SWorld
     SCamera*                m_camera                    = nullptr;

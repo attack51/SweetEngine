@@ -158,7 +158,7 @@ void SVkMeshAnimInstance::UpdateAnims(float deltaTime)
         animContainer->MMs[boneIndex] = (bone.PrePoseTransform * m_hcTransforms[boneIndex] * worldTransform).GetMatrix4x3();
     }
 
-    float totalAnimTime = rewind ? totalTime + keyFrameTime : totalTime;
+    float totalAnimTime = m_rewind ? totalTime + keyFrameTime : totalTime;
     m_animTime = SMath::Freq(m_animTime + deltaTime, 0.0f, totalAnimTime);
 }
 

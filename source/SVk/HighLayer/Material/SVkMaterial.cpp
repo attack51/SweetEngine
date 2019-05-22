@@ -7,8 +7,11 @@
 //SVk Include
 #include "SVk/SVkInclude.h"
 
+#include "SVk/HighLayer/Renderer/SVkUniformData.h"
+
 #include "SVk/LowLayer/Shader/SVkShaderLoadParameter.h"
 #include "SVk/LowLayer/Texture/SVkTextureLoadParam.h"
+#include "SVk/LowLayer/Buffer/SVkUniformBuffer.h"
 
 //Header Include
 #include "SVkMaterial.h"
@@ -18,15 +21,23 @@ SVkMaterial::SVkMaterial(const SVkDevice* device, SAssetManager* assetManager, c
 {
     m_deviceRef = device;
     m_assetManager = assetManager;
+    m_alphaBlend = serializedMaterial->MaterialProperty.AlphaBlend;
 
     InitShader(serializedMaterial);
     InitTexture(serializedMaterial);
+    InitUniformBuffer(serializedMaterial);
 }
 
 SVkMaterial::~SVkMaterial()
 {
     DeInitShader();
     DeInitTexture();
+    DeInitUniformBuffer();
+}
+
+const SVkUniformBuffer* SVkMaterial::GetUB() const
+{
+    return m_UB.get();
 }
 
 void SVkMaterial::InitShader(const SSerializedMaterial* serializedMaterial)
@@ -86,6 +97,16 @@ void SVkMaterial::InitTexture(const SSerializedMaterial* serializedMaterial)
     Textures.push_back(textureHandle);
 }
 
+void SVkMaterial::InitUniformBuffer(const SSerializedMaterial* serializedMaterial)
+{
+    SMaterialUniformDataG data;
+    data.Col = serializedMaterial->MaterialProperty.Tint;
+
+    m_UB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SMaterialUniformDataG));
+    m_UB->SetBuffer(&data);
+    m_UB->BindMemory(0, sizeof(SMaterialUniformDataG));
+}
+
 void SVkMaterial::DeInitShader()
 {
     FsHandle.Clear();
@@ -95,4 +116,9 @@ void SVkMaterial::DeInitShader()
 void SVkMaterial::DeInitTexture()
 {
     Textures.clear();
+}
+
+void SVkMaterial::DeInitUniformBuffer()
+{
+    SPTR_SAFE_DELETE(m_UB);
 }

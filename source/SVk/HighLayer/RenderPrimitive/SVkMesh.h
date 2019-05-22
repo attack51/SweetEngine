@@ -31,6 +31,7 @@ FORWARD_DECL_PTR(class, SVkCommandBuffer);
 FORWARD_DECL_PTR(class, SVkDevice);
 FORWARD_DECL_PTR(class, SVkPipelineCache);
 FORWARD_DECL_PTR(class, SVkShader);
+FORWARD_DECL_PTR(struct, SStaticUniformDataG);
 
 
 //storage buffer input
@@ -61,19 +62,6 @@ struct SVkStaticVertex
     SVector2 Uv;
 };
 
-struct SAnimGraphicsUniformData
-{
-    SMatrix VP;
-    SVector Col;
-    uint32_t VertexCount;
-};
-
-struct SStaticGraphicsUniformData
-{
-    SMatrix WVP;
-    SVector Col;
-};
-
 struct SVkMeshElement
 {
     uint32_t IndexOffset;
@@ -88,7 +76,8 @@ struct SVkMeshElement
 struct SVkMeshRHA
 {
     SVkIndexBufferSPtr                  IB                      = nullptr;
-    SVkUniformBufferSPtr                UB                      = nullptr;
+    SVkUniformBufferSPtr                StaticUB                = nullptr;
+    SVkUniformBufferSPtr                AnimUB                  = nullptr;
 
     SVkVertexBufferSPtr                 StaticVB                = nullptr;
     SVkStorageBufferSPtr                SkinnedSB               = nullptr;
@@ -110,12 +99,13 @@ public:
         const VkRenderPass& renderPass,
         const SVkPipelineCache* pipelineCache,
         const SVkDescriptorPool* descriptorPool,
+        const SVkUniformBuffer* generalUB,
         SAssetManager* assetManager,
         const SSerializedMesh* serializedMesh);
 
     ~SVkMesh();
 
-    void SetBufferData(void* data);
+    void SetStaticBufferData(const SStaticUniformDataG* data);
 
     SVkMeshRHA* GetRHA() { return &m_rha; }
     vector<SVkMeshElement>& GetMeshElements() { return m_meshElements; }
@@ -135,7 +125,7 @@ private:
     void InitMaterial(const SSerializedMesh* serializedMesh);
     void InitUniformBuffer();
     void InitMaterialConnectors();
-    void InitDescriptor(const SVkDescriptorPool* descriptorPool);
+    void InitDescriptor(const SVkDescriptorPool* descriptorPool, const SVkUniformBuffer* generalUB);
     void InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCache* pipelineCache);
 
     //DeInit

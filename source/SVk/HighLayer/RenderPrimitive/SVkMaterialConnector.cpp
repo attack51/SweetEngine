@@ -5,6 +5,7 @@
 #include "SVk/SVkInclude.h"
 
 #include "SVk/HighLayer/Material/SVkMaterial.h"
+#include "SVk/HighLayer/Renderer/SVkUniformData.h"
 
 #include "SVk/LowLayer/Descriptor/SVkGraphicsDescriptor.h"
 

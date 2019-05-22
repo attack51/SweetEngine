@@ -12,6 +12,7 @@
 #include "SVk/HighLayer/Renderer/SVkRHC.h"
 #include "SVk/HighLayer/Renderer/SVkCrowdAnimMeshRenderer.h"
 #include "SVk/HighLayer/Renderer/SVkStaticMeshRenderer.h"
+#include "SVk/HighLayer/Renderer/SVkUniformData.h"
 
 #include "SVk/HighLayer/RenderPrimitive/SVkMesh.h"
 #include "SVk/HighLayer/RenderPrimitive/SVkMaterialConnector.h"
@@ -72,13 +73,16 @@ SVkRenderer::SVkRenderer(
     m_camera = camera;
     m_inputState = inputState;
 
+    m_generalUB = make_unique<SVkUniformBuffer>(GetDevice(0), sizeof(SGeneralUniformDataG));
+
     m_staticMeshRenderer = make_unique<SVkStaticMeshRenderer>(GetDevice(0));
 
     m_manyCrowdAnimMeshRenderer = make_unique<SVkManyCrowdAnimMeshRenderer>(
         GetDevice(0),
         assetManager,
         m_pipelineCache.get(),
-        m_descriptorPool.get());
+        m_descriptorPool.get(),
+        m_generalUB.get());
 }
 
 SVkRenderer::~SVkRenderer()
@@ -86,6 +90,8 @@ SVkRenderer::~SVkRenderer()
     QueueWaitIdle();
 
     ClearRHC();
+
+    UPTR_SAFE_DELETE(m_generalUB);
 
     UPTR_SAFE_DELETE(m_staticMeshRenderer);
     UPTR_SAFE_DELETE(m_manyCrowdAnimMeshRenderer);
@@ -164,6 +170,10 @@ void SVkRenderer::OnResize(uint32_t width, uint32_t height)
 bool SVkRenderer::Draw(const SVector4& clearColor)
 {
     if (m_mainWindow == nullptr) return true;
+
+    SGeneralUniformDataG generalData;
+    generalData.VP = m_camera->GetViewProjectionMatrix();
+    m_generalUB->SetBuffer(&generalData);
 
     m_manyCrowdAnimMeshRenderer->ComputeVertex();
 
@@ -244,6 +254,11 @@ SVkDescriptorPool* SVkRenderer::GetDescriptorPool() const
 const VkRenderPass& SVkRenderer::GetVkRenderPass() const
 {
     return m_mainCanvas->GetVkRenderPass();
+}
+
+const SVkUniformBuffer* SVkRenderer::GetGeneralUB() const
+{
+    return m_generalUB.get();
 }
 
 uint32_t SVkRenderer::GetScreenSizeX() const

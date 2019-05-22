@@ -1,6 +1,8 @@
 //SVk Include
 #include "SVk/SVkInclude.h"
 
+#include "SVk/LowLayer/Buffer/SVkUniformBuffer.h"
+
 //sax load
 #include "General/Json/SAX/SJsonMeshNode.h"
 #include "General/Json/SAX/SJsonLoadSaxHelper.h"
@@ -24,6 +26,7 @@ SVkMeshLoadParam::SVkMeshLoadParam(
     const VkRenderPass& renderPass,
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
+    const SVkUniformBuffer* generalUB,
     SAssetManager* assetManager)
         : SAssetLoadParameter(filePath)
 {
@@ -32,6 +35,7 @@ SVkMeshLoadParam::SVkMeshLoadParam(
     m_pipelineCache = pipelineCache;
     m_descriptorPool = descriptorPool;
     m_assetManager = assetManager;
+    m_generalUB = generalUB;
 }
 
 unique_ptr<SAsset> SVkMeshLoadParam::Create()
@@ -49,6 +53,7 @@ unique_ptr<SAsset> SVkMeshLoadParam::Create()
         m_renderPass,
         m_pipelineCache,
         m_descriptorPool,
+        m_generalUB,
         m_assetManager, 
         serializedMesh.get());
 

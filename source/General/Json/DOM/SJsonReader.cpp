@@ -168,9 +168,9 @@ SMatrix4x3 SJsonReader::ReadMatrix4x3(SJsonValue& parentVal, const U8Char* nameV
     return result;
 }
 
-SVector2 SJsonReader::ReadVector2(SJsonValue& parentVal, const U8Char* nameVal)
+SVector2 SJsonReader::ReadVector2(SJsonValue& parentVal, const U8Char* nameVal, const SVector2& defaultVal)
 {
-    if (false == parentVal.HasMember(nameVal)) return SVector2::Zero;
+    if (false == parentVal.HasMember(nameVal)) return defaultVal;
 
     SJsonValue& strVal = parentVal[nameVal];
     assert(strVal.IsString());
@@ -185,9 +185,9 @@ SVector2 SJsonReader::ReadVector2(SJsonValue& parentVal, const U8Char* nameVal)
         static_cast<float>(U8AtoF(subString[1].c_str())));
 }
 
-SVector SJsonReader::ReadVector(SJsonValue& parentVal, const U8Char* nameVal)
+SVector SJsonReader::ReadVector(SJsonValue& parentVal, const U8Char* nameVal, const SVector& defaultVal)
 {
-    if (false == parentVal.HasMember(nameVal)) return SVector::Zero;
+    if (false == parentVal.HasMember(nameVal)) return defaultVal;
 
     SJsonValue& strVal = parentVal[nameVal];
     assert(strVal.IsString());
@@ -203,9 +203,9 @@ SVector SJsonReader::ReadVector(SJsonValue& parentVal, const U8Char* nameVal)
         static_cast<float>(U8AtoF(subString[2].c_str())));
 }
 
-SVector4 SJsonReader::ReadVector4(SJsonValue& parentVal, const U8Char* nameVal)
+SVector4 SJsonReader::ReadVector4(SJsonValue& parentVal, const U8Char* nameVal, const SVector4& defaultVal)
 {
-    if (false == parentVal.HasMember(nameVal)) return SVector4::Zero;
+    if (false == parentVal.HasMember(nameVal)) return defaultVal;
 
     SJsonValue& strVal = parentVal[nameVal];
     assert(strVal.IsString());

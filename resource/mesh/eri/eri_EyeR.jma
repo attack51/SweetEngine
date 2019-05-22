@@ -6,6 +6,7 @@
   "material-property": {
     "vs-path": "../../resource/shader/Texture",
     "fs-path": "../../resource/shader/Texture",
-    "tex-name": "../../resource/texture/eri/eri_EyeR"
+    "tex-name": "../../resource/texture/eri/eri_EyeR",
+    "alpha-blend": true
   }
 }

@@ -877,14 +877,14 @@ VkFormat GetSFormatToVkFormat(SFormat format)
         return VK_FORMAT_BC1_RGBA_SRGB_BLOCK;
     //dxt3
     case SFormat::FORMAT_RGBA_DXT3_UNORM_BLOCK16:
-        return VK_FORMAT_BC3_UNORM_BLOCK;
+        return VK_FORMAT_BC2_UNORM_BLOCK;
     case SFormat::FORMAT_RGBA_DXT3_SRGB_BLOCK16:
-        return VK_FORMAT_BC3_SRGB_BLOCK;
+        return VK_FORMAT_BC2_SRGB_BLOCK;
     //dxt5
     case SFormat::FORMAT_RGBA_DXT5_UNORM_BLOCK16:
-        return VK_FORMAT_BC5_UNORM_BLOCK;
+        return VK_FORMAT_BC3_UNORM_BLOCK;
     case SFormat::FORMAT_RGBA_DXT5_SRGB_BLOCK16:
-        return VK_FORMAT_BC5_SNORM_BLOCK;
+        return VK_FORMAT_BC3_SRGB_BLOCK;
 
     default:
         return VK_FORMAT_UNDEFINED;

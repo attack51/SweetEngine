@@ -9,6 +9,8 @@
 
 #include "SVk/HighLayer/Renderer/SVkRHC.h"
 
+#include "SVk/HighLayer/Renderer/SVkUniformData.h"
+
 #include "SVk/HighLayer/RenderPrimitive/SVkMesh.h"
 #include "SVk/HighLayer/RenderPrimitive/SVkMaterialConnector.h"
 
@@ -50,10 +52,12 @@ SVkCrowdAnimMeshRenderer::SVkCrowdAnimMeshRenderer(
     SAssetManager* assetManager,
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
+    const SVkUniformBuffer* generalUB,
     const SAssetHandle<SVkShader>& csHandle)
 {
     m_deviceRef = device;
     m_assetManager = assetManager;
+    m_generalUB = generalUB;
 
     InitStorageBuffers();
     InitUniformBuffer();
@@ -96,11 +100,7 @@ void SVkCrowdAnimMeshRenderer::InitStorageBuffers()
 
 void SVkCrowdAnimMeshRenderer::InitUniformBuffer()
 {
-    SAnimComputeUniformData data;
-    data.BoneCount = 0;
-    data.VertexCount = 0;
-
-    m_csAnimInfoUB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SAnimComputeUniformData), &data);
+    m_csAnimInfoUB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SAnimUniformDataC));
 }
 
 void SVkCrowdAnimMeshRenderer::InitDescriptor(const SVkDescriptorPool* descriptorPool)
@@ -195,7 +195,7 @@ bool SVkCrowdAnimMeshRenderer::PushRHC(SVkAnimMeshRHCSPtr rhc)
 
 void SVkCrowdAnimMeshRenderer::UpdateAnimInfoUB(SVkAnimMeshRHC* rhc)
 {
-    SAnimComputeUniformData data;
+    SAnimUniformDataC data;
     data.BoneCount = rhc->GetBoneCount();
     data.VertexCount = rhc->GetVertexCount();
 
@@ -223,20 +223,23 @@ void SVkCrowdAnimMeshRenderer::UpdateGraphicsDescriptor()
 {
     SVkMeshRHA* RHA = m_meshHandle.GetAsset()->GetRHA();
 
-    vector<SVkUniformBuffer*> uniformBuffers = { RHA->UB.get() };
-    vector<SVkStorageBuffer*> storageBuffers = { m_csAnimatedVertexSB.get() };
+    const SVkUniformBuffer* animUB = RHA->AnimUB.get();
+
+    vector<const SVkStorageBuffer*> storageBuffers = { m_csAnimatedVertexSB.get() };
 
     for_each(RHA->MaterialConnectors.begin(), RHA->MaterialConnectors.end(),
-        [this, &uniformBuffers, &storageBuffers](SVkMaterialConnectorSPtr& element)
+        [this, &animUB, &storageBuffers](SVkMaterialConnectorSPtr& element)
     {
         SVkMaterial* material = element->MaterialHandle.GetAsset();
         assert(material);
 
-        vector<SVkTexture*> textures;
+        vector<const SVkTexture*> textures;
         for (uint32_t t = 0; t < material->Textures.size(); ++t)
         {
             textures.push_back(material->Textures[t].GetAsset());
         }
+
+        vector<const SVkUniformBuffer*> uniformBuffers = { m_generalUB, animUB, material->GetUB() };
 
         element->AnimDescriptor->UpdateDescriptorSets(uniformBuffers, storageBuffers, textures);
     });
@@ -297,22 +300,36 @@ void SVkCrowdAnimMeshRenderer::Paint()
     SVkMeshRHA* RHA = m_meshHandle.GetAsset()->GetRHA();
     vector<SVkMaterialConnectorSPtr>& matConnectors = RHA->MaterialConnectors;
 
-    SAnimGraphicsUniformData UniformData;
-    UniformData.VP = RHC->VP;
-    UniformData.Col = RHC->Col;
-    UniformData.VertexCount = RHC->GetVertexCount();
-
-    m_meshHandle.GetAsset()->SetBufferData(&UniformData);
-
     RHA->UnSkinnedVB->CmdBind(renderingCommandBuffer);
     RHA->IB->CmdBind(renderingCommandBuffer);
 
     vector<SVkMeshElement>& meshElements = m_meshHandle.GetAsset()->GetMeshElements();
 
+    //no alpha
     for_each(meshElements.begin(), meshElements.end(),
         [this, &RHC, &renderingCommandBuffer, &matConnectors](SVkMeshElement& drawElement)
     {
         SVkMaterialConnectorSPtr& matConnector = matConnectors[drawElement.MaterialIndex];
+        if (matConnector->MaterialHandle.GetAsset()->AlphaBlend()) return;
+
+        matConnector->AnimPipeline->CmdBind(renderingCommandBuffer, matConnector->AnimDescriptor.get());
+
+        vkCmdDrawIndexed(
+            renderingCommandBuffer->GetVkCommandBuffer(),
+            drawElement.IndexCount,
+            static_cast<uint32_t>(m_rhcs.size()),
+            drawElement.IndexOffset,
+            drawElement.VertexOffset,
+            drawElement.InstanceOffset);
+    });
+
+    //alpha
+    for_each(meshElements.begin(), meshElements.end(),
+        [this, &RHC, &renderingCommandBuffer, &matConnectors](SVkMeshElement& drawElement)
+    {
+        SVkMaterialConnectorSPtr& matConnector = matConnectors[drawElement.MaterialIndex];
+        if (!matConnector->MaterialHandle.GetAsset()->AlphaBlend()) return;
+
         matConnector->AnimPipeline->CmdBind(renderingCommandBuffer, matConnector->AnimDescriptor.get());
 
         vkCmdDrawIndexed(
@@ -332,13 +349,14 @@ SVkManyCrowdAnimMeshRenderer::SVkManyCrowdAnimMeshRenderer(
     const SVkDevice* device,
     SAssetManager* assetManager,
     const SVkPipelineCache* pipelineCache,
-    const SVkDescriptorPool* descriptorPool)
+    const SVkDescriptorPool* descriptorPool,
+    const SVkUniformBuffer* generalUB)
 {
     m_deviceRef = device;
     m_assetManager = assetManager;
 
     InitComputeShader();
-    InitPoolRenderers(device, assetManager, pipelineCache, descriptorPool);
+    InitPoolRenderers(device, assetManager, pipelineCache, descriptorPool, generalUB);
 }
 
 SVkManyCrowdAnimMeshRenderer::~SVkManyCrowdAnimMeshRenderer()
@@ -363,7 +381,8 @@ void SVkManyCrowdAnimMeshRenderer::InitPoolRenderers(
     const SVkDevice* device,
     SAssetManager* assetManager,
     const SVkPipelineCache* pipelineCache,
-    const SVkDescriptorPool* descriptorPool)
+    const SVkDescriptorPool* descriptorPool,
+    const SVkUniformBuffer* generalUB)
 {
     assert(m_csHandle.IsValid() && m_csHandle.HasAsset());
 
@@ -377,6 +396,7 @@ void SVkManyCrowdAnimMeshRenderer::InitPoolRenderers(
                 assetManager,
                 pipelineCache,
                 descriptorPool,
+                generalUB,
                 m_csHandle)
         );
 

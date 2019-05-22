@@ -95,9 +95,9 @@ void SVkGraphicsDescriptor::InitDescriptorSets()
 }
 
 void SVkGraphicsDescriptor::UpdateDescriptorSets(
-    const vector<SVkUniformBuffer*>& uniformBuffers,
-    const vector<SVkStorageBuffer*>& storageBuffers,
-    const vector<SVkTexture*>& textures)
+    const vector<const SVkUniformBuffer*>& uniformBuffers,
+    const vector<const SVkStorageBuffer*>& storageBuffers,
+    const vector<const SVkTexture*>& textures)
 {
     vector<VkWriteDescriptorSet> writes;
     writes.reserve(uniformBuffers.size() + storageBuffers.size() + textures.size());

@@ -6,6 +6,6 @@
   "material-property": {
     "vs-path": "../../resource/shader/Texture",
     "fs-path": "../../resource/shader/Texture",
-    "tex-name": "../../resource/texture/eri/Eri_face"
+    "tex-name": "../../resource/texture/eri/Eri_eyeline"
   }
 }

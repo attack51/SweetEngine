@@ -34,12 +34,7 @@ FORWARD_DECL_SPTR(class, SVkComputePipeline);
 FORWARD_DECL_SPTR(struct, SVkMMsContainer);
 
 
-struct SAnimComputeUniformData
-{
-    uint32_t BoneCount;
-    uint32_t VertexCount;
-    uint32_t AnimMatOffset;
-};
+
 
 class SVkCrowdAnimMeshRenderer
 {
@@ -49,6 +44,7 @@ public:
         SAssetManager* assetManager,
         const SVkPipelineCache* pipelineCache,
         const SVkDescriptorPool* descriptorPool,
+        const SVkUniformBuffer* generalUB,
         const SAssetHandle<SVkShader>& csHandle);
 
     ~SVkCrowdAnimMeshRenderer();
@@ -87,6 +83,7 @@ protected:
     //don't change member
     const SVkDevice*                    m_deviceRef = nullptr;
     SAssetManager*                      m_assetManager = nullptr;
+    const SVkUniformBuffer*             m_generalUB = nullptr;
 
     //todo:차후에 compute animation을 ManyCrowd에서 한번한 하도록 수정하기
     SAssetHandle<SVkShader>             m_csHandle = {};
@@ -130,7 +127,8 @@ public:
         const SVkDevice* device,
         SAssetManager* assetManager,
         const SVkPipelineCache* pipelineCache,
-        const SVkDescriptorPool* descriptorPool);
+        const SVkDescriptorPool* descriptorPool,
+        const SVkUniformBuffer* generalUB);
 
     ~SVkManyCrowdAnimMeshRenderer();
 
@@ -147,7 +145,8 @@ protected:
         const SVkDevice* device,
         SAssetManager* assetManager,
         const SVkPipelineCache* pipelineCache,
-        const SVkDescriptorPool* descriptorPool);
+        const SVkDescriptorPool* descriptorPool,
+        const SVkUniformBuffer* generalUB);
 
     void DeInitComputeShader();
     void DeInitPoolRenderers();

@@ -38,13 +38,11 @@ void SVkStaticMeshEntity::RequestDraw(SCamera* camera, SRendererInterface* rende
 {
     STransform worldTransform = GetWorldTransform();
     SMatrix World = worldTransform.GetMatrix();
-
     SMatrix VP = camera->GetViewProjectionMatrix();
     SMatrix WVP = World * VP;
 
     SVkStaticMeshRHCSPtr rhc = make_shared<SVkStaticMeshRHC>();
     rhc->WVP = WVP;
-    rhc->Col = SVector(1, 1, 1);
 
     rhc->MeshHandle = m_meshHandle;
 

@@ -54,8 +54,6 @@ void SVkAnimMeshEntity::RequestDraw(SCamera* camera, SRendererInterface* rendere
     SMatrix VP = camera->GetViewProjectionMatrix();
 
     SVkAnimMeshRHCSPtr rhc = make_shared<SVkAnimMeshRHC>();
-    rhc->VP = VP;
-    rhc->Col = SVector(1, 1, 1);
 
     rhc->MeshHandle = m_meshHandle;
     rhc->AnimMMsContainer = m_animInstance->GetAnimMMsContainer();

@@ -9,6 +9,7 @@
 
 #include "SVk/HighLayer/Material/SVkMaterialLoadParam.h"
 #include "SVk/HighLayer/RenderPrimitive/SVkMaterialConnector.h"
+#include "SVk/HighLayer/Renderer/SVkUniformData.h"
 
 #include "SVk/LowLayer/Buffer/SVkIndexBuffer.h"
 #include "SVk/LowLayer/Buffer/SVkUniformBuffer.h"
@@ -42,6 +43,7 @@ SVkMesh::SVkMesh(
     const VkRenderPass& renderPass,
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
+    const SVkUniformBuffer* generalUB,
     SAssetManager* assetManager,
     const SSerializedMesh* serializedMesh)
 {
@@ -53,7 +55,7 @@ SVkMesh::SVkMesh(
     InitMaterial(serializedMesh);
     InitUniformBuffer();
     InitMaterialConnectors();
-    InitDescriptor(descriptorPool);
+    InitDescriptor(descriptorPool, generalUB);
     InitPipeline(renderPass, pipelineCache);
 }
 
@@ -163,8 +165,13 @@ void SVkMesh::InitMaterial(const SSerializedMesh* serializedMesh)
 
 void SVkMesh::InitUniformBuffer()
 {
-    SAnimGraphicsUniformData data;
-    m_rha.UB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SAnimGraphicsUniformData), &data);
+    m_rha.StaticUB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SStaticUniformDataG));
+    m_rha.AnimUB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SAnimUniformDataG));
+
+    SAnimUniformDataG animData;
+    animData.VertexCount = GetMeshVertexCount();
+    m_rha.AnimUB->SetBuffer(&animData);
+    m_rha.AnimUB->BindMemory(0, sizeof(SAnimUniformDataG));
 }
 
 void SVkMesh::InitMaterialConnectors()
@@ -177,15 +184,16 @@ void SVkMesh::InitMaterialConnectors()
     }
 }
 
-void SVkMesh::InitDescriptor(const SVkDescriptorPool* descriptorPool)
+void SVkMesh::InitDescriptor(const SVkDescriptorPool* descriptorPool, const SVkUniformBuffer* generalUB)
 {
     bool canAnim = m_rha.SkinnedSB != nullptr;
 
-    vector<SVkUniformBuffer*> uniformBuffers = { m_rha.UB.get() };
-    vector<SVkStorageBuffer*> storageBuffers = {};//runtime assign
+    const SVkUniformBuffer* staticUB = m_rha.StaticUB.get();
+
+    vector<const SVkStorageBuffer*> storageBuffers = {};//runtime assign
 
     for_each(m_rha.MaterialConnectors.begin(), m_rha.MaterialConnectors.end(),
-        [this, &canAnim, descriptorPool, &uniformBuffers, &storageBuffers](SVkMaterialConnectorSPtr& element)
+        [this, &canAnim, descriptorPool, &generalUB, &staticUB, &storageBuffers](SVkMaterialConnectorSPtr& element)
     {
         SVkMaterial* material = element->MaterialHandle.GetAsset();
         assert(material);
@@ -195,25 +203,27 @@ void SVkMesh::InitDescriptor(const SVkDescriptorPool* descriptorPool)
             element->AnimDescriptor = make_shared<SVkGraphicsDescriptor>(
                 m_deviceRef,
                 descriptorPool,
-                1,//uniform buffer
+                3,//uniform buffer
                 1,//animated storage buffer
                 static_cast<uint32_t>(material->Textures.size()));
         }
 
-        vector<SVkTexture*> textures;
+        vector<const SVkTexture*> textures;
         for (uint32_t t = 0; t < material->Textures.size(); ++t)
         {
             textures.push_back(material->Textures[t].GetAsset());
         }
 
+        vector<const SVkUniformBuffer*> staticUBs = { generalUB, staticUB, material->GetUB() };
+
         element->StaticDescriptor = make_shared<SVkGraphicsDescriptor>(
             m_deviceRef,
             descriptorPool,
-            1,//uniform buffer
+            3,//uniform buffer
             0,//animated storage buffer
             static_cast<uint32_t>(material->Textures.size()));
 
-        element->StaticDescriptor->UpdateDescriptorSets(uniformBuffers, storageBuffers, textures);
+        element->StaticDescriptor->UpdateDescriptorSets(staticUBs, storageBuffers, textures);
     });
 }
 
@@ -230,23 +240,31 @@ void SVkMesh::InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCach
         vector<SVkShader*> shaders = { material->VsHandle.GetAsset(), material->FsHandle.GetAsset() };
 
         SBlendState blendState{};
-        blendState.BlendEnable = false;
-        //blendState.ColorBlendOp = SBlendOp::Add;
-        //blendState.AlphaBlendOp = SBlendOp::Add;
+        if (material->AlphaBlend())
+        {
+            blendState.BlendEnable = true;
 
-        //blendState.SrcColorBlendFactor = SBlendFactor::One;
-        //blendState.DestColorBlendFactor = SBlendFactor::One;
+            blendState.ColorBlendOp = SBlendOp::Add;
+            blendState.AlphaBlendOp = SBlendOp::Add;
 
-        //blendState.SrcAlphaBlendFactor = SBlendFactor::One;
-        //blendState.DestAlphaBlendFactor = SBlendFactor::Zero;
+            blendState.SrcColorBlendFactor = SBlendFactor::SrcAlpha;
+            blendState.DestColorBlendFactor = SBlendFactor::InvSrcAlpha;
 
-        //blendState.BlendLogicOpEnable = false;
-        //blendState.BlendLogicOp = SBlendLogicOp::Invert;
+            blendState.SrcAlphaBlendFactor = SBlendFactor::One;
+            blendState.DestAlphaBlendFactor = SBlendFactor::Zero;
 
-        //blendState.Constant = SVector4(1, 0, 0.5, 0.5);
+            //blendState.BlendLogicOpEnable = false;
+            //blendState.BlendLogicOp = SBlendLogicOp::Invert;
 
-        //blendState.BlendLogicOpEnable = true;
-        //blendState.BlendLogicOp = SBlendLogicOp::Nand;
+            //blendState.Constant = SVector4(1, 0, 0.5, 0.5);
+
+            //blendState.BlendLogicOpEnable = true;
+            //blendState.BlendLogicOp = SBlendLogicOp::Nand;
+        }
+        else
+        {
+            blendState.BlendEnable = false;
+        }
 
         if (canAnim)
         {
@@ -260,7 +278,7 @@ void SVkMesh::InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCach
                 SCullFace::Back,
                 STopology::TriangleList,
                 SFillMode::Fill,
-                SDepthMode::TestAndWrite,
+                material->AlphaBlend() ? SDepthMode::OnlyTest : SDepthMode::TestAndWrite,
                 SDepthOp::LessOrEqual,
                 SColorWriteFlags::SColorWrite_All,
                 blendState);
@@ -276,7 +294,7 @@ void SVkMesh::InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCach
             SCullFace::Back,
             STopology::TriangleList,
             SFillMode::Fill,
-            SDepthMode::TestAndWrite,
+            material->AlphaBlend() ? SDepthMode::OnlyTest : SDepthMode::TestAndWrite,
             SDepthOp::LessOrEqual,
             SColorWriteFlags::SColorWrite_All,
             blendState);
@@ -301,7 +319,7 @@ void SVkMesh::DeInitVertexDescription()
 
 void SVkMesh::DeInitUniformBuffer()
 {
-    SPTR_SAFE_DELETE(m_rha.UB);
+    SPTR_SAFE_DELETE(m_rha.StaticUB);
 }
 
 void SVkMesh::DeInitMaterial()
@@ -309,7 +327,7 @@ void SVkMesh::DeInitMaterial()
     m_rha.MaterialConnectors.clear();
 }
 
-void SVkMesh::SetBufferData(void* data)
+void SVkMesh::SetStaticBufferData(const SStaticUniformDataG* data)
 {
-    m_rha.UB->SetBuffer(data);
+    m_rha.StaticUB->SetBuffer(data);
 }

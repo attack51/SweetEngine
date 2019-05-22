@@ -9,6 +9,7 @@
 FORWARD_DECL_SPTR(class, SVkMaterial);
 FORWARD_DECL_SPTR(class, SVkGraphicsDescriptor);
 FORWARD_DECL_SPTR(class, SVkGraphicsPipeline);
+FORWARD_DECL_SPTR(class, SVkUniformBuffer);
 
 
 class SVkMaterialConnector
@@ -18,6 +19,7 @@ public:
     ~SVkMaterialConnector();
 
     SAssetHandle<SVkMaterial>           MaterialHandle = {};
+
     SVkGraphicsDescriptorSPtr           StaticDescriptor  = nullptr;
     SVkGraphicsPipelineSPtr             StaticPipeline    = nullptr;
 

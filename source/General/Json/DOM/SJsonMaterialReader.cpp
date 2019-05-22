@@ -18,4 +18,6 @@ void SJsonMaterialReader::ReadMaterialProperty(SJsonValue& parentVal, const U8Ch
     data->VsPath = ReadCString(materialPropertyVal, U8Text("vs-path"));
     data->FsPath = ReadCString(materialPropertyVal, U8Text("fs-path"));
     data->TexName = ReadCString(materialPropertyVal, U8Text("tex-name"));
+    data->Tint = ReadVector(materialPropertyVal, U8Text("tint"), SVector(1,1,1));
+    data->AlphaBlend = ReadBool(materialPropertyVal, U8Text("alpha-blend"));
 }

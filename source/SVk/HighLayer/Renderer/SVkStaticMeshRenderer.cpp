@@ -12,6 +12,7 @@
 #include "SVk/LowLayer/Texture/SVkTexture.h"
 
 #include "SVk/HighLayer/Renderer/SVkRHC.h"
+#include "SVk/HighLayer/Renderer/SVkUniformData.h"
 #include "SVk/HighLayer/RenderPrimitive/SVkMesh.h"
 #include "SVk/HighLayer/RenderPrimitive/SVkMaterialConnector.h"
 
@@ -53,34 +54,47 @@ void SVkStaticMeshRenderer::Paint()
     for_each(m_rhcs.begin(), m_rhcs.end(),
         [this, &renderingCommandBuffer](SVkStaticMeshRHCSPtr& RHC)
     {
-        SAssetHandle<SVkMesh> meshHandle = RHC->MeshHandle;
-        SVkMeshRHA* RHA = meshHandle.GetAsset()->GetRHA();
-        vector<SVkMaterialConnectorSPtr>& matConnectors = RHA->MaterialConnectors;
+        PaintForEach(renderingCommandBuffer, RHC.get(), false);
+    });
 
-        SStaticGraphicsUniformData data;
-        data.WVP = RHC->WVP;
-        data.Col = RHC->Col;
-        meshHandle.GetAsset()->SetBufferData(&data);
+    for_each(m_rhcs.begin(), m_rhcs.end(),
+        [this, &renderingCommandBuffer](SVkStaticMeshRHCSPtr& RHC)
+    {
+        PaintForEach(renderingCommandBuffer, RHC.get(), true);
+    });
+}
 
-        RHA->StaticVB->CmdBind(renderingCommandBuffer);
-        RHA->IB->CmdBind(renderingCommandBuffer);
+void SVkStaticMeshRenderer::PaintForEach(SVkCommandBuffer* commandBuffer, SVkStaticMeshRHC* RHC, bool drawAlphaBlend)
+{
+    SAssetHandle<SVkMesh> meshHandle = RHC->MeshHandle;
+    SVkMeshRHA* RHA = meshHandle.GetAsset()->GetRHA();
+    vector<SVkMaterialConnectorSPtr>& matConnectors = RHA->MaterialConnectors;
 
-        vector<SVkMeshElement>& meshElements = meshHandle.GetAsset()->GetMeshElements();
+    //wrong method! fix it.
+    SStaticUniformDataG data;
+    data.WVP = RHC->WVP;
 
-        for_each(meshElements.begin(), meshElements.end(),
-            [this, &RHC, &renderingCommandBuffer, &matConnectors](SVkMeshElement& drawElement)
-        {
-            auto& matConnector = matConnectors[drawElement.MaterialIndex];
+    meshHandle.GetAsset()->SetStaticBufferData(&data);
 
-            matConnector->StaticPipeline->CmdBind(renderingCommandBuffer, matConnector->StaticDescriptor.get());
+    RHA->StaticVB->CmdBind(commandBuffer);
+    RHA->IB->CmdBind(commandBuffer);
 
-            vkCmdDrawIndexed(
-                renderingCommandBuffer->GetVkCommandBuffer(),
-                drawElement.IndexCount,
-                drawElement.InstanceCount,
-                drawElement.IndexOffset,
-                drawElement.VertexOffset,
-                drawElement.InstanceOffset);
-        });
+    vector<SVkMeshElement>& meshElements = meshHandle.GetAsset()->GetMeshElements();
+
+    for_each(meshElements.begin(), meshElements.end(),
+        [this, &drawAlphaBlend, &RHC, &commandBuffer, &matConnectors](SVkMeshElement& drawElement)
+    {
+        auto& matConnector = matConnectors[drawElement.MaterialIndex];
+        if (matConnector->MaterialHandle.GetAsset()->AlphaBlend() != drawAlphaBlend) return;
+
+        matConnector->StaticPipeline->CmdBind(commandBuffer, matConnector->StaticDescriptor.get());
+
+        vkCmdDrawIndexed(
+            commandBuffer->GetVkCommandBuffer(),
+            drawElement.IndexCount,
+            drawElement.InstanceCount,
+            drawElement.IndexOffset,
+            drawElement.VertexOffset,
+            drawElement.InstanceOffset);
     });
 }

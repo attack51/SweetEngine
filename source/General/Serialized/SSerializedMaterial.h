@@ -12,6 +12,8 @@ struct SSerializedMaterialProperty
     CString VsPath;
     CString FsPath;
     CString TexName;
+    SVector Tint;
+    bool AlphaBlend;
 };
 
 struct SSerializedMaterial

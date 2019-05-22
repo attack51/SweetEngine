@@ -28,7 +28,6 @@ public:
     ~SVkStaticMeshRHC();
 
     SMatrix WVP;
-    SVector Col;
 
     SAssetHandle<SVkMesh> MeshHandle;
 
@@ -38,9 +37,6 @@ public:
 class SVkAnimMeshRHC : public SRHC
 {
 public:
-    SMatrix VP;
-    SVector Col;
-
     SAssetHandle<SVkMesh> MeshHandle;
     vector<SVkMaterialConnectorSPtr> MaterialConnectors;
     SVkMMsContainerSPtr AnimMMsContainer;

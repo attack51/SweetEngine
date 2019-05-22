@@ -51,9 +51,9 @@ protected:
 
     static SMatrix4x3 ReadMatrix4x3(SJsonValue& parentVal, const U8Char* nameVal);
 
-    static SVector2 ReadVector2(SJsonValue& parentVal, const U8Char* nameVal);
-    static SVector ReadVector(SJsonValue& parentVal, const U8Char* nameVal);
-    static SVector4 ReadVector4(SJsonValue& parentVal, const U8Char* nameVal);
+    static SVector2 ReadVector2(SJsonValue& parentVal, const U8Char* nameVal, const SVector2& defaultVal = SVector2::Zero);
+    static SVector ReadVector(SJsonValue& parentVal, const U8Char* nameVal, const SVector& defaultVal = SVector::Zero);
+    static SVector4 ReadVector4(SJsonValue& parentVal, const U8Char* nameVal, const SVector4& defaultVal = SVector4::Zero);
     static SQuaternion ReadQuaternion(SJsonValue& parentVal, const U8Char* nameVal);
 
     static void ReadVector2Array(SJsonValue& parentVal, const U8Char* nameVal, vector<SVector2>& vec);

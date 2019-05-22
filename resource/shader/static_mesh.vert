@@ -1,10 +1,17 @@
 #version 450
 
-layout (std140, binding = 0) uniform bufferVals
+//binding 0 is generalVal. no use it for this shader
+
+layout (std140, binding = 1) uniform staticVal
 {
-    mat4 mvp;
-	vec3 col;
-} myBufferVals;
+    mat4 wvp;
+} inStaticVal;
+
+layout (std140, binding = 2) uniform materialVal
+{
+    vec3 col;
+} inMaterialVal;
+
 
 layout (location = 0) in vec3 inPos;
 layout (location = 1) in vec2 inNor;
@@ -16,7 +23,7 @@ layout (location = 1) out vec3 outColor;
 void main()
 {
    outUV 		 = inUV;
-   outColor		 = myBufferVals.col;
+   outColor		 = inMaterialVal.col;
 
-   gl_Position 	 = vec4(inPos, 1) * myBufferVals.mvp;
+   gl_Position 	 = vec4(inPos, 1) * inStaticVal.wvp;
 }

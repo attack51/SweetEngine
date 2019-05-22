@@ -16,7 +16,7 @@ class SVkUniformBuffer : public SVkBuffer
 {
     // Begin public funtions
 public:
-    SVkUniformBuffer(const SVkDevice* device, size_t bufferSize, const void* pInitData=nullptr);
+    SVkUniformBuffer(const SVkDevice* device, size_t dataSize);
     virtual ~SVkUniformBuffer();
 
     void SetBuffer(const void* pSrcData);
@@ -24,10 +24,11 @@ public:
     virtual size_t GetMinBufferOffset() const override;
 
 protected:
-    void Init(size_t bufferSize, const void* pInitData);
+    void Init(size_t dataSize);
     void DeInit();
 
 protected:
     vector<VkMappedMemoryRange> m_mappedRanges   = {};
+
     uint8_t*                    m_pData         = nullptr;
 };

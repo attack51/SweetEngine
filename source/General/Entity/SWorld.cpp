@@ -89,6 +89,7 @@ void SWorld::CreateEntitiesForSample()
         m_renderer->GetVkRenderPass(),
         m_renderer->GetPipelineCache(),
         m_renderer->GetDescriptorPool(),
+        m_renderer->GetGeneralUB(),
         m_assetManager.get());
 
     SAssetHandle<SVkMesh> animMeshHandle = m_assetManager->GetAssetHandle<SVkMesh>(animMeshLoadParam);
@@ -152,6 +153,7 @@ void SWorld::CreateEntitiesForSample()
         m_renderer->GetVkRenderPass(),
         m_renderer->GetPipelineCache(),
         m_renderer->GetDescriptorPool(),
+        m_renderer->GetGeneralUB(),
         m_assetManager.get());
 
     SAssetHandle<SVkMesh> staticMeshHandle = m_assetManager->GetAssetHandle<SVkMesh>(staticMeshLoadParam);

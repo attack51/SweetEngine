@@ -36,7 +36,8 @@ public:
 private:
 // Begin private funtions
 
-   
+    void PaintForEach(SVkCommandBuffer* commandBuffer, SVkStaticMeshRHC* RHC, bool drawAlphaBlend);
+
 
 // ~End private funtions
 

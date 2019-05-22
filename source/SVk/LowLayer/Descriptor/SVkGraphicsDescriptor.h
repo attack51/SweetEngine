@@ -32,9 +32,9 @@ public:
     virtual ~SVkGraphicsDescriptor();
 
     void UpdateDescriptorSets(
-        const vector<SVkUniformBuffer*>& uniformBuffers,
-        const vector<SVkStorageBuffer*>& storageBuffers,
-        const vector<SVkTexture*>& textures);
+        const vector<const SVkUniformBuffer*>& uniformBuffers,
+        const vector<const SVkStorageBuffer*>& storageBuffers,
+        const vector<const SVkTexture*>& textures);
 
 // ~End public funtions
 
