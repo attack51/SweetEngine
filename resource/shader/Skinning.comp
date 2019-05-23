@@ -1,7 +1,9 @@
 #version 450
-layout (local_size_x = 1) in;
-//precision highp int;
-//precision highp float;
+layout (local_size_x = 128, local_size_y = 1) in;
+//ie)gl_NumWorkGroups 10 local_size 2, gl_LocalInvocationID 0~1 gl_WorkGroupID 0~5
+
+precision highp int;
+precision mediump float;
 
 struct skinnedVert
 {
@@ -36,7 +38,7 @@ layout(std140, binding = 1001) readonly buffer animMatrixRB
 	mat3x4 inAnimMats[];
 } inAnimMatrixRB;
 
-layout(std140, binding = 1002) buffer animVertWB
+layout(std140, binding = 1002) writeonly buffer animVertWB
 {
 	animatedVert outVertices[];
 } outAnimVertWB;
@@ -89,18 +91,20 @@ void Skinning(	in vec4 inPos,
 
 void main()
 {
-	uint id = gl_GlobalInvocationID.x;
-	uint originalId = id % inComputeUB.vertCount;
+	const uint originalId = gl_GlobalInvocationID.x;
+	if(originalId >= inComputeUB.vertCount) return;
 
-	uint crowdId = id / inComputeUB.vertCount;
+	uint crowdId = gl_GlobalInvocationID.y;
+
+	uint id = originalId + crowdId * gl_NumWorkGroups.x;
 	uint crowdBoneOffset = crowdId * inComputeUB.boneCount;
 
 	skinnedVert inVert = inSkinnedVertRB.inVertices[originalId];
 
-	vec4 outPos;
-	vec4 outNor;
+	vec4 outPos = inVert.pos;
+	vec4 outNor = inVert.nor;
+	
 	uvec3 bone_indices = Unpack_UIntToUVec3(inVert.packed_bone_indices) + crowdBoneOffset.xxx;
-
 	Skinning(
 			inVert.pos,
 			inVert.nor,

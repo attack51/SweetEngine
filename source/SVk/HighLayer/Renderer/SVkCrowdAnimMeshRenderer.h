@@ -34,8 +34,6 @@ FORWARD_DECL_SPTR(class, SVkComputePipeline);
 FORWARD_DECL_SPTR(struct, SVkMMsContainer);
 
 
-
-
 class SVkCrowdAnimMeshRenderer
 {
 public:

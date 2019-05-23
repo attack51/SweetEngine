@@ -1,4 +1,6 @@
 #version 450
+precision lowp int;
+precision lowp float;
 
 layout(binding = 2000) uniform sampler2D tex;
 

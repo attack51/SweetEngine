@@ -1,13 +1,15 @@
 #version 450
+precision lowp int;
+precision lowp float;
 
 //binding 0 is generalVal. no use it for this shader
 
-layout (std140, binding = 1) uniform staticVal
+layout (std140, binding = 1) readonly uniform staticVal
 {
     mat4 wvp;
 } inStaticVal;
 
-layout (std140, binding = 2) uniform materialVal
+layout (std140, binding = 2) readonly uniform materialVal
 {
     vec3 col;
 } inMaterialVal;

@@ -36,7 +36,7 @@ void SVkOptimalTexture::LoadTexture(const CString& filePath, const STextureFileT
     vector<uint32_t> mipmapOffset;
     vector<uint32_t> mipmapSize;
 
-    const uint32_t maxMipLevelCount = 14;
+    const uint32_t maxMipLevelCount = 10;
 
     if (!LoadRawImage(
         filePath, 

@@ -1,20 +1,20 @@
 #version 450
-//precision highp int;
-//precision highp float;
+precision highp int;
+precision highp float;
 
 ///////////////// uniform buffer ///////////////////////
 
-layout (std140, binding = 0) uniform generalVal
+layout (std140, binding = 0) readonly uniform generalVal
 {
     mat4 vp;
 } inGeneralVal;
 
-layout (std140, binding = 1) uniform animVal
+layout (std140, binding = 1) readonly uniform animVal
 {
 	uint vertCount;
 } inAnimVal;
 
-layout (std140, binding = 2) uniform materialVal
+layout (std140, binding = 2) readonly uniform materialVal
 {
     vec3 col;
 } inMaterialVal;

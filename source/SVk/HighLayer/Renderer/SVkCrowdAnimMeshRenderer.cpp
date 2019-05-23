@@ -188,6 +188,7 @@ bool SVkCrowdAnimMeshRenderer::PushRHC(SVkAnimMeshRHCSPtr rhc)
         //RHC group단위마다 한번만 호출
         UpdateCsDescriptor();
         UpdateGraphicsDescriptor();
+        UpdateAnimInfoUB(rhc.get());
 
         return true;
     }
@@ -264,19 +265,16 @@ void SVkCrowdAnimMeshRenderer::ComputeVertex()
     
     m_csAnimMatrixSB->Copy(m_crowdAnimMMs->MMs.data(), 0, matrixBytes);
 
-    UpdateAnimInfoUB(RHC);
-
     const SVkCommandBuffers* commandBuffers = m_deviceRef->GetCommandBuffers(SVkCommandBufferType::SVk_CommandBuffer_Compute);
-    SVkCommandBuffer* commandBuffer = commandBuffers->GetCommandBuffer(0);
-    
+    auto* commandBuffer = commandBuffers->GetCommandBuffer(0);
     auto* computeQueueInfo = m_deviceRef->GetFirstQueueInfo(VK_QUEUE_COMPUTE_BIT);
 
-    uint32_t crowdVertexCount = RHC->GetVertexCount() * static_cast<uint32_t>(m_rhcs.size());
+    uint32_t vertexCount = RHC->GetVertexCount();
+    uint32_t rhcCount = static_cast<uint32_t>(m_rhcs.size());
     commandBuffer->Begin();
     {
         m_csPipeline->CmdBind(commandBuffer, m_csDescriptor.get());
-
-        vkCmdDispatch(commandBuffer->GetVkCommandBuffer(), crowdVertexCount, 1, 1);
+        vkCmdDispatch(commandBuffer->GetVkCommandBuffer(), vertexCount, rhcCount, 1);
     }
     commandBuffer->End();
 
