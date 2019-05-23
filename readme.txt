@@ -1,4 +1,4 @@
-﻿<How to play>
+<How to play>
 1) go to SweetEngine/bin/release
 2) execute SweetEngine 0.1.1.exe
 It is built for Windows OS.
@@ -44,6 +44,9 @@ spirv-tool: use text based shader files in real time instead of compiled shader 
 6) cmake SweetEngine/tools/FBXConv build (optionable)
 
 FBXConv is import tool from .fbx to json format mesh/skeleton/animation data
+
+----- UPDATE [2019.05.23] -----
+Increase GPU skinning performance
 
 ----- UPDATE [2019.05.21] -----
 Crowd character gpu skinnging animation with instancing
