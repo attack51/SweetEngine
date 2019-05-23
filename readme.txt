@@ -19,7 +19,7 @@ It used Vulkan, a low-level graphics API.
 Rendering is also drawn in one Draw Call using Instancing.
 
 Each character has 131 number of bones and the vertex is 8000 more.
-It works with more than 250 frames from the 2nd gen i7 2600 + GTX 1070.
+It works with more than 330 frames from the 2nd gen i7 2600 + GTX 1070.
 
 The character used is unity asset store
 https://assetstore.unity.com/packages/3d/characters/humanoids/eri-82607
