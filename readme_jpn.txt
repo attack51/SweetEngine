@@ -8,17 +8,30 @@ A : camera move left
 D : camera move right
 W : camera move forward
 S : camera move backward 
+1 : game slower (minimum 0.05)
+2 : game faster (maximum 1)
+3 : toggle motion blur (default on)
 
 MOUSE LB DOWN + MOUSE MOVE : look around
  
 <何をする技術デモか？>
-アニメーション処理されている100人のキャラクターを高速でレンダリングする技術デモです。
+1)アニメーション処理されている100人のキャラクターを高速でレンダリングされています。
+100人のスキニングキャラクターアニメーション処理は、compute shaderを利用してgpuで急速に処理され、
+レンダリングもInstancingを利用して同じMaterialのMesh達を一度のDraw Callで描かれています。
+100人のアニメーションはフレームに一度のDispatch Callで処理されたいます。
+キャラクターのbone数は131個でありvertexは8000以上です。
+
+2)アニメーション処理されている100人のキャラクターにObject Motion Blurが適用されています。
+スキニングキャラクターアニメーションするとき、以前フレームのvertexを保管して、
+今のvertexと以前のvertexの位置を比較してVelocityを計算します。
+geometry shaderではVelocity方向でMeshを拡張して、
+fragment shaderではVelocity方向でBlurの処理をします。
+
+処理プロセスは
+
+
 ローレベルグラフィックスAPIであるVulkanを使用しました。
 
-100人のスキニングキャラクターアニメーション処理は、compute shaderを利用してgpuで急速に処理され、
-レンダリングもInstancingを利用して一度のDraw Callで描かれています。
-
-キャラクターのbone数は131個でありvertexは8000以上です。
 第2世代のi7 2600 + GTX1070から250フレーム以上で動作します。
 
 使用されているキャラクターは、unity asset store
