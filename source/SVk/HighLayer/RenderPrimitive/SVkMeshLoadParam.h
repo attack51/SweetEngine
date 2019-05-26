@@ -25,7 +25,8 @@ public:
     SVkMeshLoadParam(
         const CString& filePath, 
         const SVkDevice* device, 
-        const VkRenderPass& renderPass,
+        const VkRenderPass& geoRenderPass,
+        const VkRenderPass& blurRenderPass,
         const SVkPipelineCache* pipelineCache,
         const SVkDescriptorPool* descriptorPool,
         const SVkUniformBuffer* generalUB,
@@ -36,7 +37,8 @@ protected:
 
 protected:
     const SVkDevice* m_device;
-    VkRenderPass m_renderPass;
+    VkRenderPass m_geoRenderPass;
+    VkRenderPass m_blurRenderPass;
     const SVkPipelineCache* m_pipelineCache;
     const SVkDescriptorPool* m_descriptorPool;
     SAssetManager* m_assetManager;

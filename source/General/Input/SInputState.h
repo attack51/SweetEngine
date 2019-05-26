@@ -33,10 +33,18 @@ public:
 
     void SetMousePos(SVector2 mousePos);
 
+    const float& GetSpeed() const { return m_speed; }
+    void AppendSpeed(float append);
+
+    const bool& GetEnableBlur() const { return m_enableBlur; }
+    void ToggleBlur() { m_enableBlur = !m_enableBlur; }
+
 protected:
     SDiditalAxis m_digitalAxis;
 
     SVector2 m_mousePos;
     SVector2 m_mouseOffset;
 
+    float m_speed = 1.0f;
+    bool m_enableBlur = true;
 };

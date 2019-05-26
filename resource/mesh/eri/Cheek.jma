@@ -4,8 +4,8 @@
     "asset-type": "material"
   },
   "material-property": {
-    "vs-path": "../../resource/shader/Texture",
-    "fs-path": "../../resource/shader/Texture",
+    "vs-path": "../../resource/shader/skinning_mesh",
+    "fs-path": "../../resource/shader/skinning_mesh",
     "tex-name": "../../resource/texture/eri/Cheek",
     "alpha-blend": true
   }

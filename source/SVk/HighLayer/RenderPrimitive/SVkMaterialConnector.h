@@ -25,4 +25,8 @@ public:
 
     SVkGraphicsDescriptorSPtr           AnimDescriptor = nullptr;
     SVkGraphicsPipelineSPtr             AnimPipeline = nullptr;
+
+    SVkGraphicsDescriptorSPtr           AnimBlurDescriptor = nullptr;
+    SVkGraphicsPipelineSPtr             AnimBlurPipeline = nullptr;
+
 };

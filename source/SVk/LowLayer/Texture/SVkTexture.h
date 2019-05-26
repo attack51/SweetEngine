@@ -22,6 +22,11 @@ public:
     inline const SVkDeviceMemory* GetVkDeviceMemory() const { return m_deviceMemory.get(); }
     inline const size_t GetMemorySize() const { return m_deviceMemory->GetMemorySize(); }
     inline const VkImage& GetVkImage() const { return m_image; }
+    inline const VkImageView& GetVkImageView() const { return m_imageView; }
+    inline const VkSampler& GetVkSampler() const { return m_sampler; }
+    inline const VkFormat& GetVkFormat() const { return m_format; }
+    inline const uint32_t& GetWidth() const { return m_width; }
+    inline const uint32_t& GetHeight() const { return m_height; }
     inline const VkDescriptorImageInfo& GetVkDescriptorImageInfo() const { return m_imageInfo; }
 
     // ~End public funtions
@@ -33,12 +38,13 @@ protected:
 
     SVkCommandBuffer* GetTextureTransferCommandBuffer() const;
 
-    VkImageSubresourceRange CreateSubRresourceRange();
-    void InitImage(bool optimalTexture);
-    void WaitForTransfer(SVkCommandBuffer* commandBufferWrap);
-    void InitImageView(const VkImageSubresourceRange& subresourceRange);
-    void InitSampler();
+    virtual VkImageSubresourceRange CreateSubRresourceRange();
+    virtual void InitImage(bool optimalTexture);
+    virtual void InitImageView(const VkImageSubresourceRange& subresourceRange);
+    virtual void InitSampler();
     void InitDescriptorImageInfo();
+
+    void WaitForTransfer(SVkCommandBuffer* commandBufferWrap);
 
     static bool LoadRawImage(
         const CString& inFilePath,

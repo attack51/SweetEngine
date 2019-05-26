@@ -2,7 +2,6 @@
 #include "SVk/SVkInclude.h"
 
 #include "SVk/LowLayer/RenderTarget/SVkSwapchainRT.h"
-#include "SVk/LowLayer/RenderTarget/SVkDepthStencilRT.h"
 #include "SVk/LowLayer/Command/SVkCommandBuffer.h"
 
 //Platform Include
@@ -34,7 +33,6 @@ void SVkSurfaceRT::Init(uint32_t requireSwapchainImageCount)
 {
     InitSurface();
     InitSwapchainRT(requireSwapchainImageCount);
-    InitDepthStencilRT();
     InitRenderPass();
     InitFrameBuffers();
     InitSemaphores();
@@ -110,40 +108,19 @@ void SVkSurfaceRT::InitSwapchainRT(uint32_t requireSwapchainImageCount)
                                                 swapchainImageCount);
 }
 
-void SVkSurfaceRT::InitDepthStencilRT()
-{
-    m_depthStencilRT = make_unique<SVkDepthStencilRT>(m_deviceRef, m_surfaceSizeX, m_surfaceSizeY);
-}
-
 void SVkSurfaceRT::InitRenderPass()
 {
-    assert(m_depthStencilRT);
-
-    array<VkAttachmentDescription, 2> attachments{};
+    array<VkAttachmentDescription, 1> attachments{};
     attachments[0].flags = 0;
-    attachments[0].format = m_depthStencilRT->GetFormat();
+    attachments[0].format = m_surfaceFormat.format;
     attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
-    attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_STORE;
+    attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    attachments[0].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-    attachments[1].flags = 0;
-    attachments[1].format = m_surfaceFormat.format;
-    attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
-    attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    attachments[1].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-    VkAttachmentReference subpass0_depthStencilAttachment{};
-    subpass0_depthStencilAttachment.attachment = 0;
-    subpass0_depthStencilAttachment.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     std::array<VkAttachmentReference, 1> subpass0_colorAttachments{};
-    subpass0_colorAttachments[0].attachment = 1;
+    subpass0_colorAttachments[0].attachment = 0;
     subpass0_colorAttachments[0].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
     std::array<VkSubpassDescription, 1> subPasses{};
@@ -152,7 +129,7 @@ void SVkSurfaceRT::InitRenderPass()
     subPasses[0].pInputAttachments = nullptr;
     subPasses[0].colorAttachmentCount = (uint32_t)subpass0_colorAttachments.size();
     subPasses[0].pColorAttachments = subpass0_colorAttachments.data();
-    subPasses[0].pDepthStencilAttachment = &subpass0_depthStencilAttachment;
+    subPasses[0].pDepthStencilAttachment = nullptr;
     subPasses[0].preserveAttachmentCount = 0;
     subPasses[0].pPreserveAttachments = nullptr;
 
@@ -168,14 +145,13 @@ void SVkSurfaceRT::InitRenderPass()
 
 void SVkSurfaceRT::InitFrameBuffers()
 {
-    assert(m_swapchainRT && m_depthStencilRT);
+    assert(m_swapchainRT);
 
     m_frameBuffers.resize(m_swapchainRT->GetImageCount());
     for (uint32_t i = 0; i < m_swapchainRT->GetImageCount(); ++i)
     {
-        array<VkImageView, 2> attachments
+        array<VkImageView, 1> attachments
         {
-            m_depthStencilRT->GetImageView(),
             m_swapchainRT->GetImageView(i)
         };
 
@@ -202,7 +178,6 @@ void SVkSurfaceRT::DeInit()
     DeInitSemaphores();
     DeInitFrameBuffers();
     DeInitRenderPass();
-    DeInitDepthStencilRT();
     DeInitSwapchainRT();
     DeInitSurface();
 }
@@ -215,11 +190,6 @@ void SVkSurfaceRT::DeInitSurface()
 void SVkSurfaceRT::DeInitSwapchainRT()
 {
     m_swapchainRT.reset();
-}
-
-void SVkSurfaceRT::DeInitDepthStencilRT()
-{
-    m_depthStencilRT.reset();
 }
 
 void SVkSurfaceRT::DeInitRenderPass()
@@ -287,7 +257,12 @@ const VkExtent2D& SVkSurfaceRT::SurfaceSize() const
     return m_surfaceCapabilities.currentExtent;
 }
 
-void SVkSurfaceRT::BeginRender(SVkCommandBuffer* commandBuffer)
+const SVkSemaphores* SVkSurfaceRT::GetSemaphores() const
+{
+    return m_semaphores.get();
+}
+
+void SVkSurfaceRT::BeginSurface()
 {
     assert(m_deviceRef);
     assert(m_swapchainRT);
@@ -300,28 +275,19 @@ void SVkSurfaceRT::BeginRender(SVkCommandBuffer* commandBuffer)
         *m_semaphores->GetSemaphore(SVk_SurfaceSemaphoreType_PresentComplete),
         VK_NULL_HANDLE,
         &m_activeIndex));
-
-    commandBuffer->Begin();
 }
 
-void SVkSurfaceRT::EndRender(SVkCommandBuffer* commandBuffer)
+void SVkSurfaceRT::EndSurface(bool queueWaitIdle)
 {
     auto queueInfo = m_deviceRef->GetFirstQueueInfo(VkQueueFlagBits::VK_QUEUE_GRAPHICS_BIT);
 
-    commandBuffer->End();
-    commandBuffer->Submit(
-        queueInfo,
-        m_semaphores.get(), //todo:꼭 필요한지 확인
-        m_semaphores.get(), //todo:꼭 필요한지 확인
-        SVk_SurfaceSemaphoreType_PresentComplete,
-        SVk_SurfaceSemaphoreType_RenderComplete,
-        nullptr,
-        true);//todo:꼭 필요한지 확인
+    //first? last?
+    if (queueWaitIdle) ErrorCheck(vkQueueWaitIdle(queueInfo->Queue));
 
     VkResult result = VkResult::VK_RESULT_MAX_ENUM;
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-    presentInfo.waitSemaphoreCount = 1; //todo:꼭 필요한지 확인
+    presentInfo.waitSemaphoreCount = 1;
     presentInfo.pWaitSemaphores = m_semaphores->GetSemaphore(SVk_SurfaceSemaphoreType_RenderComplete);
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = &m_swapchainRT->GetSwapchain();
@@ -332,25 +298,24 @@ void SVkSurfaceRT::EndRender(SVkCommandBuffer* commandBuffer)
     ErrorCheck(result);
 }
 
-void SVkSurfaceRT::BeginRenderPass(SVkCommandBuffer* commandBuffer, const SVector4& clearColor)
+void SVkSurfaceRT::BeginRenderPass(SVkCommandBuffer* commandBuffer)
 {
     VkRect2D rect{};
     rect.offset.x = 0;
     rect.offset.y = 0;
     rect.extent = SurfaceSize();
 
-    array<VkClearValue, 2> clearValues{};
-    clearValues[0].depthStencil.depth = 1;
-    clearValues[0].depthStencil.stencil = 0;
-    memcpy(clearValues[1].color.float32, &clearColor, sizeof(SVector4));
+    SVector4 clearColor(1, 0, 0, 0);
+    array<VkClearValue, 1> clearValues{};
+    memcpy(clearValues[0].color.float32, &clearColor, sizeof(SVector4));
 
     VkRenderPassBeginInfo renderPassBeginInfo{};
     renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassBeginInfo.renderPass = m_renderPass;
     renderPassBeginInfo.framebuffer = GetActiveFramebuffer();
     renderPassBeginInfo.renderArea = rect;
-    renderPassBeginInfo.clearValueCount = (uint32_t)clearValues.size();
-    renderPassBeginInfo.pClearValues = clearValues.data();
+    renderPassBeginInfo.clearValueCount = 0;
+    renderPassBeginInfo.pClearValues = nullptr;
 
     vkCmdBeginRenderPass(commandBuffer->GetVkCommandBuffer(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 }
@@ -364,7 +329,6 @@ void SVkSurfaceRT::Resize(uint32_t width, uint32_t height)
 {
     //DeInit
     DeInitFrameBuffers();
-    m_depthStencilRT->DeInit();
     m_swapchainRT->DeInit();
 
     //Resize
@@ -376,8 +340,6 @@ void SVkSurfaceRT::Resize(uint32_t width, uint32_t height)
         m_surfaceFormat,
         m_surfaceSizeX,
         m_surfaceSizeY);
-
-    m_depthStencilRT->Init(m_surfaceSizeX, m_surfaceSizeY);
 
     InitFrameBuffers();
 }

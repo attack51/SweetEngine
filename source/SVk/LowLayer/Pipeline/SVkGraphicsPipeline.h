@@ -31,7 +31,8 @@ public:
         const SDepthMode depthMode,
         const SDepthOp depthOp,
         const SColorWriteFlags colorWriteFlags,
-        const SBlendState& blendState);
+        const SBlendState& blendState,
+        const int rtCount);
 
     virtual ~SVkGraphicsPipeline();
 
@@ -53,7 +54,8 @@ protected:
         const SDepthMode depthMode,
         const SDepthOp depthOp,
         const SColorWriteFlags colorWriteFlags,
-        const SBlendState& blendState);
+        const SBlendState& blendState,
+        const int rtCount);
 
     // ~End protected funtions
 

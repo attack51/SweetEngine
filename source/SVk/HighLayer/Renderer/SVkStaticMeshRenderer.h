@@ -27,7 +27,7 @@ public:
 
     void ClearRHC();
     bool PushRHC(SVkStaticMeshRHCSPtr rhc);
-    void Paint();
+    void Paint(SVkCommandBuffer* commandBuffer);
 
     uint32_t GetNumRHC() const { return static_cast<uint32_t>(m_rhcs.size()); }
 

@@ -23,19 +23,17 @@ public:
     
     void Submit(
         const SVkQueueInfo* queueInfo,
-        const SVkSemaphores* waitSemaphores,
-        const SVkSemaphores* signalSemaphores,
-        int waitSemaphoreIndex,
-        int signalSemaphoreIndex,
+        const VkSemaphores& waitSemaphores,
+        const VkSemaphores& signalSemaphores,
         const SVkFence* fence = nullptr,
-        bool waitIdle = true);
+        bool waitIdle = false);
 
     void SubmitMulti(
         const SVkQueueInfo* queueInfo,
         const SVkSemaphores* waitSemaphores,
         const SVkSemaphores* signalSemaphores,
         const SVkFence* fence,
-        bool waitIdle = true);
+        bool waitIdle = false);
 
     // ~End public funtions
     

@@ -41,7 +41,7 @@ void SVkGraphicsDescriptor::InitDescriptorSetLayouts(
         layoutBinding.binding = UNIFORM_BINDING_START + i;
         layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER; //descriptor가 uniform buffer(shader parameter)
         layoutBinding.descriptorCount = 1;
-        layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; //vs용 uniform buffer
+        layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
         layoutBinding.pImmutableSamplers = nullptr;
 
         layoutBindings.push_back(layoutBinding);

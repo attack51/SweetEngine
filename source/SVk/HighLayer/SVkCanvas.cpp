@@ -20,25 +20,30 @@ SVkCanvas::~SVkCanvas()
     m_surfaceRT.reset();
 }
 
-void SVkCanvas::BeginPainting(SVector4 clearColor)
+void SVkCanvas::BeginSurface()
 {
-    auto renderingCommandBuffer = m_deviceRef->GetRenderingCommandBuffer();
-    assert(renderingCommandBuffer);
-
-    m_surfaceRT->BeginRender(renderingCommandBuffer);
-    m_surfaceRT->BeginRenderPass(renderingCommandBuffer, clearColor);
-
-    vkCmdSetViewport(renderingCommandBuffer->GetVkCommandBuffer(), 0, 1, &m_viewport);
-    vkCmdSetScissor(renderingCommandBuffer->GetVkCommandBuffer(), 0, 1, &m_scissor);
+    m_surfaceRT->BeginSurface();
 }
 
-void SVkCanvas::EndPainting()
+void SVkCanvas::EndSurface(bool queueWaitIdle)
 {
-    auto renderingCommandBuffer = m_deviceRef->GetRenderingCommandBuffer();
-    assert(renderingCommandBuffer);
+    m_surfaceRT->EndSurface(queueWaitIdle);
+}
 
-    m_surfaceRT->EndRenderPass(renderingCommandBuffer);
-    m_surfaceRT->EndRender(renderingCommandBuffer);
+void SVkCanvas::BeginRenderPass(SVkCommandBuffer* commandBuffer)
+{
+    m_surfaceRT->BeginRenderPass(commandBuffer);
+}
+
+void SVkCanvas::EndRenderPass(SVkCommandBuffer* commandBuffer)
+{
+    m_surfaceRT->EndRenderPass(commandBuffer);
+}
+
+void SVkCanvas::SetViewport(SVkCommandBuffer* commandBuffer)
+{
+    vkCmdSetViewport(commandBuffer->GetVkCommandBuffer(), 0, 1, &m_viewport);
+    vkCmdSetScissor(commandBuffer->GetVkCommandBuffer(), 0, 1, &m_scissor);
 }
 
 void SVkCanvas::Init(uint32_t requireSwapchainImageCount)
@@ -75,3 +80,7 @@ void SVkCanvas::Resize(uint32_t width, uint32_t height)
     m_scissor.offset.y = 0;
 }
 
+const SVkSemaphores* SVkCanvas::GetSemaphores() const
+{
+    return m_surfaceRT->GetSemaphores();
+}

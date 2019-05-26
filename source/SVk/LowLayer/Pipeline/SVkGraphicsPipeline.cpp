@@ -6,6 +6,8 @@
 #include "SVk/LowLayer/Descriptor/SVkGraphicsDescriptor.h"
 #include "SVk/LowLayer/Etc/SVkVertexDescription.h"
 
+//C++ Include
+
 //Header Include
 #include "SVkGraphicsPipeline.h"
 
@@ -23,7 +25,8 @@ SVkGraphicsPipeline::SVkGraphicsPipeline(
     const SDepthMode depthMode,
     const SDepthOp depthOp,
     const SColorWriteFlags colorWriteFlags,
-    const SBlendState& blendState) : SVkPipeline(device)
+    const SBlendState& blendState,
+    const int rtCount) : SVkPipeline(device)
 {
     InitLayout(descriptor);
     Init(
@@ -37,7 +40,8 @@ SVkGraphicsPipeline::SVkGraphicsPipeline(
         depthMode,
         depthOp,
         colorWriteFlags,
-        blendState);
+        blendState,
+        rtCount);
 }
 
 SVkGraphicsPipeline::~SVkGraphicsPipeline()
@@ -46,6 +50,7 @@ SVkGraphicsPipeline::~SVkGraphicsPipeline()
 
 void SVkGraphicsPipeline::InitLayout(const SVkGraphicsDescriptor* descriptor)
 {
+    //todo:check how to use push constant
     const int pushConstantRangeCount = 1;
     VkPushConstantRange pushConstantRanges[pushConstantRangeCount]{};
     pushConstantRanges[0].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -57,6 +62,8 @@ void SVkGraphicsPipeline::InitLayout(const SVkGraphicsDescriptor* descriptor)
     createInfo.pNext = nullptr;
     createInfo.pushConstantRangeCount = pushConstantRangeCount;
     createInfo.pPushConstantRanges = pushConstantRanges;
+    createInfo.pushConstantRangeCount = pushConstantRangeCount;
+    createInfo.pPushConstantRanges = nullptr;
     createInfo.setLayoutCount = descriptor->GetLayoutCount();
     createInfo.pSetLayouts = descriptor->GetLayout();
 
@@ -74,10 +81,9 @@ void SVkGraphicsPipeline::Init(
     const SDepthMode depthMode,
     const SDepthOp depthOp,
     const SColorWriteFlags colorWriteFlags,
-    const SBlendState& blendState)
+    const SBlendState& blendState,
+    const int rtCount)
 {
-    const static bool includeDepth = true;
-
     VkDynamicState dynamicStateEnables[VK_DYNAMIC_STATE_RANGE_SIZE];
     memset(dynamicStateEnables, 0, sizeof(dynamicStateEnables));
     dynamicStateEnables[0] = VK_DYNAMIC_STATE_VIEWPORT;
@@ -115,33 +121,41 @@ void SVkGraphicsPipeline::Init(
     resterStateInfo.polygonMode = FillModeToVkPolygonMode(fillMode);
     resterStateInfo.cullMode = CullFaceToVkCullModeFlags(cullFace);
     resterStateInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
-    resterStateInfo.depthClampEnable = GetDepthWriteEnable(depthMode);
+    resterStateInfo.depthClampEnable = VK_FALSE;
     resterStateInfo.rasterizerDiscardEnable = VK_FALSE;
     resterStateInfo.depthBiasEnable = VK_FALSE;
     resterStateInfo.depthBiasClamp = 0;
     resterStateInfo.depthBiasSlopeFactor = 0;
     resterStateInfo.lineWidth = 1;
 
-    //color blend attachment
-    VkPipelineColorBlendAttachmentState colorBlendAttachmentStateInfo[1] = {};
-    colorBlendAttachmentStateInfo[0].colorWriteMask = colorWriteFlags;
-    colorBlendAttachmentStateInfo[0].blendEnable = BoolToVkBool32(blendState.BlendEnable);
-    colorBlendAttachmentStateInfo[0].colorBlendOp = BlendOpToVkBlendOp(blendState.ColorBlendOp);
-    colorBlendAttachmentStateInfo[0].alphaBlendOp = BlendOpToVkBlendOp(blendState.AlphaBlendOp);
-    colorBlendAttachmentStateInfo[0].srcColorBlendFactor = BlendFactorToVkBlendFactor(blendState.SrcColorBlendFactor);
-    colorBlendAttachmentStateInfo[0].dstColorBlendFactor = BlendFactorToVkBlendFactor(blendState.DestColorBlendFactor);
-    colorBlendAttachmentStateInfo[0].srcAlphaBlendFactor = BlendFactorToVkBlendFactor(blendState.SrcAlphaBlendFactor);
-    colorBlendAttachmentStateInfo[0].dstAlphaBlendFactor = BlendFactorToVkBlendFactor(blendState.DestAlphaBlendFactor);
+    //color blend attachment(must all color attachments)
+    vector<VkPipelineColorBlendAttachmentState> colorBlendAttachmentStateInfos;
+    colorBlendAttachmentStateInfos.resize(rtCount);
+    for (int i = 0; i < rtCount; ++i)
+    {
+        colorBlendAttachmentStateInfos[i] = VkPipelineColorBlendAttachmentState{};
+        colorBlendAttachmentStateInfos[i].colorWriteMask = colorWriteFlags;
+        colorBlendAttachmentStateInfos[i].blendEnable = BoolToVkBool32(blendState.BlendEnable);
+        if (blendState.BlendEnable)
+        {
+            colorBlendAttachmentStateInfos[i].colorBlendOp = BlendOpToVkBlendOp(blendState.ColorBlendOp);
+            colorBlendAttachmentStateInfos[i].alphaBlendOp = BlendOpToVkBlendOp(blendState.AlphaBlendOp);
+            colorBlendAttachmentStateInfos[i].srcColorBlendFactor = BlendFactorToVkBlendFactor(blendState.SrcColorBlendFactor);
+            colorBlendAttachmentStateInfos[i].dstColorBlendFactor = BlendFactorToVkBlendFactor(blendState.DestColorBlendFactor);
+            colorBlendAttachmentStateInfos[i].srcAlphaBlendFactor = BlendFactorToVkBlendFactor(blendState.SrcAlphaBlendFactor);
+            colorBlendAttachmentStateInfos[i].dstAlphaBlendFactor = BlendFactorToVkBlendFactor(blendState.DestAlphaBlendFactor);
+        }
+    }
 
     //color blend state info
     VkPipelineColorBlendStateCreateInfo colorBlendStateInfo{};
     colorBlendStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     colorBlendStateInfo.flags = 0;
-    colorBlendStateInfo.attachmentCount = 1;
-    colorBlendStateInfo.pAttachments = colorBlendAttachmentStateInfo;
-    colorBlendStateInfo.logicOpEnable = BoolToVkBool32(blendState.BlendLogicOpEnable);
-    colorBlendStateInfo.logicOp = BlendLogicOpToVkLogicOp(blendState.BlendLogicOp);
-    memcpy(colorBlendStateInfo.blendConstants, &blendState.Constant, sizeof(SVector4));
+    colorBlendStateInfo.attachmentCount = (uint32_t)colorBlendAttachmentStateInfos.size();
+    colorBlendStateInfo.pAttachments = colorBlendAttachmentStateInfos.data();
+    //colorBlendStateInfo.logicOpEnable = BoolToVkBool32(blendState.BlendLogicOpEnable);
+    //colorBlendStateInfo.logicOp = BlendLogicOpToVkLogicOp(blendState.BlendLogicOp);
+    //memcpy(colorBlendStateInfo.blendConstants, &blendState.Constant, sizeof(SVector4));
 
     //viewport state
     VkPipelineViewportStateCreateInfo viewportStateInfo{};
@@ -160,7 +174,7 @@ void SVkGraphicsPipeline::Init(
     depthStencilStateInfo.flags = 0;
     depthStencilStateInfo.depthTestEnable = GetDepthTestEnable(depthMode);
     depthStencilStateInfo.depthWriteEnable = GetDepthWriteEnable(depthMode);
-    depthStencilStateInfo.depthCompareOp = DepthOpToVkCompareOp(depthOp);;
+    depthStencilStateInfo.depthCompareOp = DepthOpToVkCompareOp(depthOp);
     depthStencilStateInfo.depthBoundsTestEnable = VK_FALSE;
     depthStencilStateInfo.stencilTestEnable = VK_FALSE;
     depthStencilStateInfo.back.failOp = VK_STENCIL_OP_KEEP;
@@ -182,19 +196,18 @@ void SVkGraphicsPipeline::Init(
     multisampleStatetInfo.flags = 0;
     multisampleStatetInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
-    VkGraphicsPipelineCreateInfo pipelineInfo{};
-    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-    //pipelinelayout이 있으면 꼭 설정해야함
-    pipelineInfo.layout = m_pipelineLayout;
-    pipelineInfo.basePipelineHandle = 0;
-    pipelineInfo.basePipelineIndex = 0;
-
+    //shader stages
     vector<VkPipelineShaderStageCreateInfo> shaderStages;
     for_each(shaders.begin(), shaders.end(), [&shaderStages](SVkShader* shader)
     {
         shaderStages.push_back(shader->GetVkShaderStage());
     });
 
+    VkGraphicsPipelineCreateInfo pipelineInfo{};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.layout = m_pipelineLayout;//pipelinelayout이 있으면 꼭 설정해야함
+    pipelineInfo.basePipelineIndex = -1;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
     pipelineInfo.pDynamicState = &dynamicState;
     pipelineInfo.pVertexInputState = &vertexInputStateInfo;
     pipelineInfo.pInputAssemblyState = &inputAssemblyInfo;

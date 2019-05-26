@@ -18,12 +18,18 @@ public:
     SVkCanvas(const SVkDevice* device, const SPlatformWindow* platformWindow, uint32_t requireSwapchainImageCount);
     virtual ~SVkCanvas();
 
-    void BeginPainting(SVector4 clearColor);
-    void EndPainting();
+    void BeginSurface();
+    void EndSurface(bool queueWaitIdle=true);
+
+    void BeginRenderPass(SVkCommandBuffer* commandBuffer);
+    void EndRenderPass(SVkCommandBuffer* commandBuffer);
+
+    void SetViewport(SVkCommandBuffer* commandBuffer);
 
     void Resize(uint32_t width, uint32_t height);
 
     inline const VkRenderPass& GetVkRenderPass() const { return m_surfaceRT->GetVkRenderPass(); }
+    const SVkSemaphores* GetSemaphores() const;
 
 protected:
     void Init(uint32_t requireSwapchainImageCount);

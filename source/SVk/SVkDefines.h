@@ -10,6 +10,7 @@
 #define STORAGE_BINDING_START 1000
 #define IMAGE_SAMPLER_BINDING_START 2000
 
+typedef vector<VkSemaphore> VkSemaphores;
 
 //index로 casting 접근안하면 enum class
 enum class SVkDepthStencilState : uint8_t
@@ -27,6 +28,13 @@ enum SVkSurfaceSemaphoreType : uint8_t
     SVk_SurfaceSemaphoreType_Count
 };
 
+enum SVkRTSemaphoreType : uint8_t
+{
+    SVk_RTSemaphoreType_Geometry,
+    SVk_RTSemaphoreType_PostProcess,
+    SVk_RTSemaphoreType_Count
+};
+
 enum SVkCommandBufferType : uint8_t
 {
     SVk_CommandBuffer_Graphics,
@@ -35,24 +43,26 @@ enum SVkCommandBufferType : uint8_t
     SVk_CommandBuffer_Count,
 };
 
-enum SVkGraphicsCommandBufferType : uint8_t
+enum SVkGCommandBufferType : uint8_t
 {
-    SVk_GraphicsCommandBuffer_Render,
-    SVk_GraphicsCommandBuffer_Push,
-    SVk_GraphicsCommandBuffer_Texture,
-    SVk_GraphicsCommandBuffer_Count,
+    SVk_GCommandBuffer_Geo,
+    SVk_GCommandBuffer_PP,
+    SVk_GCommandBuffer_Screen,
+    SVk_GCommandBuffer_Push,
+    SVk_GCommandBuffer_Texture,
+    SVk_GCommandBuffer_Count,
 };
 
-enum SVkComputeCommandBufferType : uint8_t
+enum SVkCCommandBufferType : uint8_t
 {
-    SVk_ComputeCommandBuffer_Physics,
-    SVk_ComputeCommandBuffer_Count,
+    SVk_CCommandBuffer_Physics,
+    SVk_CCommandBuffer_Count,
 };
 
-enum SVkTransferCommandBufferType : uint8_t
+enum SVkTCommandBufferType : uint8_t
 {
-    SVk_TransferCommandBuffer_Texture,
-    SVk_TransferCommandBuffer_Count,
+    SVk_TCommandBuffer_Texture,
+    SVk_TCommandBuffer_Count,
 };
 
 enum SVkBufferMemoryType : uint8_t

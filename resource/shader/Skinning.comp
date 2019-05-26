@@ -3,7 +3,7 @@ layout (local_size_x = 128, local_size_y = 1) in;
 //ie)gl_NumWorkGroups 10 local_size 2, gl_LocalInvocationID 0~1 gl_WorkGroupID 0~5
 
 precision highp int;
-precision mediump float;
+precision highp float;
 
 struct skinnedVert
 {
@@ -23,6 +23,7 @@ layout (std140, binding = 0) readonly uniform computeUB
 {
     uint boneCount;
 	uint vertCount;
+	uint outVertexOffset;
 } inComputeUB;
 
 //https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)
@@ -98,12 +99,12 @@ void main()
 
 	uint id = originalId + crowdId * gl_NumWorkGroups.x;
 	uint crowdBoneOffset = crowdId * inComputeUB.boneCount;
+	uint outId = id + inComputeUB.outVertexOffset;
 
 	skinnedVert inVert = inSkinnedVertRB.inVertices[originalId];
-
-	vec4 outPos = inVert.pos;
-	vec4 outNor = inVert.nor;
 	
+	vec4 outPos;
+	vec4 outNor;
 	uvec3 bone_indices = Unpack_UIntToUVec3(inVert.packed_bone_indices) + crowdBoneOffset.xxx;
 	Skinning(
 			inVert.pos,
@@ -113,6 +114,6 @@ void main()
 			outPos,
 			outNor);
 	
-	outAnimVertWB.outVertices[id].pos = outPos;
-	outAnimVertWB.outVertices[id].nor = outNor;
+	outAnimVertWB.outVertices[outId].pos = outPos;
+	outAnimVertWB.outVertices[outId].nor = outNor;
 }

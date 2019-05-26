@@ -28,6 +28,7 @@
 #include "SVk/LowLayer/Shader/SVkShader.h"
 #include "SVk/LowLayer/Shader/SVkShaderLoadParameter.h"
 #include "SVk/LowLayer/Sync/SVkFence.h"
+#include "SVk/LowLayer/Sync/SVkSemaphores.h"
 #include "SVk/LowLayer/Sync/SVkBufferBarrier.h"
 
 #include "SVk/LowLayer/Pipeline/SVkComputePipeline.h"
@@ -35,6 +36,7 @@
 #include "SVk/LowLayer/Pipeline/SVkPipelineCache.h"
 
 #include "SVk/LowLayer/Texture/SVkTexture.h"
+#include "SVk/LowLayer/Texture/SVkTextureLoadParam.h"
 
 #include "SVk/HighLayer/RenderPrimitive/SVkMMsContainer.h"
 
@@ -53,11 +55,16 @@ SVkCrowdAnimMeshRenderer::SVkCrowdAnimMeshRenderer(
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
     const SVkUniformBuffer* generalUB,
-    const SAssetHandle<SVkShader>& csHandle)
+    const SVkTexture* geoRT,
+    const SAssetHandle<SVkShader>& csHandle,
+    const SAssetHandle<SVkTexture>& noiseTexHandle)
 {
     m_deviceRef = device;
     m_assetManager = assetManager;
     m_generalUB = generalUB;
+    m_geoRT = geoRT;
+    m_csHandle = csHandle;
+    m_noiseTexHandle = noiseTexHandle;
 
     InitStorageBuffers();
     InitUniformBuffer();
@@ -77,15 +84,15 @@ SVkCrowdAnimMeshRenderer::~SVkCrowdAnimMeshRenderer()
 
 void SVkCrowdAnimMeshRenderer::InitStorageBuffers()
 {
-    const uint32_t maxCharacterCount = 200;
+    const uint32_t maxCharacterCount = 100;
     const uint32_t maxSkeletonCount = 200;
     const uint32_t maxVertexCount = 10000;
 
-    const uint32_t storageSkeletonCount = maxCharacterCount * maxCharacterCount;
+    const uint32_t storageSkeletonCount = maxCharacterCount * maxSkeletonCount;
     const uint32_t storageVertexCount = maxCharacterCount * maxVertexCount;
 
-    uint32_t animMatStorageBytes = storageSkeletonCount * sizeof(SMatrix4x3);
-    uint32_t animatedVertexStorageBytes = storageVertexCount * sizeof(SVkAnimatedVertex);
+    const uint32_t animMatStorageBytes = storageSkeletonCount * sizeof(SMatrix4x3);
+    const uint32_t animatedVertexStorageBytes = NUM_STORE_VERTEX_FRAME * storageVertexCount * sizeof(SVkAnimatedVertex);
 
     m_crowdAnimMMs = make_shared<SVkMMsContainer>(storageSkeletonCount);
     m_crowdAnimMMs->MMs.resize(storageSkeletonCount);
@@ -122,7 +129,7 @@ void SVkCrowdAnimMeshRenderer::InitPipeline(
 void SVkCrowdAnimMeshRenderer::InitFence()
 {
     m_csFence = make_unique<SVkFence>(m_deviceRef);
-    m_copyFence = make_unique<SVkFence>(m_deviceRef);
+    m_csSemaphore = make_unique<SVkSemaphores>(m_deviceRef, 1);
 }
 
 void SVkCrowdAnimMeshRenderer::DeInitStorageBuffers()
@@ -149,7 +156,7 @@ void SVkCrowdAnimMeshRenderer::DeInitPipeline()
 void SVkCrowdAnimMeshRenderer::DeInitFence()
 {
     UPTR_SAFE_DELETE(m_csFence);
-    UPTR_SAFE_DELETE(m_copyFence);
+    UPTR_SAFE_DELETE(m_csSemaphore);
 }
 
 void SVkCrowdAnimMeshRenderer::ClearMeshAsset()
@@ -159,6 +166,8 @@ void SVkCrowdAnimMeshRenderer::ClearMeshAsset()
 
 void SVkCrowdAnimMeshRenderer::ClearRHC()
 {
+    UpdateAnimatedVertOffset();
+
     m_rhcs.clear();
 }
 
@@ -188,19 +197,39 @@ bool SVkCrowdAnimMeshRenderer::PushRHC(SVkAnimMeshRHCSPtr rhc)
         //RHC group단위마다 한번만 호출
         UpdateCsDescriptor();
         UpdateGraphicsDescriptor();
-        UpdateAnimInfoUB(rhc.get());
 
         return true;
     }
 }
 
-void SVkCrowdAnimMeshRenderer::UpdateAnimInfoUB(SVkAnimMeshRHC* rhc)
+void SVkCrowdAnimMeshRenderer::UpdateUB(SVkAnimMeshRHC* rhc)
 {
-    SAnimUniformDataC data;
-    data.BoneCount = rhc->GetBoneCount();
-    data.VertexCount = rhc->GetVertexCount();
+    uint32_t nextVertexOffset = m_curVertexOffset + rhc->GetVertexCount() * (uint32_t)m_rhcs.size();
+    uint32_t nextVertexByteOffset = nextVertexOffset * sizeof(SVkAnimatedVertex);
+    if (nextVertexByteOffset >= m_csAnimatedVertexSB->GetBufferSize()) m_curVertexOffset = 0;
 
-    m_csAnimInfoUB->SetBuffer(&data);
+    SAnimUniformDataC cData;
+    cData.BoneCount = rhc->GetBoneCount();
+    cData.VertexCount = rhc->GetVertexCount();
+    cData.OutVertexOffset = m_curVertexOffset;
+    m_csAnimInfoUB->SetBuffer(&cData);
+
+    SAnimUniformDataG gData;
+    gData.VertexCount = rhc->GetVertexCount();
+    gData.PrevAnimVertOffset = m_prevVertexOffset;
+    gData.CurAnimVertOffset = m_curVertexOffset;
+    rhc->MeshHandle.GetAsset()->SetAnimBufferData(&gData);
+}
+
+void SVkCrowdAnimMeshRenderer::UpdateAnimatedVertOffset()
+{
+    if (m_rhcs.size() == 0) return;
+
+    SVkAnimMeshRHC* rhc = m_rhcs[0].get();
+
+    m_prevVertexOffset = m_curVertexOffset;
+    m_curVertexOffset += rhc->GetVertexCount() * (uint32_t)m_rhcs.size();
+    uint32_t curVertexByteOffset = m_curVertexOffset * sizeof(SVkAnimatedVertex);
 }
 
 void SVkCrowdAnimMeshRenderer::UpdateCsDescriptor()
@@ -227,22 +256,24 @@ void SVkCrowdAnimMeshRenderer::UpdateGraphicsDescriptor()
     const SVkUniformBuffer* animUB = RHA->AnimUB.get();
 
     vector<const SVkStorageBuffer*> storageBuffers = { m_csAnimatedVertexSB.get() };
+    vector<const SVkTexture*> blurTextures = { m_geoRT, m_noiseTexHandle.GetAsset()};
 
     for_each(RHA->MaterialConnectors.begin(), RHA->MaterialConnectors.end(),
-        [this, &animUB, &storageBuffers](SVkMaterialConnectorSPtr& element)
+        [this, &animUB, &blurTextures, &storageBuffers](SVkMaterialConnectorSPtr& element)
     {
         SVkMaterial* material = element->MaterialHandle.GetAsset();
         assert(material);
 
-        vector<const SVkTexture*> textures;
+        vector<const SVkTexture*> geoTextures;
         for (uint32_t t = 0; t < material->Textures.size(); ++t)
         {
-            textures.push_back(material->Textures[t].GetAsset());
+            geoTextures.push_back(material->Textures[t].GetAsset());
         }
 
         vector<const SVkUniformBuffer*> uniformBuffers = { m_generalUB, animUB, material->GetUB() };
 
-        element->AnimDescriptor->UpdateDescriptorSets(uniformBuffers, storageBuffers, textures);
+        element->AnimDescriptor->UpdateDescriptorSets(uniformBuffers, storageBuffers, geoTextures);
+        element->AnimBlurDescriptor->UpdateDescriptorSets(uniformBuffers, storageBuffers, blurTextures);
     });
 }
 
@@ -262,58 +293,63 @@ void SVkCrowdAnimMeshRenderer::ComputeVertex()
     size_t matrixBytes = sizeof(SMatrix4x3) * RHC->GetBoneCount() * m_rhcs.size();
 
     m_csFence->WaitForFence();
-    
+
+    UpdateUB(RHC);
+
     m_csAnimMatrixSB->Copy(m_crowdAnimMMs->MMs.data(), 0, matrixBytes);
 
-    const SVkCommandBuffers* commandBuffers = m_deviceRef->GetCommandBuffers(SVkCommandBufferType::SVk_CommandBuffer_Compute);
-    auto* commandBuffer = commandBuffers->GetCommandBuffer(0);
-    auto* computeQueueInfo = m_deviceRef->GetFirstQueueInfo(VK_QUEUE_COMPUTE_BIT);
+    auto* comCommandBuffer = m_deviceRef->GetCCommandBuffer(SVk_CCommandBuffer_Physics);
+    auto* comQueueInfo = m_deviceRef->GetFirstQueueInfo(VK_QUEUE_COMPUTE_BIT);
 
     uint32_t vertexCount = RHC->GetVertexCount();
     uint32_t rhcCount = static_cast<uint32_t>(m_rhcs.size());
-    commandBuffer->Begin();
+    comCommandBuffer->Begin();
     {
-        m_csPipeline->CmdBind(commandBuffer, m_csDescriptor.get());
-        vkCmdDispatch(commandBuffer->GetVkCommandBuffer(), vertexCount, rhcCount, 1);
+        m_csPipeline->CmdBind(comCommandBuffer, m_csDescriptor.get());
+        vkCmdDispatch(comCommandBuffer->GetVkCommandBuffer(), vertexCount, rhcCount, 1);
     }
-    commandBuffer->End();
+    comCommandBuffer->End();
 
-    commandBuffer->Submit(
-        computeQueueInfo,
-        nullptr,
-        nullptr,
-        0,
-        0,
+    comCommandBuffer->Submit(
+        comQueueInfo,
+        VkSemaphores{},
+        VkSemaphores{*m_csSemaphore->GetSemaphore(0)},
         m_csFence.get(),
         false);
 }
 
-void SVkCrowdAnimMeshRenderer::Paint()
+void SVkCrowdAnimMeshRenderer::Paint(SVkCommandBuffer* commandBuffer, bool isGeo)
 {
     if (m_rhcs.size() == 0) return;
-
-    auto* renderingCommandBuffer = m_deviceRef->GetRenderingCommandBuffer();
 
     SVkAnimMeshRHC* RHC = m_rhcs[0].get();
     SVkMeshRHA* RHA = m_meshHandle.GetAsset()->GetRHA();
     vector<SVkMaterialConnectorSPtr>& matConnectors = RHA->MaterialConnectors;
 
-    RHA->UnSkinnedVB->CmdBind(renderingCommandBuffer);
-    RHA->IB->CmdBind(renderingCommandBuffer);
+
+    RHA->UnSkinnedVB->CmdBind(commandBuffer);
+    RHA->IB->CmdBind(commandBuffer);
 
     vector<SVkMeshElement>& meshElements = m_meshHandle.GetAsset()->GetMeshElements();
 
     //no alpha
     for_each(meshElements.begin(), meshElements.end(),
-        [this, &RHC, &renderingCommandBuffer, &matConnectors](SVkMeshElement& drawElement)
+        [this, &isGeo, &RHC, &commandBuffer, &matConnectors](SVkMeshElement& drawElement)
     {
         SVkMaterialConnectorSPtr& matConnector = matConnectors[drawElement.MaterialIndex];
         if (matConnector->MaterialHandle.GetAsset()->AlphaBlend()) return;
 
-        matConnector->AnimPipeline->CmdBind(renderingCommandBuffer, matConnector->AnimDescriptor.get());
+        if (isGeo)
+        {
+            matConnector->AnimPipeline->CmdBind(commandBuffer, matConnector->AnimDescriptor.get());
+        }
+        else
+        {
+            matConnector->AnimBlurPipeline->CmdBind(commandBuffer, matConnector->AnimBlurDescriptor.get());
+        }
 
         vkCmdDrawIndexed(
-            renderingCommandBuffer->GetVkCommandBuffer(),
+            commandBuffer->GetVkCommandBuffer(),
             drawElement.IndexCount,
             static_cast<uint32_t>(m_rhcs.size()),
             drawElement.IndexOffset,
@@ -321,23 +357,38 @@ void SVkCrowdAnimMeshRenderer::Paint()
             drawElement.InstanceOffset);
     });
 
-    //alpha
-    for_each(meshElements.begin(), meshElements.end(),
-        [this, &RHC, &renderingCommandBuffer, &matConnectors](SVkMeshElement& drawElement)
+    if (isGeo)
     {
-        SVkMaterialConnectorSPtr& matConnector = matConnectors[drawElement.MaterialIndex];
-        if (!matConnector->MaterialHandle.GetAsset()->AlphaBlend()) return;
+        //alpha
+        for_each(meshElements.begin(), meshElements.end(),
+            [this, &isGeo, &RHC, &commandBuffer, &matConnectors](SVkMeshElement& drawElement)
+        {
+            SVkMaterialConnectorSPtr& matConnector = matConnectors[drawElement.MaterialIndex];
+            if (!matConnector->MaterialHandle.GetAsset()->AlphaBlend()) return;
 
-        matConnector->AnimPipeline->CmdBind(renderingCommandBuffer, matConnector->AnimDescriptor.get());
+            if (isGeo)
+            {
+                matConnector->AnimPipeline->CmdBind(commandBuffer, matConnector->AnimDescriptor.get());
+            }
+            else
+            {
+                matConnector->AnimBlurPipeline->CmdBind(commandBuffer, matConnector->AnimBlurDescriptor.get());
+            }
 
-        vkCmdDrawIndexed(
-            renderingCommandBuffer->GetVkCommandBuffer(),
-            drawElement.IndexCount,
-            static_cast<uint32_t>(m_rhcs.size()),
-            drawElement.IndexOffset,
-            drawElement.VertexOffset,
-            drawElement.InstanceOffset);
-    });
+            vkCmdDrawIndexed(
+                commandBuffer->GetVkCommandBuffer(),
+                drawElement.IndexCount,
+                static_cast<uint32_t>(m_rhcs.size()),
+                drawElement.IndexOffset,
+                drawElement.VertexOffset,
+                drawElement.InstanceOffset);
+        });
+    }
+}
+
+const VkSemaphore* SVkCrowdAnimMeshRenderer::GetComputeSemaphore() const
+{
+    return m_csSemaphore->GetSemaphore(0);
 }
 
 ///////////////////////////////////////////////////////////////
@@ -348,18 +399,21 @@ SVkManyCrowdAnimMeshRenderer::SVkManyCrowdAnimMeshRenderer(
     SAssetManager* assetManager,
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
-    const SVkUniformBuffer* generalUB)
+    const SVkUniformBuffer* generalUB,
+    const SVkTexture* geoRT)
 {
     m_deviceRef = device;
     m_assetManager = assetManager;
 
     InitComputeShader();
-    InitPoolRenderers(device, assetManager, pipelineCache, descriptorPool, generalUB);
+    InitNoiseTexture();
+    InitPoolRenderers(device, assetManager, pipelineCache, descriptorPool, generalUB, geoRT);
 }
 
 SVkManyCrowdAnimMeshRenderer::~SVkManyCrowdAnimMeshRenderer()
 {
     DeInitPoolRenderers();
+    DeInitNoiseTexture();
     DeInitComputeShader();
 }
 
@@ -375,17 +429,27 @@ void SVkManyCrowdAnimMeshRenderer::InitComputeShader()
     m_csHandle = m_assetManager->GetAssetHandle<SVkShader>(csParam);
 }
 
+void SVkManyCrowdAnimMeshRenderer::InitNoiseTexture()
+{
+    const CString& texturePath = CText("../../resource/texture/noise");
+
+    SVkOptimalTextureLoadParameter textureParam(texturePath, STextureFileType::Dds, m_deviceRef);
+
+    m_noiseTexHandle = m_assetManager->GetAssetHandle<SVkTexture>(textureParam);
+}
+
 void SVkManyCrowdAnimMeshRenderer::InitPoolRenderers(
     const SVkDevice* device,
     SAssetManager* assetManager,
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
-    const SVkUniformBuffer* generalUB)
+    const SVkUniformBuffer* generalUB,
+    const SVkTexture* geoRT)
 {
     assert(m_csHandle.IsValid() && m_csHandle.HasAsset());
 
-    //support for maximum 2 kinds of crowd anim mesh. because it's demo
-    const int maxCount = 2;
+    //support for maximum 1 of crowd anim mesh. because it's demo
+    const int maxCount = 1;
     for (int i = 0; i < maxCount; ++i)
     {
         m_poolRenderers.push_back(
@@ -395,7 +459,9 @@ void SVkManyCrowdAnimMeshRenderer::InitPoolRenderers(
                 pipelineCache,
                 descriptorPool,
                 generalUB,
-                m_csHandle)
+                geoRT,
+                m_csHandle,
+                m_noiseTexHandle)
         );
 
         m_unUseRenderers.push_back(m_poolRenderers[i].get());
@@ -407,6 +473,11 @@ void SVkManyCrowdAnimMeshRenderer::InitPoolRenderers(
 void SVkManyCrowdAnimMeshRenderer::DeInitComputeShader()
 {
     m_csHandle.Clear();
+}
+
+void SVkManyCrowdAnimMeshRenderer::DeInitNoiseTexture()
+{
+    m_noiseTexHandle.Clear();
 }
 
 void SVkManyCrowdAnimMeshRenderer::DeInitPoolRenderers()
@@ -486,12 +557,22 @@ void SVkManyCrowdAnimMeshRenderer::ComputeVertex()
     });
 }
 
-void SVkManyCrowdAnimMeshRenderer::Paint()
+void SVkManyCrowdAnimMeshRenderer::Paint(SVkCommandBuffer* commandBuffer, bool isGeo)
 {
     for_each(m_validRenderers.begin(), m_validRenderers.end(),
-        [](ValidRendererPair& pair)
+        [&isGeo, &commandBuffer](ValidRendererPair& pair)
     {
         auto* renderer = pair.second;
-        renderer->Paint();
+        renderer->Paint(commandBuffer, isGeo);
+    });
+}
+
+void SVkManyCrowdAnimMeshRenderer::GetComputeSemaphores(VkSemaphores& outSemaphores)
+{
+    for_each(m_validRenderers.begin(), m_validRenderers.end(),
+        [this, &outSemaphores](ValidRendererPair& pair)
+    {
+        auto* renderer = pair.second;
+        outSemaphores.push_back(*renderer->GetComputeSemaphore());
     });
 }

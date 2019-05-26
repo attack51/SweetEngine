@@ -27,6 +27,7 @@ SVkMaterialConnector::~SVkMaterialConnector()
 
     SPTR_SAFE_DELETE(AnimDescriptor);
     SPTR_SAFE_DELETE(AnimPipeline);
+    SPTR_SAFE_DELETE(AnimBlurPipeline);
 
     MaterialHandle.Clear();
 }

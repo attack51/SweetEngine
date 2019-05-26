@@ -79,6 +79,19 @@ LRESULT CALLBACK WindowsEventHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
             case 0x53:
                 window->GetInputState()->DigitalAxisPress(DIGITAL_AXIS_DOWN);
                 break;
+            //number 1
+            case 0x31:
+                window->GetInputState()->AppendSpeed(-0.1f);
+                break;
+            //number 2
+            case 0x32:
+                window->GetInputState()->AppendSpeed(0.1f);
+                break;
+            //number 3
+            case 0x33:
+                window->GetInputState()->ToggleBlur();
+                break;
+
             default:
                 break;
             }

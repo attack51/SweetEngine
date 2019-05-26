@@ -49,21 +49,19 @@ void SVkCommandBuffer::End()
 
 void SVkCommandBuffer::Submit(
         const SVkQueueInfo* queueInfo,
-        const SVkSemaphores* waitSemaphores,
-        const SVkSemaphores* signalSemaphores,
-        int waitSemaphoreIndex,
-        int signalSemaphoreIndex,
+        const VkSemaphores& waitSemaphores,
+        const VkSemaphores& signalSemaphores,
         const SVkFence* fence,
         bool waitIdle)
 {
     //sumit command buffer
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.waitSemaphoreCount = waitSemaphores ? 1 : 0;
-    submitInfo.pWaitSemaphores = waitSemaphores ? waitSemaphores->GetSemaphore(waitSemaphoreIndex) : nullptr;
+    submitInfo.waitSemaphoreCount = (uint32_t)waitSemaphores.size();
+    submitInfo.pWaitSemaphores = waitSemaphores.size()>0 ? waitSemaphores.data() : nullptr;
     submitInfo.pWaitDstStageMask = nullptr;
-    submitInfo.signalSemaphoreCount = signalSemaphores ? 1 : 0;
-    submitInfo.pSignalSemaphores = signalSemaphores ? signalSemaphores->GetSemaphore(signalSemaphoreIndex) : nullptr;
+    submitInfo.signalSemaphoreCount = (uint32_t)signalSemaphores.size();
+    submitInfo.pSignalSemaphores = signalSemaphores.size()>0 ? signalSemaphores.data() : nullptr;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &m_commandBuffer;
 

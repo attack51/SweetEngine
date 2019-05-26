@@ -98,3 +98,8 @@ void SInputState::SetMousePos(SVector2 mousePos)
     }
     m_mousePos = mousePos;
 }
+
+void SInputState::AppendSpeed(float append)
+{
+    m_speed = SMath::Clamp(m_speed + append, 0.05f, 1.0f);
+}

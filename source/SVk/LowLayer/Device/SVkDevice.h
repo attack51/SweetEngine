@@ -33,7 +33,9 @@ public:
     bool HasCommandBuffer(const SVkCommandBufferType commandBufferType) const;
     const SVkCommandBuffers* GetCommandBuffers(const SVkCommandBufferType commandBufferType) const;
 
-    SVkCommandBuffer* GetRenderingCommandBuffer() const;
+    SVkCommandBuffer* GetGCommandBuffer(SVkGCommandBufferType type) const;
+    SVkCommandBuffer* GetCCommandBuffer(SVkCCommandBufferType type) const;
+    SVkCommandBuffer* GetTCommandBuffer(SVkTCommandBufferType type) const;
 
 // ~End public funtions
 

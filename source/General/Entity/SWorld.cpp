@@ -86,7 +86,8 @@ void SWorld::CreateEntitiesForSample()
     SVkMeshLoadParam animMeshLoadParam(
         CText("../../resource/mesh/eri/Eri_sweather.jme"),
         m_renderer->GetDevice(0),
-        m_renderer->GetVkRenderPass(),
+        m_renderer->GetVkRenderPassGeoRT(),//you must pointing where to draw. this is very important!!
+        m_renderer->GetVkRenderPassPostProcessRT(),//you must pointing where to draw. this is very important!!
         m_renderer->GetPipelineCache(),
         m_renderer->GetDescriptorPool(),
         m_renderer->GetGeneralUB(),
@@ -104,14 +105,14 @@ void SWorld::CreateEntitiesForSample()
         {CText("../../resource/mesh/eri/Anim@Bye.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Cry.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Cutepose.jan")     ,true},
-        {CText("../../resource/mesh/eri/Anim@IdleB.jan")       ,false},
+        {CText("../../resource/mesh/eri/Anim@IdleB.jan")        ,false},
         {CText("../../resource/mesh/eri/Anim@Jump.jan")         ,false},
         {CText("../../resource/mesh/eri/Anim@Rei.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Run.jan")          ,false},
         {CText("../../resource/mesh/eri/Anim@Walk.jan")         ,false},
         {CText("../../resource/mesh/eri/Anim@CastspellB.jan")   ,true},
         {CText("../../resource/mesh/eri/Anim@CastspellC.jan")   ,true},
-        {CText("../../resource/mesh/eri/Anim@Atk1.jan")         ,true },
+        {CText("../../resource/mesh/eri/Anim@Atk1.jan")         ,true},
     };
 
     vector<SAssetHandle<SVkAnim>> animHandles;
@@ -150,7 +151,8 @@ void SWorld::CreateEntitiesForSample()
     SVkMeshLoadParam staticMeshLoadParam(
         CText("../../resource/mesh/floor/floor.jme"),
         m_renderer->GetDevice(0),
-        m_renderer->GetVkRenderPass(),
+        m_renderer->GetVkRenderPassGeoRT(),//you must pointing where to draw. this is very important!!
+        m_renderer->GetVkRenderPassPostProcessRT(),//you must pointing where to draw. this is very important!!
         m_renderer->GetPipelineCache(),
         m_renderer->GetDescriptorPool(),
         m_renderer->GetGeneralUB(),
@@ -188,12 +190,13 @@ bool SWorld::Loop()
     auto deltaTime = m_timer.now() - m_lastTime;
     auto deltaTimeSec = std::chrono::duration_cast<std::chrono::duration<float>>(deltaTime);
     auto deltaTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime);
-    float deltaTimeFloat = deltaTimeSec.count();
+    float deltaTimeFloat = std::min(deltaTimeSec.count(), 0.1f);
 
     m_lastTime = m_timer.now();
 
     m_controller->Update(deltaTimeFloat);
 
+    deltaTimeFloat *= m_inputState->GetSpeed();
 #ifdef _WIN32
     Concurrency::parallel_for_each
 #else
@@ -211,8 +214,9 @@ bool SWorld::Loop()
         entity->RequestDraw(m_camera.get(), m_renderer.get());
     });
 
+    m_renderer->ChangeEnableBlur(m_inputState->GetEnableBlur());
     SVector4 clearColor(0.5f, 0.5f, 0.5f, 0.5f);
-    if (m_renderer->Draw(clearColor) == false) return false;
+    if (m_renderer->Draw(clearColor,  deltaTimeFloat) == false) return false;
 
     UpdateFrameTimer();
 

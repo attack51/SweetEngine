@@ -12,7 +12,6 @@ FORWARD_DECL_PTR(class, SPlatformWindow);
 FORWARD_DECL_PTR(class, SVkCommandBuffer);
 
 FORWARD_DECL_UPTR(class, SVkSwapchainRT);
-FORWARD_DECL_UPTR(class, SVkDepthStencilRT);
 FORWARD_DECL_UPTR(class, SVkSemaphores);
 
 
@@ -22,10 +21,10 @@ public:
     SVkSurfaceRT(const SVkDevice* device, const SPlatformWindow* platformWindow, uint32_t requireSwapchainImageCount);
     virtual ~SVkSurfaceRT();
 
-    void BeginRender(SVkCommandBuffer* commandBuffer);
-    void EndRender(SVkCommandBuffer* commandBuffer);
+    void BeginSurface();
+    void EndSurface(bool queueWaitIdle);
 
-    void BeginRenderPass(SVkCommandBuffer* commandBuffer, const SVector4& clearColor);
+    void BeginRenderPass(SVkCommandBuffer* commandBuffer);
     void EndRenderPass(SVkCommandBuffer* commandBuffer);
 
     void Resize(uint32_t width, uint32_t height);
@@ -35,6 +34,7 @@ public:
     const VkExtent2D& SurfaceSize() const;
 
     inline const VkRenderPass& GetVkRenderPass() const { return m_renderPass; }
+    const SVkSemaphores* GetSemaphores() const;
 
 protected:
     void Init(uint32_t requireSwapchainImageCount);
@@ -42,7 +42,6 @@ protected:
     void InitPlatformSurface();
     void InitSurfaceSize();
     void InitSwapchainRT(uint32_t requireSwapchainImageCount);
-    void InitDepthStencilRT();
     void InitRenderPass();
     void InitFrameBuffers();
     void InitSemaphores();
@@ -50,7 +49,6 @@ protected:
     void DeInit();
     void DeInitSurface();
     void DeInitSwapchainRT();
-    void DeInitDepthStencilRT();
     void DeInitRenderPass();
     void DeInitFrameBuffers();
     void DeInitSemaphores();
@@ -75,7 +73,6 @@ protected:
     uint32_t                            m_surfaceSizeY          = 0;
 
     SVkSwapchainRTUPtr                  m_swapchainRT           = nullptr;
-    SVkDepthStencilRTUPtr               m_depthStencilRT        = nullptr;
     vector<VkFramebuffer>               m_frameBuffers          = {};
 
     SVkSemaphoresUPtr                   m_semaphores            = nullptr;

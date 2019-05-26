@@ -82,7 +82,7 @@ void SVkMeshAnimInstance::SetAnim(const SAssetHandle<SVkAnim>& animHandle, float
     if (!m_animHandle.IsValid() || !m_animHandle.HasAsset()) return;
 
     RefreshCachedBoneIndexer();
-
+    
     const float& totalTime = GetAnim()->AnimProperty.TotalTime;
     m_animTime = SMath::Freq(startTime, 0.0f, totalTime);
     m_rewind = rewind;

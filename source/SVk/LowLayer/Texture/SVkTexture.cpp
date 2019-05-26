@@ -113,7 +113,7 @@ void SVkTexture::WaitForTransfer(SVkCommandBuffer* commandBuffer)
 
     //TODO:VK_QUEUE_TRANSFER_BIT 써야하는지, VK_QUEUE_GRAPHICS_BIT 써야하는지 체크
     const SVkQueueInfo* queueInfo = m_deviceRef->GetFirstQueueInfo(VK_QUEUE_GRAPHICS_BIT);
-    commandBuffer->Submit(queueInfo, nullptr, nullptr, 0, 0, transferFence.get());
+    commandBuffer->Submit(queueInfo, VkSemaphores{}, VkSemaphores{}, transferFence.get());
     transferFence->WaitForFence(10000000);
 }
 
@@ -309,13 +309,13 @@ bool SVkTexture::IsSupportFormat(VkPhysicalDevice gpu, const VkFormat& format)
 
 SVkCommandBuffer* SVkTexture::GetTextureTransferCommandBuffer() const
 {
-    if (auto transferCommandBuffers = m_deviceRef->GetCommandBuffers(SVk_CommandBuffer_Transfer))
+    if (m_deviceRef->HasCommandBuffer(SVk_CommandBuffer_Transfer))
     {
-        return transferCommandBuffers->GetCommandBuffer(SVk_TransferCommandBuffer_Texture);
+        return m_deviceRef->GetTCommandBuffer(SVk_TCommandBuffer_Texture);
     }
-    else if (auto graphicsCommandBuffers = m_deviceRef->GetCommandBuffers(SVk_CommandBuffer_Graphics))
+    else if (m_deviceRef->HasCommandBuffer(SVk_CommandBuffer_Graphics))
     {
-        return graphicsCommandBuffers->GetCommandBuffer(SVk_GraphicsCommandBuffer_Texture);
+        return m_deviceRef->GetGCommandBuffer(SVk_GCommandBuffer_Texture);
     }
     return nullptr;
 }

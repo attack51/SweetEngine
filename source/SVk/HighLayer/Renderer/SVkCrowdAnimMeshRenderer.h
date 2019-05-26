@@ -7,6 +7,7 @@
 #include "SVk/SVkHeader.h"
 
 #include "SVk/HighLayer/RenderPrimitive/SVkMesh.h"
+#include "SVk/LowLayer/Texture/SVkTexture.h"
 
 //C++ Include
 #include <vector>
@@ -22,6 +23,7 @@ FORWARD_DECL_SPTR(class, SVkAnimMeshRHC);
 
 FORWARD_DECL_PTR(class, SCamera);
 FORWARD_DECL_PTR(class, SInputState);
+FORWARD_DECL_PTR(class, SVkTexture);
 
 FORWARD_DECL_SPTR(class, SVkShader);
 FORWARD_DECL_SPTR(class, SVkBuffer);
@@ -33,6 +35,8 @@ FORWARD_DECL_SPTR(class, SVkComputePipeline);
 
 FORWARD_DECL_SPTR(struct, SVkMMsContainer);
 
+#define NUM_STORE_VERTEX_FRAME 2
+
 
 class SVkCrowdAnimMeshRenderer
 {
@@ -43,7 +47,9 @@ public:
         const SVkPipelineCache* pipelineCache,
         const SVkDescriptorPool* descriptorPool,
         const SVkUniformBuffer* generalUB,
-        const SAssetHandle<SVkShader>& csHandle);
+        const SVkTexture* geoRT,
+        const SAssetHandle<SVkShader>& csHandle,
+        const SAssetHandle<SVkTexture>& noiseTexHandle);
 
     ~SVkCrowdAnimMeshRenderer();
 
@@ -52,11 +58,13 @@ public:
     bool PushRHC(SVkAnimMeshRHCSPtr rhc);
 
     void ComputeVertex();
-    void Paint();
+    void Paint(SVkCommandBuffer* commandBuffer, bool isGeo);
 
     bool IsValid() const { return m_meshHandle.IsValid(); }
     uint32_t GetNumRHC() const { return static_cast<uint32_t>(m_rhcs.size()); }
     const CString& GetKey() const { return  IsValid() ? m_meshHandle.GetKey() : EmptyCString; }
+
+    const VkSemaphore* GetComputeSemaphore() const;
 
 protected:
     void InitStorageBuffers();
@@ -71,21 +79,25 @@ protected:
     void DeInitPipeline();
     void DeInitFence();
 
-    void UpdateAnimInfoUB(SVkAnimMeshRHC* rhc);
+    void UpdateUB(SVkAnimMeshRHC* rhc);
     void UpdateCsDescriptor();
 
     void UpdateGraphicsDescriptor();
     void InsertCrowdAnimMMs(SVkAnimMeshRHC* rhc);
+
+    void UpdateAnimatedVertOffset();
 
 protected:
     //don't change member
     const SVkDevice*                    m_deviceRef = nullptr;
     SAssetManager*                      m_assetManager = nullptr;
     const SVkUniformBuffer*             m_generalUB = nullptr;
+    const SVkTexture*                   m_geoRT = nullptr;
 
     //todo:차후에 compute animation을 ManyCrowd에서 한번한 하도록 수정하기
     SAssetHandle<SVkShader>             m_csHandle = {};
-    
+    SAssetHandle<SVkTexture>            m_noiseTexHandle = {};
+
     //MMs cpu memory. copy from MeshAnimInstance
     SVkMMsContainerSPtr                 m_crowdAnimMMs = nullptr;//don't change but write every frame
 
@@ -101,12 +113,14 @@ protected:
     SVkComputeDescriptorSPtr            m_csDescriptor = nullptr; //don't change but update
     SVkComputePipelineSPtr              m_csPipeline = nullptr;
     SVkFenceUPtr                        m_csFence = nullptr;
-
-    SVkFenceUPtr                        m_copyFence = nullptr;
+    SVkSemaphoresUPtr                   m_csSemaphore = nullptr;
 
     //change member
     SAssetHandle<SVkMesh>               m_meshHandle;
     vector<SVkAnimMeshRHCSPtr>          m_rhcs;
+
+    uint32_t                            m_prevVertexOffset = 0;
+    uint32_t                            m_curVertexOffset = 0;
 };
 
 typedef unique_ptr<SVkCrowdAnimMeshRenderer> SVkCrowdAnimMeshRendererUPtr;
@@ -126,7 +140,8 @@ public:
         SAssetManager* assetManager,
         const SVkPipelineCache* pipelineCache,
         const SVkDescriptorPool* descriptorPool,
-        const SVkUniformBuffer* generalUB);
+        const SVkUniformBuffer* generalUB,
+        const SVkTexture* geoRT);
 
     ~SVkManyCrowdAnimMeshRenderer();
 
@@ -134,18 +149,23 @@ public:
     void PushRHC(SVkAnimMeshRHCSPtr rhc);
 
     void ComputeVertex();
-    void Paint();
+    void Paint(SVkCommandBuffer* commandBuffer, bool isGeo);
+
+    void GetComputeSemaphores(VkSemaphores& outSemaphores);
 
 protected:
     void InitComputeShader();
+    void InitNoiseTexture();
 
     void InitPoolRenderers(
         const SVkDevice* device,
         SAssetManager* assetManager,
         const SVkPipelineCache* pipelineCache,
         const SVkDescriptorPool* descriptorPool,
-        const SVkUniformBuffer* generalUB);
+        const SVkUniformBuffer* generalUB,
+        const SVkTexture* geoRT);
 
+    void DeInitNoiseTexture();
     void DeInitComputeShader();
     void DeInitPoolRenderers();
 
@@ -156,6 +176,7 @@ protected:
     SAssetManager*                              m_assetManager = nullptr;
 
     SAssetHandle<SVkShader>                     m_csHandle = {};
+    SAssetHandle<SVkTexture>                    m_noiseTexHandle = {};
     PoolRenderers                               m_poolRenderers;
 
     //UpdateDescriptor를 줄이기 위해 다음에도 가능하면 재사용

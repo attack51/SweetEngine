@@ -3,15 +3,18 @@ precision highp int;
 precision highp float;
 
 ///////////////// uniform buffer ///////////////////////
-
 layout (std140, binding = 0) readonly uniform generalVal
 {
     mat4 vp;
+	vec4 screenSize;
+	float deltaTime;
 } inGeneralVal;
 
 layout (std140, binding = 1) readonly uniform animVal
 {
 	uint vertCount;
+	uint prevVertOffset;
+	uint curVertOffset;
 } inAnimVal;
 
 layout (std140, binding = 2) readonly uniform materialVal
@@ -46,15 +49,19 @@ void main()
 {
    outUV 		 = inUV;
    outColor		 = inMaterialVal.col;
-
+   
    uint instanceId = gl_InstanceIndex;
    uint vertexId = gl_VertexIndex;
 
    uint crowdVertOffset = instanceId * inAnimVal.vertCount;
    uint vertIndex = crowdVertOffset + vertexId;
+   uint prevVertIndex = vertIndex + inAnimVal.prevVertOffset;
+   uint curVertIndex = vertIndex + inAnimVal.curVertOffset;
 
-   vec4 inPos	= inAnimVertWB.inVertices[vertIndex].pos;
-   vec4 inNor	= inAnimVertWB.inVertices[vertIndex].nor;
+   vec4 curPosWorld	= inAnimVertWB.inVertices[curVertIndex].pos;
+   vec4 curNorWorld	= inAnimVertWB.inVertices[curVertIndex].nor;
 
-   gl_Position 	 = inPos * inGeneralVal.vp;
+   vec4 curPosClip = curPosWorld * inGeneralVal.vp;
+
+   gl_Position 	 = curPosClip;
 }

@@ -32,6 +32,7 @@ FORWARD_DECL_PTR(class, SVkDevice);
 FORWARD_DECL_PTR(class, SVkPipelineCache);
 FORWARD_DECL_PTR(class, SVkShader);
 FORWARD_DECL_PTR(struct, SStaticUniformDataG);
+FORWARD_DECL_PTR(struct, SAnimUniformDataG);
 
 
 //storage buffer input
@@ -96,7 +97,8 @@ public:
 
     SVkMesh(
         const SVkDevice* device,
-        const VkRenderPass& renderPass,
+        const VkRenderPass& geoRenderPass,
+        const VkRenderPass& blurRenderPass,
         const SVkPipelineCache* pipelineCache,
         const SVkDescriptorPool* descriptorPool,
         const SVkUniformBuffer* generalUB,
@@ -106,6 +108,7 @@ public:
     ~SVkMesh();
 
     void SetStaticBufferData(const SStaticUniformDataG* data);
+    void SetAnimBufferData(const SAnimUniformDataG* data);
 
     SVkMeshRHA* GetRHA() { return &m_rha; }
     vector<SVkMeshElement>& GetMeshElements() { return m_meshElements; }
@@ -122,17 +125,26 @@ private:
     //Init
     void InitVertex(const SSerializedMesh* serializedMesh);
     void InitVertexDescription();
+    void InitBlurShader();
     void InitMaterial(const SSerializedMesh* serializedMesh);
     void InitUniformBuffer();
     void InitMaterialConnectors();
-    void InitDescriptor(const SVkDescriptorPool* descriptorPool, const SVkUniformBuffer* generalUB);
-    void InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCache* pipelineCache);
+    
+    void InitDescriptor(
+        const SVkDescriptorPool* descriptorPool, 
+        const SVkUniformBuffer* generalUB);
+
+    void InitPipeline(
+        const VkRenderPass& geoRenderPass, 
+        const VkRenderPass& blurRenderPass,
+        const SVkPipelineCache* pipelineCache);
 
     //DeInit
     void DeInitVertex();
     void DeInitVertexDescription();
     void DeInitUniformBuffer();
     void DeInitMaterial();
+    void DeInitBlurShader();
 
 // ~End private funtions
 
@@ -151,6 +163,10 @@ private:
 
     vector<SVkMeshElement>              m_meshElements          = {};
     vector<SAssetHandle<SVkMaterial>>   m_materials             = {};
+
+    SAssetHandle<SVkShader>             m_blurVsHandle = {};
+    SAssetHandle<SVkShader>             m_blurGsHandle = {};
+    SAssetHandle<SVkShader>             m_blurFsHandle = {};
 
     SVkMeshRHA                          m_rha;
 

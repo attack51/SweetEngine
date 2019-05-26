@@ -23,7 +23,8 @@
 SVkMeshLoadParam::SVkMeshLoadParam(
     const CString& filePath,
     const SVkDevice* device,
-    const VkRenderPass& renderPass,
+    const VkRenderPass& geoRenderPass,
+    const VkRenderPass& blurRenderPass,
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
     const SVkUniformBuffer* generalUB,
@@ -31,7 +32,9 @@ SVkMeshLoadParam::SVkMeshLoadParam(
         : SAssetLoadParameter(filePath)
 {
     m_device = device;
-    m_renderPass = renderPass;
+    m_geoRenderPass = geoRenderPass;
+    m_blurRenderPass = blurRenderPass;
+
     m_pipelineCache = pipelineCache;
     m_descriptorPool = descriptorPool;
     m_assetManager = assetManager;
@@ -50,7 +53,8 @@ unique_ptr<SAsset> SVkMeshLoadParam::Create()
 
     auto mesh = make_unique<SVkMesh>(
         m_device, 
-        m_renderPass,
+        m_geoRenderPass,
+        m_blurRenderPass,
         m_pipelineCache,
         m_descriptorPool,
         m_generalUB,

@@ -11,6 +11,9 @@
 #include "SVk/HighLayer/RenderPrimitive/SVkMaterialConnector.h"
 #include "SVk/HighLayer/Renderer/SVkUniformData.h"
 
+#include "SVk/LowLayer/Shader/SVkShader.h"
+#include "SVk/LowLayer/Shader/SVkShaderLoadParameter.h"
+
 #include "SVk/LowLayer/Buffer/SVkIndexBuffer.h"
 #include "SVk/LowLayer/Buffer/SVkUniformBuffer.h"
 #include "SVk/LowLayer/Buffer/SVkVertexBuffer.h"
@@ -22,7 +25,6 @@
 #include "SVk/LowLayer/Pipeline/SVkPipelineCache.h"
 #include "SVk/LowLayer/Pipeline/SVkGraphicsPipeline.h"
 
-#include "SVk/LowLayer/Shader/SVkShader.h"
 #include "SVk/LowLayer/Texture/SVkTexture.h"
 
 #include "SVk/LowLayer/Etc/SVkVertexDescription.h"
@@ -40,7 +42,8 @@
 
 SVkMesh::SVkMesh(
     const SVkDevice* device,
-    const VkRenderPass& renderPass,
+    const VkRenderPass& geoRenderPass,
+    const VkRenderPass& blurRenderPass,
     const SVkPipelineCache* pipelineCache,
     const SVkDescriptorPool* descriptorPool,
     const SVkUniformBuffer* generalUB,
@@ -52,15 +55,17 @@ SVkMesh::SVkMesh(
 
     InitVertex(serializedMesh);
     InitVertexDescription();
+    InitBlurShader();
     InitMaterial(serializedMesh);
     InitUniformBuffer();
     InitMaterialConnectors();
     InitDescriptor(descriptorPool, generalUB);
-    InitPipeline(renderPass, pipelineCache);
+    InitPipeline(geoRenderPass, blurRenderPass, pipelineCache);
 }
 
 SVkMesh::~SVkMesh()
 {
+    DeInitBlurShader();
     DeInitMaterial();
     DeInitUniformBuffer();
     DeInitVertexDescription();
@@ -148,6 +153,35 @@ void SVkMesh::InitVertexDescription()
     m_rha.AnimVertexDescription = make_shared<SVkVertexDescription>(vertexFormats2);
 }
 
+void SVkMesh::InitBlurShader()
+{
+    const CString& vsPath = CText("../../resource/shader/skinning_mesh_blur");
+    SVkShaderLoadFromGlslParameter vsParam(
+        vsPath + CText(".vert"),
+        m_deviceRef,
+        VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT,
+        CText("main"));
+
+    const CString& gsPath = CText("../../resource/shader/skinning_mesh_blur");
+    SVkShaderLoadFromGlslParameter gsParam(
+        gsPath + CText(".geo"),
+        m_deviceRef,
+        VkShaderStageFlagBits::VK_SHADER_STAGE_GEOMETRY_BIT,
+        CText("main"));
+
+    const CString& fsPath = CText("../../resource/shader/skinning_mesh_blur");
+    SVkShaderLoadFromGlslParameter fsParam(
+        fsPath + CText(".frag"),
+        m_deviceRef,
+        VkShaderStageFlagBits::VK_SHADER_STAGE_FRAGMENT_BIT,
+        CText("main"));
+
+    m_blurVsHandle = m_assetManager->GetAssetHandle<SVkShader>(vsParam);
+    m_blurGsHandle = m_assetManager->GetAssetHandle<SVkShader>(gsParam);
+    m_blurFsHandle = m_assetManager->GetAssetHandle<SVkShader>(fsParam);
+}
+
+
 void SVkMesh::InitMaterial(const SSerializedMesh* serializedMesh)
 {
     assert(serializedMesh->MeshGroups.size() == m_meshElements.size());
@@ -167,11 +201,6 @@ void SVkMesh::InitUniformBuffer()
 {
     m_rha.StaticUB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SStaticUniformDataG));
     m_rha.AnimUB = make_shared<SVkUniformBuffer>(m_deviceRef, sizeof(SAnimUniformDataG));
-
-    SAnimUniformDataG animData;
-    animData.VertexCount = GetMeshVertexCount();
-    m_rha.AnimUB->SetBuffer(&animData);
-    m_rha.AnimUB->BindMemory(0, sizeof(SAnimUniformDataG));
 }
 
 void SVkMesh::InitMaterialConnectors()
@@ -184,7 +213,9 @@ void SVkMesh::InitMaterialConnectors()
     }
 }
 
-void SVkMesh::InitDescriptor(const SVkDescriptorPool* descriptorPool, const SVkUniformBuffer* generalUB)
+void SVkMesh::InitDescriptor(
+    const SVkDescriptorPool* descriptorPool,
+    const SVkUniformBuffer* generalUB)
 {
     bool canAnim = m_rha.SkinnedSB != nullptr;
 
@@ -206,6 +237,14 @@ void SVkMesh::InitDescriptor(const SVkDescriptorPool* descriptorPool, const SVkU
                 3,//uniform buffer
                 1,//animated storage buffer
                 static_cast<uint32_t>(material->Textures.size()));
+
+            element->AnimBlurDescriptor = make_shared<SVkGraphicsDescriptor>(
+                m_deviceRef,
+                descriptorPool,
+                3,//uniform buffer
+                1,//animated storage buffer
+                2//texture(geometry render target, noise)
+                );
         }
 
         vector<const SVkTexture*> textures;
@@ -221,18 +260,23 @@ void SVkMesh::InitDescriptor(const SVkDescriptorPool* descriptorPool, const SVkU
             descriptorPool,
             3,//uniform buffer
             0,//animated storage buffer
-            static_cast<uint32_t>(material->Textures.size()));
+            static_cast<uint32_t>(textures.size()));
 
         element->StaticDescriptor->UpdateDescriptorSets(staticUBs, storageBuffers, textures);
     });
 }
 
-void SVkMesh::InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCache* pipelineCache)
+void SVkMesh::InitPipeline(
+    const VkRenderPass& geoRenderPass,
+    const VkRenderPass& blurRenderPass,
+    const SVkPipelineCache* pipelineCache)
 {
     bool canAnim = m_rha.SkinnedSB != nullptr;
 
+    vector<SVkShader*> blurShaders = { m_blurVsHandle.GetAsset(), m_blurGsHandle.GetAsset(), m_blurFsHandle.GetAsset() };
+
     for_each(m_rha.MaterialConnectors.begin(), m_rha.MaterialConnectors.end(),
-        [this, &canAnim, &renderPass, &pipelineCache](SVkMaterialConnectorSPtr& element)
+        [this, &canAnim, &blurShaders, &geoRenderPass, &blurRenderPass, &pipelineCache](SVkMaterialConnectorSPtr& element)
     {
         SVkMaterial* material = element->MaterialHandle.GetAsset();
         assert(material);
@@ -270,7 +314,7 @@ void SVkMesh::InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCach
         {
             element->AnimPipeline = make_shared<SVkGraphicsPipeline>(
                 m_deviceRef,
-                renderPass,
+                geoRenderPass,
                 pipelineCache,
                 shaders,
                 GetRHA()->AnimVertexDescription.get(),
@@ -281,12 +325,29 @@ void SVkMesh::InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCach
                 material->AlphaBlend() ? SDepthMode::OnlyTest : SDepthMode::TestAndWrite,
                 SDepthOp::LessOrEqual,
                 SColorWriteFlags::SColorWrite_All,
-                blendState);
+                blendState,
+                1);
+
+            element->AnimBlurPipeline = make_shared<SVkGraphicsPipeline>(
+                m_deviceRef,
+                blurRenderPass,
+                pipelineCache,
+                blurShaders,
+                GetRHA()->AnimVertexDescription.get(),
+                element->AnimBlurDescriptor.get(),
+                SCullFace::Back,
+                STopology::TriangleList,
+                SFillMode::Fill,
+                material->AlphaBlend() ? SDepthMode::OnlyTest : SDepthMode::TestAndWrite,
+                SDepthOp::LessOrEqual,
+                SColorWriteFlags::SColorWrite_All,
+                blendState,
+                1);
         }
 
         element->StaticPipeline = make_shared<SVkGraphicsPipeline>(
             m_deviceRef,
-            renderPass,
+            geoRenderPass,
             pipelineCache,
             shaders,
             GetRHA()->StaticVertexDescription.get(),
@@ -297,7 +358,8 @@ void SVkMesh::InitPipeline(const VkRenderPass& renderPass, const SVkPipelineCach
             material->AlphaBlend() ? SDepthMode::OnlyTest : SDepthMode::TestAndWrite,
             SDepthOp::LessOrEqual,
             SColorWriteFlags::SColorWrite_All,
-            blendState);
+            blendState,
+            1);
     });
 }
 
@@ -320,6 +382,7 @@ void SVkMesh::DeInitVertexDescription()
 void SVkMesh::DeInitUniformBuffer()
 {
     SPTR_SAFE_DELETE(m_rha.StaticUB);
+    SPTR_SAFE_DELETE(m_rha.AnimUB);
 }
 
 void SVkMesh::DeInitMaterial()
@@ -327,7 +390,19 @@ void SVkMesh::DeInitMaterial()
     m_rha.MaterialConnectors.clear();
 }
 
+void SVkMesh::DeInitBlurShader()
+{
+    m_blurVsHandle.Clear();
+    m_blurGsHandle.Clear();
+    m_blurVsHandle.Clear();
+}
+
 void SVkMesh::SetStaticBufferData(const SStaticUniformDataG* data)
 {
     m_rha.StaticUB->SetBuffer(data);
+}
+
+void SVkMesh::SetAnimBufferData(const SAnimUniformDataG* data)
+{
+    m_rha.AnimUB->SetBuffer(data);
 }

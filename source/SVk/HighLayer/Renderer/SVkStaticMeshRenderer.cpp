@@ -47,20 +47,18 @@ bool SVkStaticMeshRenderer::PushRHC(SVkStaticMeshRHCSPtr rhc)
     return true;
 }
 
-void SVkStaticMeshRenderer::Paint()
+void SVkStaticMeshRenderer::Paint(SVkCommandBuffer* commandBuffer)
 {
-    auto* renderingCommandBuffer = m_deviceRef->GetRenderingCommandBuffer();
-
     for_each(m_rhcs.begin(), m_rhcs.end(),
-        [this, &renderingCommandBuffer](SVkStaticMeshRHCSPtr& RHC)
+        [this, &commandBuffer](SVkStaticMeshRHCSPtr& RHC)
     {
-        PaintForEach(renderingCommandBuffer, RHC.get(), false);
+        PaintForEach(commandBuffer, RHC.get(), false);
     });
 
     for_each(m_rhcs.begin(), m_rhcs.end(),
-        [this, &renderingCommandBuffer](SVkStaticMeshRHCSPtr& RHC)
+        [this, &commandBuffer](SVkStaticMeshRHCSPtr& RHC)
     {
-        PaintForEach(renderingCommandBuffer, RHC.get(), true);
+        PaintForEach(commandBuffer, RHC.get(), true);
     });
 }
 

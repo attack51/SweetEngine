@@ -215,7 +215,7 @@ void SVkDevice::InitCommandBuffers()
     {
         m_graphicsCommandBuffers = make_unique<SVkCommandBuffers>(
             m_graphicsCommandPool.get(),
-            SVk_GraphicsCommandBuffer_Count,
+            SVk_GCommandBuffer_Count,
             VK_COMMAND_BUFFER_LEVEL_PRIMARY);
     }
 
@@ -223,7 +223,7 @@ void SVkDevice::InitCommandBuffers()
     {
         m_computeCommandBuffers = make_unique<SVkCommandBuffers>(
             m_computeCommandPool.get(),
-            SVk_ComputeCommandBuffer_Count,
+            SVk_CCommandBuffer_Count,
             VK_COMMAND_BUFFER_LEVEL_PRIMARY);
     }
 
@@ -231,7 +231,7 @@ void SVkDevice::InitCommandBuffers()
     {
         m_transferCommandBuffers = make_unique<SVkCommandBuffers>(
             m_transferCommandPool.get(),
-            SVk_TransferCommandBuffer_Count,
+            SVk_TCommandBuffer_Count,
             VK_COMMAND_BUFFER_LEVEL_PRIMARY);
     }
 }
@@ -318,7 +318,6 @@ bool SVkDevice::HasCommandBuffer(const SVkCommandBufferType commandBufferType) c
     {
     case SVk_CommandBuffer_Graphics:
         return m_graphicsCommandBuffers.get() != nullptr;
-
     case SVk_CommandBuffer_Compute:
         return m_computeCommandBuffers.get() != nullptr;
     case SVk_CommandBuffer_Transfer:
@@ -343,10 +342,26 @@ const SVkCommandBuffers* SVkDevice::GetCommandBuffers(const SVkCommandBufferType
     }
 }
 
-SVkCommandBuffer* SVkDevice::GetRenderingCommandBuffer() const
+SVkCommandBuffer* SVkDevice::GetGCommandBuffer(SVkGCommandBufferType type) const
 {
     auto graphicsCommandBuffers = GetCommandBuffers(SVk_CommandBuffer_Graphics);
     if (graphicsCommandBuffers == nullptr) return nullptr;
 
-    return graphicsCommandBuffers->GetCommandBuffer(SVk_GraphicsCommandBuffer_Render);
+    return graphicsCommandBuffers->GetCommandBuffer(type);
+}
+
+SVkCommandBuffer* SVkDevice::GetCCommandBuffer(SVkCCommandBufferType type) const
+{
+    auto computeCommandBuffers = GetCommandBuffers(SVk_CommandBuffer_Compute);
+    if (computeCommandBuffers == nullptr) return nullptr;
+
+    return computeCommandBuffers->GetCommandBuffer(type);
+}
+
+SVkCommandBuffer* SVkDevice::GetTCommandBuffer(SVkTCommandBufferType type) const
+{
+    auto transferCommandBuffers = GetCommandBuffers(SVk_CommandBuffer_Transfer);
+    if (transferCommandBuffers == nullptr) return nullptr;
+
+    return transferCommandBuffers->GetCommandBuffer(type);
 }
