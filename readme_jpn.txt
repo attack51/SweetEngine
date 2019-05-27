@@ -42,9 +42,14 @@ GPUのidle timeが起こすと思います。
 
 <処理プロセス>
 A.キャラクター達をupdateする時、アニメーションMatrix Paletteを計算(CPU)。
-B.
-Geometry Render Target(GeoRT)にキャラクターを描く。
-B.
+B.全てのキャラクターのMatrix Palette(100個)を合わせてGPUのStorageBufferにコピー。
+C.Compute shaderでAnimation Matrix Paletteを利用して全てのキャラクターのvertexを計算。
+  計算されたvertexはAnimated Vertex Storage Bufferに保管。
+  以前のフレームに計算されたvertexは上書きしない。(MotionBlurをために)
+D.Geometry Render Target(GeoRT)にキャラクターを描く。
+  アニメーションされたvertexはAnimated Vertex Storage Bufferから読み出す。
+  ただし、UVはアニメーション処理が必要ないのでvertex bufferから読み出す。
+E.
 
 
 
