@@ -49,10 +49,16 @@ C.Compute shaderでAnimation Matrix Paletteを利用して全てのキャラク�
 D.Geometry Render Target(GeoRT)にキャラクターを描く。
   アニメーションされたvertexはAnimated Vertex Storage Bufferから読み出す。
   ただし、UVはアニメーション処理が必要ないのでvertex bufferから読み出す。
-E.
+E.キャラクターが描いているGeoRTをPostProcess Render Target(PPRT)にコピー。
+F.MotionBlurをため、PPRTにキャラクター達を描く。
+  Vertex shaderで以前フレームと今のvertexを読み出してVelocityを計算。
+  計算されたVelocityはClipとNDC座標系で変換。
+  ClipVelはgeometry shaderでMeshを拡張する時、
+  NDCVelはfragment shaderでMotionBlurする時使用。
+G.PPRTをPresentSurfaceにコピー。
 
 
-
+<使用されているリソース>
 使用されているキャラクターは、unity asset store
 https://assetstore.unity.com/packages/3d/characters/humanoids/eri-82607
 ここで購入して得られたfbx、pngファイルを利用しています。
