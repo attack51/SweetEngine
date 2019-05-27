@@ -18,7 +18,7 @@ MOUSE LB DOWN + MOUSE MOVE : look around
 1)アニメーション処理されている100人のキャラクターを高速でレンダリングされています。
 100人のスキニングキャラクターアニメーション処理は、compute shaderを利用してGPUで急速に処理され、
 レンダリングもInstancingを利用して同じMaterialのMesh達を一度のDraw Callで描かれています。
-100人のアニメーションはフレームに一度のDispatch Callで処理されたいます。
+100人のアニメーションはフレームに一度のDispatch Callで処理されています。
 キャラクターのbone数は131個でありvertexは8000以上です。
 
 2)アニメーション処理されている100人のキャラクターにObject Motion Blurが適用されています。
