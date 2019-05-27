@@ -16,23 +16,37 @@ MOUSE LB DOWN + MOUSE MOVE : look around
  
 <何をする技術デモか？>
 1)アニメーション処理されている100人のキャラクターを高速でレンダリングされています。
-100人のスキニングキャラクターアニメーション処理は、compute shaderを利用してgpuで急速に処理され、
+100人のスキニングキャラクターアニメーション処理は、compute shaderを利用してGPUで急速に処理され、
 レンダリングもInstancingを利用して同じMaterialのMesh達を一度のDraw Callで描かれています。
 100人のアニメーションはフレームに一度のDispatch Callで処理されたいます。
 キャラクターのbone数は131個でありvertexは8000以上です。
 
 2)アニメーション処理されている100人のキャラクターにObject Motion Blurが適用されています。
-スキニングキャラクターアニメーションするとき、以前フレームのvertexを保管して、
+compute shaderでスキニングキャラクターアニメーションする時、以前フレームのvertexを保管して、
 今のvertexと以前のvertexの位置を比較してVelocityを計算します。
-geometry shaderではVelocity方向でMeshを拡張して、
-fragment shaderではVelocity方向でBlurの処理をします。
+geometry shaderではVelocityの方向でMeshを拡張して、
+fragment shaderではVelocityの方向でBlurの処理をします。
 
-処理プロセスは
+デモは独自で作成されているゲームフレームワークを元で作りました。
+ローレベルグラフィックスAPIであるVulkanを使用しています。
+
+第2世代のi7 2600 + GTX1070のシステムで
+MotionBlurが適用された時180フレーム以上、
+MotionBlurが適用されなかった時290フレーム以上で動作します。
+殆どがGPUの負荷ですけと、そっちの方はまだ最適化されておりません。
+負荷の理由は全般的な処理のプロセスが順序の依存があるからだと思っています。
+各CommandBufferのsubmitはsemaphoreを利用して順次的な処理を保障しますので、
+GPUのidle timeが起こすと思います。
+依存関係の処理をする時に、他の(依存関係がない)GPUの処理をするのも最適化の方法だと思います。
 
 
-ローレベルグラフィックスAPIであるVulkanを使用しました。
+<処理プロセス>
+A.キャラクター達をupdateする時、アニメーションMatrix Paletteを計算(CPU)。
+B.
+Geometry Render Target(GeoRT)にキャラクターを描く。
+B.
 
-第2世代のi7 2600 + GTX1070から250フレーム以上で動作します。
+
 
 使用されているキャラクターは、unity asset store
 https://assetstore.unity.com/packages/3d/characters/humanoids/eri-82607
