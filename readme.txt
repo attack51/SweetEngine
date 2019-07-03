@@ -8,6 +8,9 @@ A: camera move left
 D: camera move right
 W: camera move forward
 S: camera move backward
+1 : game slower (minimum 0.05)
+2 : game faster (maximum 1)
+3 : toggle motion blur (default on)
 
 MOUSE LB DOWN + MOUSE MOVE: look around
  
