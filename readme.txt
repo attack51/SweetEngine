@@ -15,20 +15,51 @@ S: camera move backward
 MOUSE LB DOWN + MOUSE MOVE: look around
  
 <What is this?>
-This is a tech demo that rendering 100 characters that are animation process at high speed.
+1)This is a tech demo that rendering 100 characters that are animation process at high speed.
 It used Vulkan, a low-level graphics API.
-
 100 skinning character animation processes are processed quickly with gpu using a compute shader.
-Rendering is also drawn in one Draw Call using Instancing.
-
+Rendering is also drawn using a single Draw Call for same material meshes using Instancing.
 Each character has 131 number of bones and the vertex is 8000 more.
-It works with more than 330 frames from the 2nd gen i7 2600 + GTX 1070.
+
+2)Object Motion Blur is applied to 100 animated characters.
+When the skinning character animation is done with the compute shader, save the vertex of the previous frame,
+Calculate Velocity by comparing the position of the current vertex and the previous vertex.
+In the geometry shader, extend Mesh in the direction of velocity.
+The fragment shader handles Blur in the direction of velocity.
+
+The demo is based on a game framework that has been created on its own.
+It uses Vulkan, a low-level graphics API.
+
+In the 2nd gen i7 2600 + GTX 1070 system,
+Over 180 frames when MotionBlur is applied,
+When MotionBlur is not applied, it works with 290 frames or more.
+Most are GPU bottleneck, but they are not yet optimized.
+I think that the reason for the bottleneck is that the processing submit is dependent on the order.
+Since submit of each CommandBuffer is guaranteed to be processed sequentially using semaphore,
+I think that idle time of the GPU is caused.
 
 The character used is unity asset store
 https://assetstore.unity.com/packages/3d/characters/humanoids/eri-82607
 I use fbx and png files obtained by purchasing here.
 png is converted to dds file and used
 fbx uses FBX SDK and converts it into json format mesh, skeleton, animation file using FbxConv made by its own.
+
+<Processing order>
+A. When updating the characters, calculate the animation Matrix Palette (CPU).
+B. Combine Matrix Palette (100 pieces) of all characters and copy to GPU StorageBuffer.
+C. Calculate vertex of all characters using Animation Matrix Palette with Compute shader.
+  Calculated vertices are stored in Animated Vertex Storage Buffer.
+  Not overwritten calculated vertertices to previous frame vertertices. (For MotionBlur)
+D. Draw a character on the Geometry Render Target (GeoRT).
+  An animated vertex is read from the Animated Vertex Storage Buffer.
+  However, UV does not require animation processing, so it reads from static vertex buffer.
+E. Copy the GeoRT (that the character is drawing) to PostProcess Render Target (PPRT).
+F. Draw characters to PPRT for Motion Blur.
+  Read the current & previous frame vertex with the vertex shader and calculate the velocity.
+  Calculated Velocity is converted to Clip and NDC coordinate system.
+  ClipVel is used when extend Mesh with geometry shader,
+  NDCVel is used when MotionBlur with fragment shader.
+G. Copy PPRT to PresentSurface.
 
 <Used library>
 FBXSDK: Used by FbxConv
@@ -47,6 +78,9 @@ spirv-tool: use text based shader files in real time instead of compiled shader 
 6) cmake SweetEngine/tools/FBXConv build (optionable)
 
 FBXConv is import tool from .fbx to json format mesh/skeleton/animation data
+
+----- UPDATE [2019.05.27] -----
+Apply object motion blur
 
 ----- UPDATE [2019.05.23] -----
 Increase GPU skinning performance
